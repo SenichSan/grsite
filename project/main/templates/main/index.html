@@ -1,9 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
+
     <!-- Стиль footer-a для главной страницы -->
-    {% block css %}
-        <link rel="stylesheet" href="{% static 'deps/css/my_footer_css.css' %}">
-    {% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'deps/css/my_footer_css.css' %}">
+{% endblock %}
+
+{% block modal_cart %}
+{% include 'includes/cart_button.html' %}
+{% endblock %}
 
 {% block content %}
     <h1 class="mt-5 pt-5", style="color: crimson; font-family: 'Creepster', cursive; text-shadow: 15px 15px 20px red;"><strong>Магазин СМЕЕЕРТИИИ </strong></h1>
