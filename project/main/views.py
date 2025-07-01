@@ -1,22 +1,47 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from unicodedata import category
+from django.views.generic import TemplateView
 
 from goods.models import Categories
 
 
-def index(request):
-    context = {
-        'title':'Home - Главная',
-        'content':'Главная страница магазина - HOME'
-    }
-    return render(request,  'main/index.html', context)
+
+class IndexView(TemplateView):
+    template_name = 'main/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Home - Главная'
+        context['content'] = "GROWNICA"
+        return context
 
 
-def about(request):
-    context = {
-        'title': 'Home - О нас',
-        'content': 'DANGER; pizda',
-        'text_on_page': 'Starina, syebi nahuy... FUCK YOUU! '
-    }
-    return render(request, 'main/about.html', context)
+class AboutView(TemplateView):
+    template_name = 'main/about.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Home - О нас'
+        context['content'] = "О нас"
+        context['text_on_page'] = "************"
+        return context
+    
+
+# def index(request):
+
+#     context = {
+#         'title': 'Home - Главная',
+#         'content': "Магазин мебели HOME",
+#     }
+
+#     return render(request, 'main/index.html', context)
+
+
+# def about(request):
+#     context = {
+#         'title': 'Home - О нас',
+#         'content': "О нас",
+#         'text_on_page': "Текст о том почему этот магазин такой классный, и какой хороший товар."
+#     }
+
+#     return render(request, 'main/about.html', context)

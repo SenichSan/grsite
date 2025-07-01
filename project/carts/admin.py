@@ -2,14 +2,14 @@ from django.contrib import admin
 
 from carts.models import Cart
 
-
-# admin.register(Cart)
+# admin.site.register(Cart)
 class CartTabAdmin(admin.TabularInline):
     model = Cart
     fields = "product", "quantity", "created_timestamp"
     search_fields = "product", "quantity", "created_timestamp"
     readonly_fields = ("created_timestamp",)
     extra = 1
+
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
@@ -24,4 +24,11 @@ class CartAdmin(admin.ModelAdmin):
     def product_display(self, obj):
         return str(obj.product.name)
 
+    # user_display and product_display alter name of columns in admin panel
+    user_display.short_description = "Пользователь"
+    product_display.short_description = "Товар"
 
+
+
+
+    

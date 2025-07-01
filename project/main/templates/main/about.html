@@ -1,23 +1,29 @@
 {% extends "base.html" %}
 {% load static %}
-    <!-- Стиль footer-a для главной страницы -->
+
 {% block css %}
-    <link rel="stylesheet" href="{% static 'deps/css/my_footer_css.css' %}">
+    <link rel="stylesheet" href="{% static "deps/css/my_footer_css.css" %}">
 {% endblock %}
 
 {% block modal_cart %}
-{% include 'includes/cart_button.html' %}
-{% endblock %}
+{% include "includes/cart_button.html" %}
+{% endblock  %}
 
 {% block content %}
-    <h2 class="mt-5 pt-5", style="color: crimson; font-family: 'Creepster', cursive; text-shadow: 15px 15px 20px red;"><strong>{{ content }} </strong></h2>
-    <h1 class="mt-5 pt-5", style="color: crimson; font-family: 'Creepster', cursive; text-shadow: 15px 15px 20px red;"><strong>{{ text_on_page }} </strong></h1>
+    <div class="mt-5 pt-5 bg-white custom-shadow rounded">
+        <div class="container p-4">
+        <h2 class="m-2"><strong>{{ content }}</strong></h2>
+        <p class="m-2">{{ text_on_page }}</p>
+        </div>
+    </div>
 {% endblock %}
 
 {% block footer %}
 <footer class="py-4 bg-dark">
     <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; ZalupaINDUSTRIES 20228</p>
+        <p class="m-0 text-center text-white">Copyright &copy; ------ </p>
     </div>
 </footer>
 {% endblock %}
+
+
