@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'goods',
     'users',
     'carts',
-    'orders',
+    'orders.apps.OrdersConfig',
 
 ]
 
@@ -163,3 +163,12 @@ AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'shroomer0ua@gmail.com'  # Замените на ваш Gmail-адрес
+EMAIL_HOST_PASSWORD = 'eofa witb svwe knyh'  # Пароль приложения или обычный пароль
+

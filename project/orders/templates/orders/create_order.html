@@ -3,101 +3,160 @@
 {% load carts_tags %}
 
 {% block content %}
-<div class=" bg-white p-4 mb-4 mx-2 rounded custom-shadow">
+<div class="bg-white p-4 mb-4 mx-2 rounded custom-shadow">
     <div class="container">
         <h3 class="text-center mb-4">Выбранные товары</h3>
         <div class="container" id="cart-items-container">
-            <!-- Разметка корзины -->
             {% user_carts request as carts %}
-
             {% include "carts/includes/included_cart.html" %}
-            <!-- Закончилась разметка корзины -->
         </div>
     </div>
-    <!-- Детали заказа -->
+
     <div class="container">
         <h3 class="text-center">Детали заказа</h3>
         <div class="card mb-3">
             <div class="card-body">
-                <form action="{% url "orders:create_order" %}" method="post" id="create_order_form">
+                <form action="{% url 'orders:create_order' %}" method="post" id="create_order_form">
                     {% csrf_token %}
                     <div class="row">
+                        <!-- Имя -->
                         <div class="col-md-6 mb-3">
                             <label for="id_first_name" class="form-label">Имя*:</label>
-                            <input type="text" class="form-control" id="id_first_name"
-                                value="{% if form.first_name.value %}{{ form.first_name.value }}{% endif %}"
-                                name="first_name" required>
-                            {% if form.first_name.errors %}
-                                <div class="alert alert-danger alert-dismissible fade show">{{form.first_name.errors}}</div>
-                            {% endif %}
+                            <input type="text" class="form-control" id="id_first_name" name="first_name"
+                                   value="{{ form.first_name.value|default:'' }}" required>
                         </div>
+
+                        <!-- Фамилия -->
                         <div class="col-md-6 mb-3">
                             <label for="id_last_name" class="form-label">Фамилия*:</label>
                             <input type="text" class="form-control" id="id_last_name" name="last_name"
-                            value="{% if form.last_name.value %}{{ form.last_name.value }}{% endif %}"
-                            required>
-                            {% if form.last_name.errors %}
-                                <div class="alert alert-danger alert-dismissible fade show">{{form.last_name.errors}}</div>
-                            {% endif %}
+                                   value="{{ form.last_name.value|default:'' }}" required>
                         </div>
+
+                        <!-- Телефон -->
                         <div class="col-md-6 mb-3">
-                            <label for="id_phone_number" class="form-label">Номер телефона*:</label>
+                            <label for="id_phone_number" class="form-label">Номер телефона<span class="text-danger">*</span>:</label>
                             <input type="text" class="form-control" id="id_phone_number" name="phone_number"
-                                value="{% if form.phone_number.value %}{{ form.phone_number.value }}{% endif %}"
-                                placeholder="(000) 000-0000"
-                                required>
-                            {% if form.phone_number.errors %}
-                                <div class="alert alert-danger alert-dismissible fade show">{{form.phone_number.errors}}</div>
-                            {% endif %}
-                            <div class="alert alert-danger alert-dismissible fade show" style="display: none" id="phone_number_error">Неверный формат номера</div>
+                                   value="{{ form.phone_number.value|default:'' }}" placeholder="+(380) 000-0000" required>
                         </div>
+
+                        <!-- Email -->
+                        <div class="col-md-6 mb-3">
+                            <label for="id_email" class="form-label">Email:</label>
+                            <input type="email" class="form-control" id="id_email" name="email"
+                                   value="{{ form.email.value|default:'' }}" required>
+                        </div>
+
+                        <!-- Способ доставки -->
                         <div class="col-md-12 mb-3">
-                            <label for="delivery" class="form-label">Способ доставки: </label>
+                            <label class="form-label">Способ доставки <span class="text-danger">*</span>:</label>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="requires_delivery"
-                                    id="id_requires_delivery" value="1" checked>
-                                <label class="form-check-label" for="id_requires_delivery">Нужна
-                                    доставка</label>
+                                <input class="form-check-input" type="radio" name="delivery_method" id="delivery_courier" value="courier" required>
+                                <label class="form-check-label" for="delivery_courier">Укрпошта</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="requires_delivery"
-                                    id="id_requires_delivery" value="0">
-                                <label class="form-check-label" for="id_requires_delivery">Самовывоз</label>
+                                <input class="form-check-input" type="radio" name="delivery_method" id="delivery_np" value="nova_poshta" required>
+                                <label class="form-check-label" for="delivery_np">Нова Пошта</label>
                             </div>
                         </div>
-                        <div class="mb-3" id="deliveryAddressField">
-                            <label for="id_delivery_address" class="form-label">Адрес
-                                доставки*:</label>
-                            <textarea class="form-control" id="id_delivery_address"
-                                value="{% if form.delivery_address.value %}{{ form.delivery_address.value }}{% endif %}"
-                                name="delivery_address" rows="2"></textarea>
-                            {% if form.delivery_address.errors %}
-                                <div class="alert alert-danger alert-dismissible fade show">{{form.delivery_address.errors}}</div>
-                            {% endif %}
+
+                        <!-- Город -->
+                        <div class="col-md-6 mb-3">
+                            <label for="id_city">Город <span class="text-danger">*</span>:</label>
+                            <input type="text" name="city" id="id_city" class="form-control" list="cities-list" required>
+                            <datalist id="cities-list"></datalist>
+                            <input type="hidden" name="city_ref" id="city_ref">
                         </div>
+
+                        <!-- Отделение -->
+                        <div class="col-md-6 mb-3">
+                            <label for="id_warehouse">Отделение <span class="text-danger">*</span>:</label>
+                            <select name="warehouse" id="id_warehouse" class="form-control" required>
+                                <option value="">Выберите отделение</option>
+                            </select>
+                        </div>
+
+                        <!-- Способ оплаты -->
                         <div class="col-md-12 mb-3">
                             <label class="form-label">Способ оплаты: </label>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="payment_on_get"
-                                    id="id_payment_on_get" value="0" checked>
-                                <label class="form-check-label" for="id_payment_on_get">Оплата
-                                    картой</label>
+                                <input class="form-check-input" type="radio" name="payment_on_get" id="payment_card" value="0" checked>
+                                <label class="form-check-label" for="payment_card">Оплата картой</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="payment_on_get"
-                                    id="id_payment_on_get" value="1">
-                                <label class="form-check-label" for="id_payment_on_get">Наличными/картой
-                                    при плучении</label>
-                                {% if form.payment_on_get.errors %}
-                                    <div class="alert alert-danger alert-dismissible fade show">{{form.payment_on_get.errors}}</div>
-                                {% endif %}
+                                <input class="form-check-input" type="radio" name="payment_on_get" id="payment_cash" value="1">
+                                <label class="form-check-label" for="payment_cash">При получении</label>
                             </div>
                         </div>
                     </div>
+
                     <button type="submit" class="btn btn-dark">Оформить заказ</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-{% endblock  %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const cityInput = document.getElementById("id_city");
+    const datalist = document.getElementById("cities-list");
+    const cityRefInput = document.getElementById("city_ref");
+    const warehouseSelect = document.getElementById("id_warehouse");
+
+    let timer;
+    cityInput.addEventListener("input", function () {
+        clearTimeout(timer);
+        const query = cityInput.value;
+        if (query.length < 2) return;
+
+        timer = setTimeout(() => {
+            fetch(`/orders/ajax/search-city/?q=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(data => {
+                    datalist.innerHTML = "";
+                    data.forEach(city => {
+                        const option = document.createElement("option");
+                        option.value = city.label;
+                        option.dataset.ref = city.ref; // SettlementRef
+                        datalist.appendChild(option);
+                    });
+                });
+        }, 300);
+    });
+
+    cityInput.addEventListener("change", function () {
+        const selectedOption = Array.from(datalist.options)
+            .find(opt => opt.value === cityInput.value);
+        if (!selectedOption) return;
+
+        const settlementRef = selectedOption.dataset.ref;
+        cityRefInput.value = settlementRef;
+
+        warehouseSelect.innerHTML = "<option>Загрузка...</option>";
+
+        fetch("{% url 'orders:get_warehouses' %}?settlement_ref=" + encodeURIComponent(settlementRef))
+            .then(res => res.json())
+            .then(data => {
+                warehouseSelect.innerHTML = "";
+                if (data.success && data.warehouses.length) {
+                    data.warehouses.forEach(wh => {
+                        const opt = document.createElement("option");
+                        opt.value = wh;
+                        opt.text = wh;
+                        warehouseSelect.appendChild(opt);
+                    });
+                } else {
+                    warehouseSelect.innerHTML = "<option>Нет отделений</option>";
+                }
+            })
+            .catch(err => {
+                console.error("Ошибка загрузки:", err);
+                warehouseSelect.innerHTML = "<option>Ошибка загрузки</option>";
+            });
+    });
+});
+</script>
+{% endblock %}
