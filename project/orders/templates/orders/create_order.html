@@ -19,144 +19,210 @@
                 <form action="{% url 'orders:create_order' %}" method="post" id="create_order_form">
                     {% csrf_token %}
                     <div class="row">
-                        <!-- Имя -->
                         <div class="col-md-6 mb-3">
                             <label for="id_first_name" class="form-label">Имя*:</label>
                             <input type="text" class="form-control" id="id_first_name" name="first_name"
                                    value="{{ form.first_name.value|default:'' }}" required>
+                            {% if form.first_name.errors %}
+                            <div class="alert alert-danger">{{ form.first_name.errors }}</div>
+                            {% endif %}
                         </div>
 
-                        <!-- Фамилия -->
                         <div class="col-md-6 mb-3">
                             <label for="id_last_name" class="form-label">Фамилия*:</label>
                             <input type="text" class="form-control" id="id_last_name" name="last_name"
                                    value="{{ form.last_name.value|default:'' }}" required>
+                            {% if form.last_name.errors %}
+                            <div class="alert alert-danger">{{ form.last_name.errors }}</div>
+                            {% endif %}
                         </div>
 
-                        <!-- Телефон -->
                         <div class="col-md-6 mb-3">
-                            <label for="id_phone_number" class="form-label">Номер телефона<span class="text-danger">*</span>:</label>
+                            <label for="id_phone_number" class="form-label">Номер телефона*:</label>
                             <input type="text" class="form-control" id="id_phone_number" name="phone_number"
-                                   value="{{ form.phone_number.value|default:'' }}" placeholder="+(380) 000-0000" required>
+                                   value="{{ form.phone_number.value|default:'' }}" required>
+                            {% if form.phone_number.errors %}
+                            <div class="alert alert-danger">{{ form.phone_number.errors }}</div>
+                            {% endif %}
                         </div>
 
-                        <!-- Email -->
                         <div class="col-md-6 mb-3">
                             <label for="id_email" class="form-label">Email:</label>
                             <input type="email" class="form-control" id="id_email" name="email"
                                    value="{{ form.email.value|default:'' }}" required>
+                            {% if form.email.errors %}
+                            <div class="alert alert-danger">{{ form.email.errors }}</div>
+                            {% endif %}
                         </div>
 
-                        <!-- Способ доставки -->
                         <div class="col-md-12 mb-3">
-                            <label class="form-label">Способ доставки <span class="text-danger">*</span>:</label>
+                            <label class="form-label">Способ доставки*:</label>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="delivery_method" id="delivery_courier" value="courier" required>
+                                <input class="form-check-input" type="radio" name="delivery_method"
+                                       id="delivery_courier" value="courier" required>
                                 <label class="form-check-label" for="delivery_courier">Укрпошта</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="delivery_method" id="delivery_np" value="nova_poshta" required>
+                                <input class="form-check-input" type="radio" name="delivery_method" id="delivery_np"
+                                       value="nova_poshta" required>
                                 <label class="form-check-label" for="delivery_np">Нова Пошта</label>
                             </div>
                         </div>
 
-                        <!-- Город -->
                         <div class="col-md-6 mb-3">
-                            <label for="id_city">Город <span class="text-danger">*</span>:</label>
-                            <input type="text" name="city" id="id_city" class="form-control" list="cities-list" required>
-                            <datalist id="cities-list"></datalist>
-                            <input type="hidden" name="city_ref" id="city_ref">
+                            <label for="nova_city">Населений пункт*</label>
+                            <input type="text" class="form-control" id="nova_city" name="city_name"
+                                   placeholder="Начніть вводити назву населеного пункту..." autocomplete="off" required>
+                            <input type="hidden" id="nova_city_ref" name="city_ref">
                         </div>
 
-                        <!-- Отделение -->
-                        <div class="col-md-6 mb-3">
-                            <label for="id_warehouse">Отделение <span class="text-danger">*</span>:</label>
-                            <select name="warehouse" id="id_warehouse" class="form-control" required>
-                                <option value="">Выберите отделение</option>
+                        <div class="col-md-6 mb-3 d-flex flex-column justify-content-end">
+                            <label for="warehouse_display">Отделение*</label>
+                            <select class="form-select" id="warehouse_display" name="warehouse_ref" style="width: 100%"
+                                    required>
+                                <option value="">Спочатку оберіть населений пункт</option>
                             </select>
                         </div>
 
-                        <!-- Способ оплаты -->
+
                         <div class="col-md-12 mb-3">
-                            <label class="form-label">Способ оплаты: </label>
+                            <label class="form-label">Способ оплаты:</label>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="payment_on_get" id="payment_card" value="0" checked>
+                                <input class="form-check-input" type="radio" name="payment_on_get" id="payment_card"
+                                       value="0" checked>
                                 <label class="form-check-label" for="payment_card">Оплата картой</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="payment_on_get" id="payment_cash" value="1">
+                                <input class="form-check-input" type="radio" name="payment_on_get" id="payment_cash"
+                                       value="1">
                                 <label class="form-check-label" for="payment_cash">При получении</label>
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-dark">Оформить заказ</button>
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-success btn-lg">Оформить заказ</button>
+                    </div>
+
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+{% if form.errors %}
+<div class="alert alert-danger">
+    <strong>Ошибка!</strong> Пожалуйста, исправьте:
+    <ul>
+        {% for field in form %}
+        {% for error in field.errors %}
+        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+        {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}
+<style>
+    .ui-autocomplete {
+        max-height: 200px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        background-color: white;
+        z-index: 1051 !important;
+        border: 1px solid #ced4da;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+</style>
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const cityInput = document.getElementById("id_city");
-    const datalist = document.getElementById("cities-list");
-    const cityRefInput = document.getElementById("city_ref");
-    const warehouseSelect = document.getElementById("id_warehouse");
+    $(function () {
+      const apiKey = "65ef3beeda1b3897b0e3e4d66b759a93";
 
-    let timer;
-    cityInput.addEventListener("input", function () {
-        clearTimeout(timer);
-        const query = cityInput.value;
-        if (query.length < 2) return;
+      $("#nova_city").autocomplete({
+        minLength: 2,
+        source: function (request, response) {
+          $.ajax({
+            url: "https://api.novaposhta.ua/v2.0/json/",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+              apiKey: apiKey,
+              modelName: "AddressGeneral",
+              calledMethod: "searchSettlements",
+              methodProperties: {
+                CityName: request.term,
+                Limit: "10",
+                Page: "1"
+              }
+            }),
+            success: function (res) {
+              if (res.success && res.data.length > 0) {
+                const cities = res.data[0].Addresses;
+                response(cities.map(city => ({
+                  label: city.Present,
+                  value: city.Present,
+                  ref: city.DeliveryCity
+                })));
+              } else {
+                response([]);
+              }
+            }
+          });
+        },
+        select: function (event, ui) {
+          $("#nova_city").val(ui.item.value);
+          $("#nova_city_ref").val(ui.item.ref);
 
-        timer = setTimeout(() => {
-            fetch(`/orders/ajax/search-city/?q=${encodeURIComponent(query)}`)
-                .then(res => res.json())
-                .then(data => {
-                    datalist.innerHTML = "";
-                    data.forEach(city => {
-                        const option = document.createElement("option");
-                        option.value = city.label;
-                        option.dataset.ref = city.ref; // SettlementRef
-                        datalist.appendChild(option);
-                    });
+          // Загружаем отделения
+          $.ajax({
+            url: "https://api.novaposhta.ua/v2.0/json/",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+              apiKey: apiKey,
+              modelName: "Address",
+              calledMethod: "getWarehouses",
+              methodProperties: {
+                CityRef: ui.item.ref
+              }
+            }),
+            success: function (res) {
+              const $select = $("#warehouse_display");
+              $select.empty().append('<option value="">Оберіть відділення</option>');
+
+              if (res.success && res.data.length > 0) {
+                res.data.forEach(wh => {
+                  $select.append(
+                    $('<option>', {
+                      value: wh.Ref,
+                      text: wh.Description
+                    })
+                  );
                 });
-        }, 300);
-    });
 
-    cityInput.addEventListener("change", function () {
-        const selectedOption = Array.from(datalist.options)
-            .find(opt => opt.value === cityInput.value);
-        if (!selectedOption) return;
-
-        const settlementRef = selectedOption.dataset.ref;
-        cityRefInput.value = settlementRef;
-
-        warehouseSelect.innerHTML = "<option>Загрузка...</option>";
-
-        fetch("{% url 'orders:get_warehouses' %}?settlement_ref=" + encodeURIComponent(settlementRef))
-            .then(res => res.json())
-            .then(data => {
-                warehouseSelect.innerHTML = "";
-                if (data.success && data.warehouses.length) {
-                    data.warehouses.forEach(wh => {
-                        const opt = document.createElement("option");
-                        opt.value = wh;
-                        opt.text = wh;
-                        warehouseSelect.appendChild(opt);
-                    });
+                // Активируем Select2 на отделениях
+                if (!$select.hasClass("select2-hidden-accessible")) {
+                  $select.select2({
+                    placeholder: "Введіть адресу або номер відділення",
+                    width: "100%"
+                  });
                 } else {
-                    warehouseSelect.innerHTML = "<option>Нет отделений</option>";
+                  $select.trigger("change");
                 }
-            })
-            .catch(err => {
-                console.error("Ошибка загрузки:", err);
-                warehouseSelect.innerHTML = "<option>Ошибка загрузки</option>";
-            });
+              } else {
+                $select.append('<option value="">Немає відділень</option>');
+              }
+            }
+          });
+        }
+      });
     });
-});
 </script>
 {% endblock %}
+

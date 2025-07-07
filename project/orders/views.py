@@ -42,14 +42,18 @@ class CreateOrderView(LoginRequiredMixin, FormView):
 
                     if cart_items.exists():
                         # Создать заказ
+                        city_name = self.request.POST.get('city_name', '').strip()
+                        warehouse_ref = self.request.POST.get('warehouse_ref', '').strip()
+                        warehouse_desc = get_warehouse_description(warehouse_ref)
+                        delivery_address = f"{city_name}, отделение: {warehouse_desc}" if city_name and warehouse_desc else '—'
+
                         order = Order.objects.create(
                             user=user,
                             first_name=form.cleaned_data['first_name'],
                             last_name=form.cleaned_data['last_name'],
                             phone_number=form.cleaned_data['phone_number'],
                             email=form.cleaned_data['email'],
-                            requires_delivery=form.cleaned_data['requires_delivery'],
-                            delivery_address=form.cleaned_data['delivery_address'],
+                            delivery_address=delivery_address,
                             payment_on_get=form.cleaned_data['payment_on_get'],
                         )
                         # Создать заказанные товары
@@ -81,13 +85,14 @@ class CreateOrderView(LoginRequiredMixin, FormView):
 
                         messages.success(self.request, 'Заказ оформлен!')
                         return redirect('user:profile')
+
         except ValidationError as e:
             messages.success(self.request, str(e))
             return redirect('orders:create_order')
 
     def form_invalid(self, form):
         messages.error(self.request, 'Заполните все обязательные поля!')
-        return redirect('orders:create_order')
+        return self.render_to_response(self.get_context_data(form=form))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -143,3 +148,20 @@ def get_warehouses(request):
         whs = [w["Description"] for w in resp["data"]]
         return JsonResponse({"success": True, "warehouses": whs})
     return JsonResponse({"success": False, "warehouses": []})
+
+def get_warehouse_description(ref):
+    payload = {
+        "apiKey": API_KEY,
+        "modelName": "Address",
+        "calledMethod": "getWarehouses",
+        "methodProperties": {
+            "Ref": ref
+        }
+    }
+    try:
+        res = requests.post("https://api.novaposhta.ua/v2.0/json/", json=payload, timeout=5).json()
+        if res.get("success") and res["data"]:
+            return res["data"][0]["Description"]
+    except Exception:
+        pass
+    return ref  # fallback: просто вернуть ref, если что-то пошло не так
