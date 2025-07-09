@@ -53,7 +53,7 @@ class CreateOrderView(LoginRequiredMixin, FormView):
                             last_name=form.cleaned_data['last_name'],
                             phone_number=form.cleaned_data['phone_number'],
                             email=form.cleaned_data['email'],
-                            delivery_address=delivery_address,
+                            delivery_address=form.cleaned_data['delivery_address'],
                             payment_on_get=form.cleaned_data['payment_on_get'],
                         )
                         # Создать заказанные товары

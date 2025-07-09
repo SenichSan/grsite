@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{% static 'deps/css/bootstrap/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'deps/css/my_css.css' %}">
     {% block css %}{% endblock %}
+
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'deps/favicon/apple-touch-icon.png' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'deps/favicon/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'deps/favicon/favicon-16x16.png' %}">
@@ -25,7 +26,7 @@
 <header>
     <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'main:index' %}">Главная</a>
+            <a class="navbar-brand text-white" href="{% url 'main:index' %}">Главная</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -33,13 +34,13 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item dropdown ">
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-white" href="#" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">Информация</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item text-white" href="#">Доставка и оплата</a></li>
-                            <li><a class="dropdown-item text-white" href="#">Контактная информация</a></li>
-                            <li><a class="dropdown-item text-white" href="{% url 'main:about' %}">Про нас</a></li>
+                            <li><a class="dropdown-item" href="#">Доставка и оплата</a></li>
+                            <li><a class="dropdown-item" href="#">Контактная информация</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:about' %}">Про нас</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -50,15 +51,16 @@
                         <a class="nav-link text-white" href="{% url 'user:login' %}">Войти</a>
                     </li>
                     {% else %}
-                    <li class="nav-item dropdown ">
-                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Мой профиль</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">Мой профиль</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item text-white" href="{% url 'user:profile' %}">Личный кабинет</a></li>
+                            <li><a class="dropdown-item" href="{% url 'user:profile' %}">Личный кабинет</a></li>
                             {% if user.is_admin or user.is_staff %}
-                            <li><a class="dropdown-item text-white" href="{% url 'admin:index' %}">Админ панель</a></li>
+                            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Админ панель</a></li>
                             {% endif %}
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-white" href="{% url 'user:logout' %}">Выйти</a></li>
+                            <li><a class="dropdown-item" href="{% url 'user:logout' %}">Выйти</a></li>
                         </ul>
                     </li>
                     {% endif %}
@@ -75,15 +77,17 @@
     <div class="container">
         <div class="row mt-1 position-fixed z-3">
             <div class="dropdown mb-2">
-                <button class="btn btn-secondary dropdown-toggle btn-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-secondary dropdown-toggle btn-dark" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
                     Каталог
-                    <img class="mx-1" src="{% static 'deps/icons/grid-fill.svg' %}" alt="Catalog Icon" width="16" height="16">
+                    <img class="mx-1" src="{% static 'deps/icons/grid-fill.svg' %}" alt="Catalog Icon" width="16"
+                         height="16">
                 </button>
-                <ul class="dropdown-menu bg-dark" data-bs-theme="dark">
+                <ul class="dropdown-menu">
                     {% cache 60 catalog_categories %}
                     {% tag_categories as categories %}
                     {% for category in categories %}
-                    <li><a class="dropdown-item text-white" href="{% url 'catalog:index' category.slug %}">{{ category.name }}</a></li>
+                    <li><a class="dropdown-item" href="{% url 'catalog:index' category.slug %}">{{ category.name }}</a></li>
                     {% endfor %}
                     {% endcache %}
                 </ul>

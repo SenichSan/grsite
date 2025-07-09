@@ -8,7 +8,10 @@ class CartQueryset(models.QuerySet):
     
     def total_price(self):
         return sum(cart.products_price() for cart in self)
-    
+
+    def total_discount(self):
+        return sum(cart.product.discount for cart in self)
+
     def total_quantity(self):
         if self:
             return sum(cart.quantity for cart in self)
@@ -34,6 +37,8 @@ class Cart(models.Model):
     def products_price(self):
         return round(self.product.sell_price() * self.quantity, 2)
 
+    def product_discount(self):
+        return round(self.product.price_discount() * self.quantity, 2)
 
     def __str__(self):
         if self.user:

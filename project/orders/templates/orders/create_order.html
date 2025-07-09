@@ -1,228 +1,273 @@
 {% extends "base.html" %}
-{% load static %}
-{% load carts_tags %}
+{% load static carts_tags %}
+
+{% block css %}
+<style>
+    body {
+        background-color: #ffffff !important;
+        color: #212529 !important;
+    }
+
+    .card, .form-control, .checkout-order-summary {
+        background-color: #ffffff !important;
+        color: #212529 !important;
+        box-shadow: 0 2px 3px #e4e8f0;
+        border-radius: 1rem;
+    }
+
+    .form-control {
+        border-radius: .75rem;
+    }
+
+    .activity-checkout .checkout-item {
+        padding-left: 35px;
+        border-left: 2px solid #f5f6f8;
+        position: relative;
+    }
+
+    .activity-checkout .checkout-item:first-child {
+        border-color: #3b76e1;
+    }
+
+    .activity-checkout .checkout-item .checkout-icon {
+        position: absolute;
+        top: -4px;
+        left: -24px;
+    }
+
+    .checkout-order-summary {
+        min-width: 450px;
+    }
+
+    .table-responsive {
+        overflow-x: visible !important;
+    }
+
+    /* Вот эти два блока — ключ к успеху: */
+    .text-white {
+        color: #ffffff !important;
+    }
+
+    [class*="text-"] {
+        color: #ffffff !important;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="bg-white p-4 mb-4 mx-2 rounded custom-shadow">
-    <div class="container">
-        <h3 class="text-center mb-4">Выбранные товары</h3>
-        <div class="container" id="cart-items-container">
-            {% user_carts request as carts %}
-            {% include "carts/includes/included_cart.html" %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-xl-7">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <ol class="activity-checkout list-unstyled mb-0 px-4 mt-3">
+                        <li class="checkout-item">
+                            <div class="avatar checkout-icon p-1">
+                                <div class="avatar-title rounded-circle bg-primary">
+                                    <i class="bx bxs-receipt text-white"></i>
+                                </div>
+                            </div>
+                            <h5 class="fw-bold">Детали заказа</h5>
+                            {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                    {% for field in form %}
+                                    {% for error in field.errors %}
+                                    <li>{{ field.label }}: {{ error }}</li>
+                                    {% endfor %}
+                                    {% endfor %}
+                                    {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                            <form action="{% url 'orders:create_order' %}" method="post" id="create_order_form">
+                                {% csrf_token %}
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="id_first_name">Имя*</label>
+                                    <input type="text" name="first_name" id="id_first_name"
+                                           value="{{ form.first_name.value|default_if_none:'' }}" class="form-control"
+                                           required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="id_last_name">Фамилия*</label>
+                                    <input type="text" name="last_name" id="id_last_name"
+                                           value="{{ form.last_name.value|default_if_none:'' }}" class="form-control"
+                                           required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="id_phone_number">Номер телефона*</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">+380</span>
+                                        <input type="tel"
+                                               name="phone_number"
+                                               id="id_phone_number"
+                                               class="form-control"
+                                               pattern="[0-9]{9}"
+                                               placeholder="XX XXX-XX-XX"
+                                               title="Введите 9 цифр номера"
+                                               maxlength="13"
+                                               required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="id_email">Email*</label>
+                                    <input type="text" name="email" id="id_email"
+                                           value="{{ form.email.value|default_if_none:'' }}" class="form-control"
+                                           required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label d-block">Способ доставки*</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="delivery_method"
+                                               id="delivery_courier" value="courier" required checked>
+                                        <label class="form-check-label" for="delivery_courier">Нова Пошта</label>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="nova_city" class="form-label">Населений пункт*</label>
+                                    <input type="text" class="form-control" id="nova_city"
+                                           placeholder="Начните вводить..." autocomplete="off" required>
+                                    <input type="hidden" name="city_ref" id="nova_city_ref">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="warehouse_display" class="form-label">Відділення або поштомат*</label>
+                                    <select class="form-select" id="warehouse_display" name="warehouse_ref" required>
+                                        <option value="">Сначала выберите город</option>
+                                    </select>
+                                </div>
+
+                                <!-- Восстановленные поля -->
+                                <input type="hidden" name="delivery_address" id="id_delivery_address">
+
+                                <div class="mb-3">
+                                    <label class="form-label d-block">Способ оплаты:</label>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="payment_on_get"
+                                               id="payment_cash" value="1" checked>
+                                        <label class="form-check-label" for="payment_cash">Наложенный платёж</label>
+                                    </div>
+                                </div>
+
+                                <div class="text-center mt-4">
+                                    <button type="submit" class="btn btn-success btn-lg">Оформить заказ</button>
+                                </div>
+                            </form>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <a href="{% url 'main:index' %}" class="btn btn-link text-muted">
+                        <i class="mdi mdi-arrow-left me-1"></i> Продолжить покупки
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="container">
-        <h3 class="text-center">Детали заказа</h3>
-        <div class="card mb-3">
-            <div class="card-body">
-                <form action="{% url 'orders:create_order' %}" method="post" id="create_order_form">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="id_first_name" class="form-label">Имя*:</label>
-                            <input type="text" class="form-control" id="id_first_name" name="first_name"
-                                   value="{{ form.first_name.value|default:'' }}" required>
-                            {% if form.first_name.errors %}
-                            <div class="alert alert-danger">{{ form.first_name.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="id_last_name" class="form-label">Фамилия*:</label>
-                            <input type="text" class="form-control" id="id_last_name" name="last_name"
-                                   value="{{ form.last_name.value|default:'' }}" required>
-                            {% if form.last_name.errors %}
-                            <div class="alert alert-danger">{{ form.last_name.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="id_phone_number" class="form-label">Номер телефона*:</label>
-                            <input type="text" class="form-control" id="id_phone_number" name="phone_number"
-                                   value="{{ form.phone_number.value|default:'' }}" required>
-                            {% if form.phone_number.errors %}
-                            <div class="alert alert-danger">{{ form.phone_number.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="id_email" class="form-label">Email:</label>
-                            <input type="email" class="form-control" id="id_email" name="email"
-                                   value="{{ form.email.value|default:'' }}" required>
-                            {% if form.email.errors %}
-                            <div class="alert alert-danger">{{ form.email.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="col-md-12 mb-3">
-                            <label class="form-label">Способ доставки*:</label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="delivery_method"
-                                       id="delivery_courier" value="courier" required>
-                                <label class="form-check-label" for="delivery_courier">Укрпошта</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="delivery_method" id="delivery_np"
-                                       value="nova_poshta" required>
-                                <label class="form-check-label" for="delivery_np">Нова Пошта</label>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="nova_city">Населений пункт*</label>
-                            <input type="text" class="form-control" id="nova_city" name="city_name"
-                                   placeholder="Начніть вводити назву населеного пункту..." autocomplete="off" required>
-                            <input type="hidden" id="nova_city_ref" name="city_ref">
-                        </div>
-
-                        <div class="col-md-6 mb-3 d-flex flex-column justify-content-end">
-                            <label for="warehouse_display">Отделение*</label>
-                            <select class="form-select" id="warehouse_display" name="warehouse_ref" style="width: 100%"
-                                    required>
-                                <option value="">Спочатку оберіть населений пункт</option>
-                            </select>
-                        </div>
-
-
-                        <div class="col-md-12 mb-3">
-                            <label class="form-label">Способ оплаты:</label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="payment_on_get" id="payment_card"
-                                       value="0" checked>
-                                <label class="form-check-label" for="payment_card">Оплата картой</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="payment_on_get" id="payment_cash"
-                                       value="1">
-                                <label class="form-check-label" for="payment_cash">При получении</label>
-                            </div>
-                        </div>
+        <div class="col-xl-5">
+            <div class="card checkout-order-summary">
+                <div class="card-body">
+                    <div class="p-3 bg-light mb-3">
+                        <h5>Итог заказа</h5>
                     </div>
-
-                    <div class="d-flex justify-content-center">
-                        <button type="submit" class="btn btn-success btn-lg">Оформить заказ</button>
+                    <div class="table-responsive">
+                        <table class="table table-centered mb-0">
+                            <thead>
+                            <tr>
+                                <th scope="col">Товар</th>
+                                <th scope="col">Описание</th>
+                                <th scope="col">Кол-во</th>
+                                <th scope="col">Сумма</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% user_carts request as carts %}
+                            {% for item in carts %}
+                            <tr>
+                                <td><img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
+                                         class="rounded" style="max-width: 65px; height: auto;"></td>
+                                <td>{{ item.product.name }}</td>
+                                <td class="text-center" style="color: black !important;">{{ item.quantity }}</td>
+                                <td>{{ item.products_price }}&nbsp;₴</td>
+                            </tr>
+                            {% endfor %}
+                            <tr class="bg-light">
+                                <td colspan="2"><strong>Итого:</strong></td>
+                                <td><strong>{{ carts.total_price }}&nbsp;₴</strong></td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
-
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-{% if form.errors %}
-<div class="alert alert-danger">
-    <strong>Ошибка!</strong> Пожалуйста, исправьте:
-    <ul>
-        {% for field in form %}
-        {% for error in field.errors %}
-        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
-        {% endfor %}
-        {% endfor %}
-        {% for error in form.non_field_errors %}
-        <li>{{ error }}</li>
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
 {% endblock %}
 
 {% block extra_js %}
-<style>
-    .ui-autocomplete {
-        max-height: 200px;
-        overflow-y: auto;
-        overflow-x: hidden;
-        background-color: white;
-        z-index: 1051 !important;
-        border: 1px solid #ced4da;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-</style>
-
 <script>
-    $(function () {
+    $(function() {
       const apiKey = "65ef3beeda1b3897b0e3e4d66b759a93";
+      let selectedCity = "";
 
       $("#nova_city").autocomplete({
         minLength: 2,
-        source: function (request, response) {
-          $.ajax({
-            url: "https://api.novaposhta.ua/v2.0/json/",
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({
-              apiKey: apiKey,
-              modelName: "AddressGeneral",
-              calledMethod: "searchSettlements",
-              methodProperties: {
-                CityName: request.term,
-                Limit: "10",
-                Page: "1"
-              }
-            }),
-            success: function (res) {
-              if (res.success && res.data.length > 0) {
-                const cities = res.data[0].Addresses;
-                response(cities.map(city => ({
-                  label: city.Present,
-                  value: city.Present,
-                  ref: city.DeliveryCity
-                })));
-              } else {
-                response([]);
-              }
-            }
-          });
+        source(request, response) {
+          $.post("https://api.novaposhta.ua/v2.0/json/", JSON.stringify({
+            apiKey,
+            modelName: "AddressGeneral",
+            calledMethod: "searchSettlements",
+            methodProperties: { CityName: request.term, Limit: "10", Page: "1" }
+          }), function(res) {
+            const add = res.data[0]?.Addresses || [];
+            response(add.map(c => ({ label: c.Present, value: c.Present, ref: c.DeliveryCity })));
+          }, 'json');
         },
-        select: function (event, ui) {
-          $("#nova_city").val(ui.item.value);
-          $("#nova_city_ref").val(ui.item.ref);
+        select(event, ui) {
+          $('#nova_city_ref').val(ui.item.ref);
+          selectedCity = ui.item.label;
+          $('#nova_city').val(selectedCity);
 
-          // Загружаем отделения
-          $.ajax({
-            url: "https://api.novaposhta.ua/v2.0/json/",
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({
-              apiKey: apiKey,
-              modelName: "Address",
-              calledMethod: "getWarehouses",
-              methodProperties: {
-                CityRef: ui.item.ref
-              }
-            }),
-            success: function (res) {
-              const $select = $("#warehouse_display");
-              $select.empty().append('<option value="">Оберіть відділення</option>');
+          $.post("https://api.novaposhta.ua/v2.0/json/", JSON.stringify({
+            apiKey,
+            modelName: "Address",
+            calledMethod: "getWarehouses",
+            methodProperties: { CityRef: ui.item.ref }
+          }), function(res) {
+            const $w = $('#warehouse_display').empty();
+            (res.data || []).forEach(w => {
+              $w.append(new Option(w.Description, w.Ref));
+            });
+            $w.select2({ placeholder: 'Выберите отделение', width: '100%' });
 
-              if (res.success && res.data.length > 0) {
-                res.data.forEach(wh => {
-                  $select.append(
-                    $('<option>', {
-                      value: wh.Ref,
-                      text: wh.Description
-                    })
-                  );
-                });
+            $w.on('change', function () {
+              const warehouseText = $(this).find('option:selected').text();
+              $('#id_delivery_address').val(`${selectedCity}, ${warehouseText}`);
+            });
+          }, 'json');
+        }
+      });
 
-                // Активируем Select2 на отделениях
-                if (!$select.hasClass("select2-hidden-accessible")) {
-                  $select.select2({
-                    placeholder: "Введіть адресу або номер відділення",
-                    width: "100%"
-                  });
-                } else {
-                  $select.trigger("change");
-                }
-              } else {
-                $select.append('<option value="">Немає відділень</option>');
-              }
-            }
-          });
+      // ✅ Этот блок должен быть внутри $(function() {...})
+      $('#create_order_form').on('submit', function() {
+        const city = $('#nova_city').val();
+        const wh = $('#warehouse_display option:selected').text();
+
+        if (city && wh) {
+          $('#id_delivery_address').val(`${city}, ${wh}`);
         }
       });
     });
 </script>
 {% endblock %}
-
