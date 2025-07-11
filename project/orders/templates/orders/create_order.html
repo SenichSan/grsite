@@ -99,21 +99,22 @@
                                            required>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label class="form-label" for="id_phone_number">Номер телефона*</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">+380</span>
-                                        <input type="tel"
-                                               name="phone_number"
-                                               id="id_phone_number"
-                                               class="form-control"
-                                               pattern="[0-9]{9}"
-                                               placeholder="XX XXX-XX-XX"
-                                               title="Введите 9 цифр номера"
-                                               maxlength="13"
-                                               required>
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_phone_number" class="form-label">Номер телефона*:</label>
+                                    <input type="text" class="form-control" id="id_phone_number" name="phone_number"
+                                           value="{% if form.phone_number.value %}{{ form.phone_number.value }}{% endif %}"
+                                           placeholder="(380) 000-0000"
+                                           required>
+                                    {% if form.phone_number.errors %}
+                                    <div class="alert alert-danger alert-dismissible fade show">
+                                        {{form.phone_number.errors}}
+                                    </div>
+                                    {% endif %}
+                                    <div class="alert alert-danger alert-dismissible fade show" style="display: none"
+                                         id="phone_number_error">Неверный формат номера
                                     </div>
                                 </div>
+
 
                                 <div class="mb-3">
                                     <label class="form-label" for="id_email">Email*</label>
@@ -216,6 +217,13 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- jQuery UI for autocomplete -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<!-- Select2 for better dropdowns -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script>
     $(function() {
       const apiKey = "65ef3beeda1b3897b0e3e4d66b759a93";
@@ -259,7 +267,8 @@
         }
       });
 
-      // ✅ Этот блок должен быть внутри $(function() {...})
+
+      // Delivery address handling
       $('#create_order_form').on('submit', function() {
         const city = $('#nova_city').val();
         const wh = $('#warehouse_display option:selected').text();
@@ -269,5 +278,7 @@
         }
       });
     });
+
 </script>
+
 {% endblock %}

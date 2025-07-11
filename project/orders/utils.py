@@ -25,7 +25,7 @@ def send_order_email_to_seller(order):
         f"Имя клиента: {order.first_name.upper()}\n"
         f"Фамилия клиента: {order.last_name.upper()}\n"
         f"Телефон: {order.phone_number}\n"
-        f"Email: {order.user.email if order.user else '—'}"
+        f"Email: {order.user.email if order.user else order.email}"
     )
 
     send_mail(

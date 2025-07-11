@@ -19,7 +19,7 @@ class Order(models.Model):
     first_name = models.CharField(max_length=50, verbose_name="Имя")
     last_name = models.CharField(max_length=50, verbose_name="Фамилия")
     created_timestamp = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания заказа")
-    phone_number = models.CharField(max_length=20, verbose_name="Номер телефона")
+    phone_number = models.CharField(max_length=25, verbose_name="Номер телефона")
     email = models.EmailField(verbose_name="Email")
     requires_delivery = models.CharField(verbose_name="Вид почты")
     delivery_address = models.TextField(null=True, blank=True, verbose_name="Адрес доставки")
