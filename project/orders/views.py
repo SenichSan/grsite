@@ -51,10 +51,9 @@ class CreateOrderView(FormView):
                 
                 if cart_items.exists():
                     form_data = form.cleaned_data
-                    city_name = self.request.POST.get('city_name', '').strip()
-                    warehouse_ref = self.request.POST.get('warehouse_ref', '').strip()
-                    warehouse_desc = get_warehouse_description(warehouse_ref)
-                    
+                    delivery_address = self.request.POST.get('delivery_address', '').strip()
+
+
                     # Создаем заказ
                     order = Order.objects.create(
                         user=self.request.user if self.request.user.is_authenticated else None,
@@ -62,7 +61,7 @@ class CreateOrderView(FormView):
                         last_name=form_data['last_name'],
                         phone_number=form_data['phone_number'],
                         email=form_data['email'],
-                        delivery_address=f"{city_name}, {warehouse_desc}",
+                        delivery_address=delivery_address,
                         payment_on_get=form_data.get('payment_on_get', False),
                     )
 
