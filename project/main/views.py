@@ -1,13 +1,14 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 
 from goods.models import Categories
 
 
-
-class IndexView(TemplateView):
-    template_name = 'main/index.html'
+class HomeView(ListView):
+    model = Categories
+    template_name = 'main/home.html'  # путь к шаблону
+    context_object_name = 'categories'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -34,7 +35,7 @@ class AboutView(TemplateView):
 #         'content': "Магазин мебели HOME",
 #     }
 
-#     return render(request, 'main/index.html', context)
+#     return render(request, 'main/home.html', context)
 
 
 # def about(request):

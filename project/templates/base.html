@@ -26,7 +26,7 @@
 <header>
     <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
         <div class="container">
-            <a class="navbar-brand text-white" href="{% url 'main:index' %}">Главная</a>
+            <a class="navbar-brand text-white" href="{% url 'main:home' %}">Главная</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -87,7 +87,7 @@
                     {% cache 60 catalog_categories %}
                     {% tag_categories as categories %}
                     {% for category in categories %}
-                    <li><a class="dropdown-item" href="{% url 'catalog:index' category.slug %}">{{ category.name }}</a></li>
+                    <li><a class="dropdown-item" href="{% url 'catalog:home' category.slug %}">{% if category.image %}<img src="{{ category.image.url }}" alt="{{ category.name }}" width="25" height="25" class="rounded-circle">{% endif %}{{ category.name }}</a></li>
                     {% endfor %}
                     {% endcache %}
                 </ul>
