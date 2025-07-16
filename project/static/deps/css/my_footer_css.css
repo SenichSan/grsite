@@ -1,7 +1,12 @@
-footer {
-    position: fixed;
-    bottom: 0;
+.card-img-top {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    object-fit: cover;
+    height: 200px;
     width: 100%;
-    background-color: #343a40;
-    padding: 1000px 0;
-  }
+    border-radius: 0.5rem;
+}
+
+.card-img-top:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}

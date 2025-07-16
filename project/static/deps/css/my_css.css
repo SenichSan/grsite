@@ -1,10 +1,19 @@
-body {
+.section-background {
+    background-image: url('/static/images/bg-image.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    max-width: 1140px;
+    margin: 2rem auto;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+
+.section-background {
   background-image: url("../images/bg-image.jpg");
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center center;
   background-size: cover;
-  height: 100%;
+  background-position: center;
 }
 
 .dropdown-toggle::after {

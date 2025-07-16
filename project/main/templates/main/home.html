@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block css %}
-<link rel="stylesheet" href="{% static " deps/css/my_footer_css.css" %}">
+<link rel="stylesheet" href="{% static 'deps/css/my_footer_css.css' %}">
 {% endblock %}
 
 {% block modal_cart %}
@@ -10,21 +10,28 @@
 {% endblock  %}
 
 {% block content %}
-<div class="container mt-5">
-    <h1 class="text-center">Добро пожаловать на наш сайт!</h1>
-    <p class="text-center">Выберите интересующую вас категорию ниже</p>
+<div class="section-background">
+    <section class="py-5 text-white">
+        <div class="container">
+            <h1 class="text-center"><strong>GROWNICA</strong></h1>
+            <p class="text-center">ТУТ ТЕКСТ, ТЕКСТ, ТЕКСТ, ТЕКСТ. МНОГО ТЕКСТА</p>
+        </div>
+    </section>
+</div>
 
-    <div class="row mt-4">
+<section class="container my-5">
+    <div class="row">
         {% for category in categories %}
         <div class="col-md-4 mb-4">
             <div class="card h-100 text-center">
-                <a href="{% url 'catalog:home' category.slug %}">
+                <a href="{% url 'catalog:index' category.slug %}">
                     {% if category.image %}
-                        <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}">
+                    <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}">
                     {% else %}
-                        <div class="d-flex justify-content-center align-items-center card-img-top bg-light" style="height: 200px;">
-                            <span>No Image</span>
-                        </div>
+                    <div class="d-flex justify-content-center align-items-center card-img-top bg-light"
+                         style="height: 200px;">
+                        <span>No Image</span>
+                    </div>
                     {% endif %}
                 </a>
                 <div class="card-body">
@@ -34,13 +41,15 @@
         </div>
         {% endfor %}
     </div>
-</div>
+</section>
+
+
 {% endblock %}
 
 {% block footer %}
 <footer class="py-4 bg-dark">
     <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; ----- </p>
+        <p class="m-0 text-center text-white">Copyright &copy; </p>
     </div>
 </footer>
 {% endblock %}

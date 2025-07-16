@@ -1,37 +1,11 @@
-{% load static %}
-{% load cache %}
-{% load goods_tags %}
+<nav class="navbar navbar-expand-lg custom-navbar">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center text-white fw-bold" href="{% url 'main:home' %}">
+            <img src="{% static 'deps/images/logo.png' %}" alt="Logo" width="30" height="30" class="me-2">
+            Grownica
+        </a>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'deps/css/bootstrap/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'deps/css/my_css.css' %}">
-    {% block css %}{% endblock %}
-
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'deps/favicon/apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'deps/favicon/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'deps/favicon/favicon-16x16.png' %}">
-    <link rel="manifest" href="{% static 'deps/favicon/site.webmanifest' %}">
-    <title>{{ title }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
-</head>
-
-<body>
-<header>
-    <nav class="navbar navbar-expand-lg custom-navbar">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center text-white fw-bold" href="{% url 'main:home' %}">
-                <img src="{% static 'deps/images/logo.png' %}" alt="Logo" width="30" height="30" class="me-2">
-                Grownica
-            </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -123,48 +97,3 @@
         }
     </style>
 </header>
-
-<section>
-    <div class="container">
-        <div class="row mt-1 position-fixed z-3">
-            <div class="dropdown mb-2">
-                <button class="btn btn-secondary dropdown-toggle btn-dark" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                    Каталог
-                    <img class="mx-1" src="{% static 'deps/icons/grid-fill.svg' %}" alt="Catalog Icon" width="16"
-                         height="16">
-                </button>
-                <ul class="dropdown-menu">
-                    {% cache 60 catalog_categories %}
-                    {% tag_categories as categories %}
-                    {% for category in categories %}
-                    <li><a class="dropdown-item" href="{% url 'catalog:index' category.slug %}">
-                        {% if category.image %}
-                            <img src="{{ category.image.url }}" alt="{{ category.name }}" width="25" height="25" class="rounded-circle">
-                        {% endif %}
-                        {{ category.name }}
-                    </a></li>
-                    {% endfor %}
-                    {% endcache %}
-                </ul>
-            </div>
-            {% block modal_cart %}{% endblock %}
-        </div>
-    </div>
-
-    {% include "includes/notifications.html" %}
-    {% block content %}{% endblock %}
-</section>
-
-{% block footer %}{% endblock %}
-
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-<script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-<script src="{% static 'deps/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="{% static 'deps/js/jquery-ajax.js' %}"></script>
-{% block extra_js %}{% endblock %}
-
-</body>
-</html>
