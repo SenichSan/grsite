@@ -1,118 +1,128 @@
-.section-background {
-    background-image: url('/static/images/bg-image.jpg');
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
-    max-width: 1140px;
-    margin: 2rem auto;
-    position: relative;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+/* Reset & base */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
-
-.section-background {
-  background-image: url("../images/bg-image.jpg");
-  background-size: cover;
-  background-position: center;
+/* Hero Section */
+.hero-section {
+  height: 100vh;
+  width: 100%;
+  background: url("../images/bg-image.jpg") center/cover no-repeat;
+  padding-top: 200px;
 }
 
-.dropdown-toggle::after {
+/* Catalog Section */
+#catalog-section {
+  border-top: 1px solid #fff;
+  background-color: #000;
+  padding: 50px 0 0;
+}
+
+/* Typography */
+.hero-title,
+.catalog-title,
+.hero-subtitle {
+  color: #fff;
+  font-family: "Montserrat", sans-serif;
+  text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.9);
+}
+.hero-title {
+  font-size: 4rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+.catalog-title {
+  font-size: 3rem;
+  font-weight: 800;
+  text-shadow: 4px 4px 10px rgba(255, 255, 255, 0.5);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.hero-subtitle {
+  font-size: 1.5rem;
+  font-weight: 400;
+  font-family: "Open Sans", sans-serif;
+  text-shadow: 3px 4px 7px rgba(0, 0, 0, 0.9);
+}
+
+/* Scroll Button */
+.scroll-button {
   display: inline-block;
-  margin-left: 0.255em;
-  vertical-align: 0.255em;
-  content: "";
-  border-top: 0.3em solid;
-  border-right: 0.3em solid transparent;
-  border-bottom: 0;
-  border-left: 0.3em solid transparent;
-  transition: transform 0.2s ease-in-out;
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: #000;
+  border-radius: 50px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s, transform 0.2s;
+}
+.scroll-button:hover {
+  background-color: #444;
+  transform: translateY(-2px);
 }
 
-.dropdown-toggle:hover::after {
-  transform: translateY(2px);
+/* Navbar Fixes */
+.navbar {
+  z-index: 30;
+}
+.navbar.bg-dark .nav-link,
+.navbar.bg-dark .navbar-brand {
+  color: #fff !important;
+}
+.navbar.bg-dark .nav-link:hover,
+.navbar.bg-dark .nav-link.dropdown-toggle:hover {
+  color: #ccc !important;
 }
 
-.custom-shadow {
-  box-shadow: 5px 5px 25px 19px #000000;
-}
-
-.product_id {
-  color: gray;
-  font-size: 15px;
-}
-
-.badge.bg-warning.text-dark {
-  position: absolute;
-  top: 10px;
-  right: 5px;
-  z-index: 1;
-  padding: 5px 10px;
-  border-radius: 3px;
-  font-size: 1rem;
-  box-shadow: 2px 2px 15px 9px #000000;
-}
-
-.badge-banner {
-  top: 80%;
-  border-radius: 15px;
-  font-size: 0.7rem;
-}
-
-/* Общий стиль для выпадающего меню */
+/* Dropdown Menu */
 .dropdown-menu {
-  background-color: #ffffff !important;
+  background-color: #fff !important;
   color: #212529 !important;
   border: 1px solid #ccc;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1050;
 }
-
-/* Стили пунктов меню */
 .dropdown-menu .dropdown-item {
   color: #212529 !important;
-  background-color: transparent;
 }
-
 .dropdown-menu .dropdown-item:hover,
 .dropdown-menu .dropdown-item:focus {
   background-color: #f0f0f0;
-  color: #000000;
-}
-
-/* Темная тема — сбрасываем её */
-.dropdown-menu[data-bs-theme="dark"] {
-  background-color: #ffffff !important;
-  color: #212529 !important;
-}
-
-.dropdown-menu[data-bs-theme="dark"] .dropdown-item {
-  color: #212529 !important;
-}
-
-.dropdown-menu[data-bs-theme="dark"] .dropdown-item:hover {
-  background-color: #f0f0f0 !important;
   color: #000 !important;
 }
 
-/* Чтобы не наследовались .text-white */
-.dropdown-menu .text-white {
-  color: #212529 !important;
+/* Карточка */
+.custom-card-plain {
+  position: relative;
+  border: none;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  max-width: 250px;        /* ограничиваем ширину */
+  margin: 0 auto 1.5rem;   /* центрируем и отступ снизу */
 }
 
-/* Заголовки навбара */
-.navbar-dark .navbar-nav .nav-link,
-.navbar-dark .navbar-nav .nav-link.dropdown-toggle {
-  color: #212529 !important;
+/* Картинка */
+.custom-card-plain .card-img-top {
+  width: 100%;
+  max-height: 150px;       /* или aspect-ratio: 1/1; */
+  object-fit: cover;
 }
 
-/* При наведении */
-.navbar-dark .navbar-nav .nav-link:hover,
-.navbar-dark .navbar-nav .nav-link.dropdown-toggle:hover {
-  color: #cccccc !important;
-}
-
-/* --- Форсируем белый текст на черной навигации --- */
-.navbar.bg-dark .nav-link,
-.navbar.bg-dark .navbar-brand a {
-  color: #ffffff !important;
+/* Градиент‑оверлей и текст */
+.custom-card-plain .card-body {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  margin: 0;
+  padding: 1rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  color: #fff;
 }

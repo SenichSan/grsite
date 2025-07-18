@@ -1,55 +1,162 @@
-{% extends "base.html" %}
 {% load static %}
 
-{% block css %}
-<link rel="stylesheet" href="{% static 'deps/css/my_footer_css.css' %}">
-{% endblock %}
+<!DOCTYPE html>
+<html>
 
-{% block modal_cart %}
-{% include "includes/cart_button.html" %}
-{% endblock  %}
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Simple House Template</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet"/>
+    <link href="{% static 'deps/css/templatemo-style.css' %}" rel="stylesheet"/>
+</head>
+<!--
 
-{% block content %}
-<div class="section-background">
-    <section class="py-5 text-white">
-        <div class="container">
-            <h1 class="text-center"><strong>GROWNICA</strong></h1>
-            <p class="text-center">ТУТ ТЕКСТ, ТЕКСТ, ТЕКСТ, ТЕКСТ. МНОГО ТЕКСТА</p>
-        </div>
-    </section>
-</div>
+Simple House
 
-<section class="container my-5">
-    <div class="row">
-        {% for category in categories %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 text-center">
-                <a href="{% url 'catalog:index' category.slug %}">
-                    {% if category.image %}
-                    <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}">
-                    {% else %}
-                    <div class="d-flex justify-content-center align-items-center card-img-top bg-light"
-                         style="height: 200px;">
-                        <span>No Image</span>
+https://templatemo.com/tm-539-simple-house
+
+-->
+<body>
+
+<div class="container">
+    <!-- Top box -->
+    <!-- Logo & Site Name -->
+    <div class="placeholder">
+        <div class="parallax-window" data-parallax="scroll"
+             data-image-src="{% static 'deps/images/bg-image.jpg' %}">
+            <div class="tm-header">
+                <div class="row tm-header-inner">
+                    <div class="col-md-6 col-12">
+                        <img src="{% static 'deps/images/simple-house-logo.png' %}" alt="Logo" class="tm-site-logo"/>
+                        <div class="tm-site-text-box">
+                            <h1 class="tm-site-title">Grownica</h1>
+                            <h6 class="tm-site-description">Все для гровинга в одном месте</h6>
+                        </div>
                     </div>
-                    {% endif %}
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title">{{ category.name }}</h5>
+                    <nav class="col-md-6 col-12 tm-nav">
+                        <ul class="tm-nav-ul">
+                            <li class="tm-nav-li"><a href="home.html" class="tm-nav-link active">Home</a></li>
+                            <li class="tm-nav-li"><a href="about.html" class="tm-nav-link">About</a></li>
+                            <li class="tm-nav-li"><a href="contact.html" class="tm-nav-link">Contact</a></li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
-</section>
 
+    <main>
+        <header class="row tm-welcome-section">
+            <h2 class="col-12 text-center tm-section-title">Welcome to Simple House</h2>
+            <p class="col-12 text-center">Total 3 HTML pages are included in this template. Header image has a parallax
+                effect. You can feel free to download, edit and use this TemplateMo layout for your commercial or
+                non-commercial websites.</p>
+        </header>
 
-{% endblock %}
+        <div class="tm-paging-links">
+            <nav>
+                <ul>
+                    <li class="tm-paging-item"><a href="#" class="tm-paging-link active">Pizza</a></li>
+                    <li class="tm-paging-item"><a href="#" class="tm-paging-link">Salad</a></li>
+                    <li class="tm-paging-item"><a href="#" class="tm-paging-link">Noodle</a></li>
+                </ul>
+            </nav>
+        </div>
 
-{% block footer %}
-<footer class="py-4 bg-dark">
-    <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; </p>
-    </div>
-</footer>
-{% endblock %}
+        <!-- Gallery -->
+        <div class="row tm-gallery">
+            <!-- gallery page 1 -->
+            <div id="tm-gallery-page-pizza" class="tm-gallery-page">
+                {% for product in products %}
+                    <article class="col-lg-3 col-md-4 col-sm-6 col-12 tm-gallery-item">
+                        <figure>
+                            <img src="{{ product.image.url }}" alt="Image" class="img-fluid tm-gallery-img"/>
+                            <figcaption>
+                                <h4 class="tm-gallery-title">{{ product.name }}</h4>
+                                <p class="tm-gallery-description">Orci varius natoque penatibus et magnis dis parturient
+                                    montes, nascetur ridiculus mus.</p>
+                                <p class="tm-gallery-price">${{ product.price }} / $55</p>
+                            </figcaption>
+                        </figure>
+                    </article>
+                {% endfor %}
+            </div> <!-- gallery page 1 -->
+
+            <!-- gallery page 2 -->
+            <div id="tm-gallery-page-salad" class="tm-gallery-page hidden">
+                <article class="col-lg-3 col-md-4 col-sm-6 col-12 tm-gallery-item">
+                    <figure>
+                        <img src="{% static 'deps/images/gallery/04.jpg' %}" alt="Image" class="img-fluid tm-gallery-img"/>
+                        <figcaption>
+                            <h4 class="tm-gallery-title">Salad Menu One</h4>
+                            <p class="tm-gallery-description">Proin eu velit egestas, viverra sapien eget, consequat
+                                nunc. Vestibulum tristique</p>
+                            <p class="tm-gallery-price">$25</p>
+                        </figcaption>
+                    </figure>
+                </article>
+            </div> <!-- gallery page 2 -->
+
+            <!-- gallery page 3 -->
+            <div id="tm-gallery-page-noodle" class="tm-gallery-page hidden">
+                <article class="col-lg-3 col-md-4 col-sm-6 col-12 tm-gallery-item">
+                    <figure>
+                        <img src="{% static 'deps/images/gallery/08.jpg' %}" alt="Image" class="img-fluid tm-gallery-img"/>
+                        <figcaption>
+                            <h4 class="tm-gallery-title">Noodle One</h4>
+                            <p class="tm-gallery-description">Orci varius natoque penatibus et magnis dis parturient
+                                montes, nascetur ridiculus mus.</p>
+                            <p class="tm-gallery-price">$12.50</p>
+                        </figcaption>
+                    </figure>
+                </article>
+            </div> <!-- gallery page 3 -->
+
+        </div>
+        <div class="tm-section tm-container-inner">
+            <div class="row">
+                <div class="col-md-6">
+                    <figure class="tm-description-figure">
+                        <img src="{% static 'deps/images/img-01.jpg' %}" alt="Image" class="img-fluid"/>
+                    </figure>
+                </div>
+                <div class="col-md-6">
+                    <div class="tm-description-box">
+                        <h4 class="tm-gallery-title">Maecenas nulla neque</h4>
+                        <p class="tm-mb-45">Redistributing this template as a downloadable ZIP file on any template
+                            collection site is strictly prohibited. You will need to <a rel="nofollow"
+                                                                                        href="https://templatemo.com/contact">talk
+                                to us</a> for additional permissions about our templates. Thank you.</p>
+                        <a href="about.html" class="tm-btn tm-btn-default tm-right">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="tm-footer text-center">
+        <p>Copyright &copy; 2020 Simple House
+
+            | Design: <a rel="nofollow" href="https://templatemo.com">TemplateMo</a></p>
+    </footer>
+</div>
+<script src="{% static 'deps/js/jquery.min.js' %}"></script>
+<script src="{% static 'deps/js/parallax.min.js' %}"></script>
+<script>
+    $(document).ready(function(){
+        // Handle click on paging links
+        $('.tm-paging-link').click(function(e){
+            e.preventDefault();
+
+            var page = $(this).text().toLowerCase();
+            $('.tm-gallery-page').addClass('hidden');
+            $('#tm-gallery-page-' + page).removeClass('hidden');
+            $('.tm-paging-link').removeClass('active');
+            $(this).addClass("active");
+        });
+    });
+</script>
+</body>
+</html>
