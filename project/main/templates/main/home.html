@@ -56,83 +56,37 @@ https://templatemo.com/tm-539-simple-house
         </header>
 
         <div class="tm-paging-links">
-            <nav>
-                <ul>
-                    <li class="tm-paging-item"><a href="#" class="tm-paging-link active">Pizza</a></li>
-                    <li class="tm-paging-item"><a href="#" class="tm-paging-link">Salad</a></li>
-                    <li class="tm-paging-item"><a href="#" class="tm-paging-link">Noodle</a></li>
-                </ul>
-            </nav>
-        </div>
-
-        <!-- Gallery -->
-        <div class="row tm-gallery">
-            <!-- gallery page 1 -->
-            <div id="tm-gallery-page-pizza" class="tm-gallery-page">
-                {% for product in products %}
-                    <article class="col-lg-3 col-md-4 col-sm-6 col-12 tm-gallery-item">
-                        <figure>
-                            <img src="{{ product.image.url }}" alt="Image" class="img-fluid tm-gallery-img"/>
-                            <figcaption>
-                                <h4 class="tm-gallery-title">{{ product.name }}</h4>
-                                <p class="tm-gallery-description">Orci varius natoque penatibus et magnis dis parturient
-                                    montes, nascetur ridiculus mus.</p>
-                                <p class="tm-gallery-price">${{ product.price }} / $55</p>
-                            </figcaption>
-                        </figure>
-                    </article>
+            <ul>
+                {% for category in categories %}
+                <li class="tm-paging-item">
+                    <a href="#" class="tm-paging-link{% if forloop.first %} active{% endif %}"
+                       data-page="{{ category.slug }}">{{ category.name }}</a>
+                </li>
                 {% endfor %}
-            </div> <!-- gallery page 1 -->
-
-            <!-- gallery page 2 -->
-            <div id="tm-gallery-page-salad" class="tm-gallery-page hidden">
-                <article class="col-lg-3 col-md-4 col-sm-6 col-12 tm-gallery-item">
-                    <figure>
-                        <img src="{% static 'deps/images/gallery/04.jpg' %}" alt="Image" class="img-fluid tm-gallery-img"/>
-                        <figcaption>
-                            <h4 class="tm-gallery-title">Salad Menu One</h4>
-                            <p class="tm-gallery-description">Proin eu velit egestas, viverra sapien eget, consequat
-                                nunc. Vestibulum tristique</p>
-                            <p class="tm-gallery-price">$25</p>
-                        </figcaption>
-                    </figure>
-                </article>
-            </div> <!-- gallery page 2 -->
-
-            <!-- gallery page 3 -->
-            <div id="tm-gallery-page-noodle" class="tm-gallery-page hidden">
-                <article class="col-lg-3 col-md-4 col-sm-6 col-12 tm-gallery-item">
-                    <figure>
-                        <img src="{% static 'deps/images/gallery/08.jpg' %}" alt="Image" class="img-fluid tm-gallery-img"/>
-                        <figcaption>
-                            <h4 class="tm-gallery-title">Noodle One</h4>
-                            <p class="tm-gallery-description">Orci varius natoque penatibus et magnis dis parturient
-                                montes, nascetur ridiculus mus.</p>
-                            <p class="tm-gallery-price">$12.50</p>
-                        </figcaption>
-                    </figure>
-                </article>
-            </div> <!-- gallery page 3 -->
-
+            </ul>
         </div>
-        <div class="tm-section tm-container-inner">
-            <div class="row">
-                <div class="col-md-6">
-                    <figure class="tm-description-figure">
-                        <img src="{% static 'deps/images/img-01.jpg' %}" alt="Image" class="img-fluid"/>
+
+        <div class="row tm-gallery">
+            {% for category in categories %}
+            <div id="tm-gallery-page-{{ category.slug }}"
+                 class="tm-gallery-page{% if not forloop.first %} hidden{% endif %}">
+                {% for product in category.products.all %}
+                <article class="col-lg-3 col-md-4 col-sm-6 col-12 tm-gallery-item">
+                    <figure>
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                             class="img-fluid tm-gallery-img"/>
+                        <figcaption>
+                            <h4 class="tm-gallery-title">{{ product.name }}</h4>
+                            <p class="tm-gallery-description">{{ product.description|truncatechars:80 }}</p>
+                            <p class="tm-gallery-price">${{ product.price }}</p>
+                        </figcaption>
                     </figure>
-                </div>
-                <div class="col-md-6">
-                    <div class="tm-description-box">
-                        <h4 class="tm-gallery-title">Maecenas nulla neque</h4>
-                        <p class="tm-mb-45">Redistributing this template as a downloadable ZIP file on any template
-                            collection site is strictly prohibited. You will need to <a rel="nofollow"
-                                                                                        href="https://templatemo.com/contact">talk
-                                to us</a> for additional permissions about our templates. Thank you.</p>
-                        <a href="about.html" class="tm-btn tm-btn-default tm-right">Read More</a>
-                    </div>
-                </div>
+                </article>
+                {% empty %}
+                <p>В этой категории ещё нет товаров.</p>
+                {% endfor %}
             </div>
+            {% endfor %}
         </div>
     </main>
 
@@ -146,16 +100,17 @@ https://templatemo.com/tm-539-simple-house
 <script src="{% static 'deps/js/parallax.min.js' %}"></script>
 <script>
     $(document).ready(function(){
-        // Handle click on paging links
-        $('.tm-paging-link').click(function(e){
-            e.preventDefault();
-
-            var page = $(this).text().toLowerCase();
-            $('.tm-gallery-page').addClass('hidden');
-            $('#tm-gallery-page-' + page).removeClass('hidden');
-            $('.tm-paging-link').removeClass('active');
-            $(this).addClass("active");
-        });
+      $('.tm-paging-link').click(function(e){
+        e.preventDefault();
+        var slug = $(this).data('page');
+        // Скрываем все
+        $('.tm-gallery-page').addClass('hidden');
+        // Показываем нужную
+        $('#tm-gallery-page-' + slug).removeClass('hidden');
+        // Активная ссылка
+        $('.tm-paging-link').removeClass('active');
+        $(this).addClass('active');
+      });
     });
 </script>
 </body>

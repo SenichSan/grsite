@@ -424,10 +424,16 @@ p, address {
 }
 
 .tm-paging-link {
-  padding: 10px 30px;
-  display: flex;
+  aspect-ratio: 1 / 1;
+  padding: 0.5em;
+  /* Опционально: фиксированный минимальный размер */
+  width: 8rem;                     /* фиксированная ширина */
+  height: 8rem;                    /* фиксированная высота */
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 0;                      /* убираем внутренние отступы */
+  vertical-align: middle;
   text-decoration: none;
   color: #2F956D;
   background-color: transparent;
