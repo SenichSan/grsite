@@ -342,10 +342,6 @@ p, address {
   flex-wrap: wrap;
 }
 
-.tm-gallery-description {
-  font-size: 0.95rem;
-}
-
 .tm-section,
 .tm-container-inner,
 .tm-container-inner-2 {
@@ -403,6 +399,7 @@ p, address {
 
 .tm-gallery-description {
   margin-bottom: 20px;
+  font-size: 0.95rem;
 }
 
 .tm-gallery-price {
@@ -419,39 +416,12 @@ p, address {
 .tm-paging-item {
   list-style: none;
   display: inline-block;
-  border: 1px solid #2F956D;
-  margin: 7px;
-}
-
-.tm-paging-link {
-  aspect-ratio: 1 / 1;
-  padding: 0.5em;
-  /* Опционально: фиксированный минимальный размер */
-  width: 8rem;                     /* фиксированная ширина */
-  height: 8rem;                    /* фиксированная высота */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;                      /* убираем внутренние отступы */
-  vertical-align: middle;
-  text-decoration: none;
-  color: #2F956D;
-  background-color: transparent;
-}
-
-.tm-paging-link.active,
-.tm-paging-link:hover {
-  background-color: #2F956D;
-  color: white;
+  border: 1px solid #ffffff;
+  margin: 0 2rem;
 }
 
 .tm-description-figure {
   text-align: center;  
-}
-
-.tm-description-box {
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .tm-description-box {
@@ -461,6 +431,8 @@ p, address {
   flex-direction: column;
   margin-top: 30px;
   max-width: 530px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @media (min-width: 768px) {
@@ -856,4 +828,47 @@ address {
 
 .panel p {
   padding: 5px 20px 30px;
+}
+
+
+.tm-paging-link {
+  display: inline-flex;
+  flex-direction: column;      /* иконка над текстом */
+  align-items: center;
+  justify-content: center;
+  width: 8rem;                 /* квадрат 5×5 rem — подкорректируйте при необходимости */
+  height: 10rem;
+  text-decoration: none;       /* убираем подчёркивание */
+  box-sizing: border-box;
+  vertical-align: middle;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  aspect-ratio: 1 / 1;
+  padding: 0.5em;
+  color: #2F956D;
+  background-color: transparent;
+  padding: 0;
+}
+
+/* Иконка категории */
+.tm-paging-link .paging-icon {
+  width: 5rem;               /* размер иконки */
+  height: auto;
+  margin-bottom: 0.25rem;      /* отступ до текста */
+}
+
+/* Текст под иконкой */
+.tm-paging-link .paging-label {
+  display: block;
+  font-size: 1rem;
+  line-height: 1;
+  color: inherit;              /* берёт цвет ссылки */
+  padding: 1rem
+}
+
+/* При наведении — приподнимаем и добавляем тень */
+.tm-paging-link:hover {
+  transform: translateY(-14px);
+  box-shadow: 15 15px 15px rgba(0, 0, 0, 0.15);
+  background-color: #2F956D;
+  color: white;
 }
