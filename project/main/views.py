@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView, ListView
 
-from goods.models import Categories
+from goods.models import Categories, Products
 
 
 class HomeView(ListView):
@@ -13,7 +13,7 @@ class HomeView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Categories.objects.order_by('name')
-
+        context['bestsellers'] = Products.objects.filter(is_bestseller=True).order_by('name')
         return context
 
 

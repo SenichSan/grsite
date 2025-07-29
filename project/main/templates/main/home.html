@@ -80,6 +80,22 @@ https://templatemo.com/tm-539-simple-house
     </main>
 
 
+    <section class="tm-section tm-featured">
+        <h2 class="text-center tm-section-title">Рекомендованные товары</h2>
+
+        {# Карусель с первыми четырьмя #}
+        <div class="tm-featured-carousel">
+            {% for product in bestsellers %}
+                    <div class="tm-carousel-item">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        <h5>{{ product.name }}</h5>
+                        <p>{{ product.price }}₴</p>
+                    </div>
+            {% endfor %}
+        </div>
+    </section>
+
+
     <footer class="tm-footer text-center">
         <p>Copyright &copy; 2025 Grownica
 

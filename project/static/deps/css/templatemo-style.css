@@ -247,7 +247,7 @@ p, address {
 
 .parallax-mirror {
   z-index: 999 !important;
-  filter: brightness(0.5) !important;
+  filter: brightness(0.6) !important;
 }
 
 .tm-header {

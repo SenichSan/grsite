@@ -26,4 +26,5 @@ class ProductsAdmin(admin.ModelAdmin):
         "image",
         ("price", "discount"),
         "quantity",
+        "is_bestseller"
     ]
