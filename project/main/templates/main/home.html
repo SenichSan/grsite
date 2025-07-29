@@ -10,6 +10,7 @@
     <title>Simple House Template</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet"/>
     <link href="{% static 'deps/css/templatemo-style.css' %}" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <!--
 
@@ -63,9 +64,7 @@ https://templatemo.com/tm-539-simple-house
                 <ul>
                     {% for category in categories %}
                     <li class="tm-paging-item">
-                        <a href="#"
-                           class="tm-paging-link{% if forloop.first %} active{% endif %}"
-                           data-page="{{ category.slug }}">
+                        <a href="{% url 'catalog:index' category.slug %}" class="tm-paging-link">
                             <img src="{% static 'deps/icons/'|add:category.slug|add:'.png' %}"
                                  alt="{{ category.name }}" class="paging-icon"/>
                             <span class="paging-label">{{ category.name }}</span>
@@ -74,30 +73,6 @@ https://templatemo.com/tm-539-simple-house
                     {% endfor %}
                 </ul>
             </nav>
-        </div>
-
-        <!-- Галерея товаров по категориям -->
-        <div class="row tm-gallery">
-            {% for category in categories %}
-            <div id="tm-gallery-page-{{ category.slug }}"
-                 class="tm-gallery-page{% if not forloop.first %} hidden{% endif %}">
-                {% for product in category.products.all %}
-                <article class="col-lg-3 col-md-4 col-sm-6 col-12 tm-gallery-item">
-                    <figure>
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}"
-                             class="img-fluid tm-gallery-img"/>
-                        <figcaption>
-                            <h4 class="tm-gallery-title">{{ product.name }}</h4>
-                            <p class="tm-gallery-description">{{ product.description|truncatechars:80 }}</p>
-                            <p class="tm-gallery-price">${{ product.price }}</p>
-                        </figcaption>
-                    </figure>
-                </article>
-                {% empty %}
-                <p>В этой категории ещё нет товаров.</p>
-                {% endfor %}
-            </div>
-            {% endfor %}
         </div>
     </main>
 
@@ -110,20 +85,5 @@ https://templatemo.com/tm-539-simple-house
 </div>
 <script src="{% static 'deps/js/jquery.min.js' %}"></script>
 <script src="{% static 'deps/js/parallax.min.js' %}"></script>
-<script>
-    $(document).ready(function(){
-      $('.tm-paging-link').click(function(e){
-        e.preventDefault();
-        var slug = $(this).data('page');
-        // Скрываем все
-        $('.tm-gallery-page').addClass('hidden');
-        // Показываем нужную
-        $('#tm-gallery-page-' + slug).removeClass('hidden');
-        // Активная ссылка
-        $('.tm-paging-link').removeClass('active');
-        $(this).addClass('active');
-      });
-    });
-</script>
 </body>
 </html>

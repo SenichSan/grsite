@@ -227,6 +227,7 @@ p, address {
   min-height: 460px;
   background: transparent;
   position: relative;
+  overflow: hidden; /* важно */
 }
 
 .parallax-window-2 {
@@ -858,17 +859,22 @@ address {
 
 /* Текст под иконкой */
 .tm-paging-link .paging-label {
+  font-family: 'Times New Roman', sans-serif;
   display: block;
-  font-size: 1rem;
-  line-height: 1;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  font-size: 19px;
+  line-height: 1,2;
   color: inherit;              /* берёт цвет ссылки */
   padding: 1rem
+  letter-spacing: 0.5px;
 }
 
 /* При наведении — приподнимаем и добавляем тень */
 .tm-paging-link:hover {
+  border-radius: 12px;
   transform: translateY(-14px);
-  box-shadow: 15 15px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: 15 15px 15px rgba(0, 0, 0, 0.6);
   background-color: #2F956D;
   color: white;
 }
