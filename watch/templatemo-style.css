@@ -932,6 +932,7 @@ address {
 .tm-featured-wrapper .slick-list {
   overflow-x: hidden;  /* по горизонтали — обрезаем */
   overflow-y: visible; /* по вертикали — показываем поднятую карточку */}
+  height: auto !important;
 
 /* 5. Отступы между слайдами */
 .tm-featured-wrapper .slick-slide {
@@ -975,7 +976,6 @@ address {
 .tm-featured-wrapper .tm-product-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  background-color: #2F956D;
 }
 
 /* 7. Контент внутри карточки */
@@ -1004,26 +1004,6 @@ address {
   margin-bottom: 0.5rem;
 }
 
-# Стилизация кнопки "Добавить в корзину"
-.add-to-cart-btn {
-    margin-top: 10px;
-    padding: 8px 14px;
-    background-color: #f5e6c4;
-    background-image: url(" {% static /deps/images/parchment-texture.jpg' %}");
-    background-size: cover;
-    border: 2px solid #a9743d;
-    border-radius: 8px;
-    color: #4b2e0e;
-    font-family: 'Marck Script', cursive;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.add-to-cart-btn:hover {
-    background-color: #e9d9b9;
-}
-
 /* 8. Стрелки карусели внутри обёртки */
 .tm-featured-wrapper .slick-prev,
 .tm-featured-wrapper .slick-next {
@@ -1038,7 +1018,6 @@ address {
   cursor: pointer;
   z-index: 2;
 }
-
 .tm-featured-wrapper .slick-prev { left: 0; }
 .tm-featured-wrapper .slick-next { right: 0; }
 
@@ -1049,67 +1028,3 @@ address {
   opacity: 1;
   text-shadow: 0 0 5px rgba(0,0,0,0.2);
 }
-
-
-/* КНОПКА-КОРЗИНА */
-.custom-cart-button {
-    position: fixed;
-    bottom: 40px;
-    right: 40px;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    z-index: 1001;
-}
-.custom-cart-button img {
-    width: 5em;
-    height: auto;
-}
-
-/* МОДАЛЬНОЕ ОКНО */
-.custom-modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-}
-
-/* Фон-затемнение */
-.custom-modal-overlay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-}
-
-/* Контент */
-.custom-modal-content {
-    position: relative;
-    max-width: 500px;
-    margin: 10% auto;
-    padding: 20px 30px;
-    background: #fdf6e3; /* пергаментный */
-    border: 3px solid #a9743d;
-    border-radius: 10px;
-    z-index: 1001;
-    color: #222;
-    font-family: 'Poppins', sans-serif;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-}
-
-/* Кнопка закрытия */
-.custom-close {
-    position: absolute;
-    right: 15px;
-    top: 10px;
-    font-size: 24px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #a9743d;
-}
-
-
