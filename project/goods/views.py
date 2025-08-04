@@ -49,6 +49,10 @@ class ProductView(DetailView):
     slug_url_kwarg = "product_slug"
     context_object_name = "product"
 
+    def get_queryset(self):
+        # подгружаем все связанные картинки
+        return super().get_queryset().prefetch_related('images')
+
     def get_object(self, queryset=None):
         product = Products.objects.get(slug=self.kwargs.get(self.slug_url_kwarg))
         return product

@@ -18,10 +18,10 @@ class Categories(models.Model):
 
 
 class Products(models.Model):
-    name = models.CharField(max_length=150, unique=True, verbose_name='Название')
+    name = models.CharField(max_length=255, unique=True, verbose_name='Название')
     slug = models.SlugField(max_length=200, unique=True, blank=True, null=True, verbose_name='URL')
     description = models.TextField(blank=True, null=True, verbose_name='Описание')
-    image = models.ImageField(upload_to='goods_images', blank=True, null=True, verbose_name='Изображение')
+    image = models.ImageField(upload_to="products/", blank=True, null=True)
     price = models.DecimalField(default=0.00, max_digits=7, decimal_places=2, verbose_name='Цена')
     discount = models.DecimalField(default=0.00, max_digits=4, decimal_places=2, verbose_name='Скидка в %')
     quantity = models.PositiveIntegerField(default=0, verbose_name='Количество')
@@ -58,3 +58,15 @@ class Products(models.Model):
             return round(self.price * self.discount/100, 2)
 
         return 0
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(upload_to="products/")
+    alt_text = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        verbose_name = 'Изображение продукта'
+        verbose_name_plural = 'Изображения продукта'
+
+    def __str__(self):
+        return f'{self.product.name} – #{self.pk}'
