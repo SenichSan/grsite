@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'users',
     'carts',
     'orders.apps.OrdersConfig',
-    'markdownx',
+
+    'tinymce',
 
 ]
 
@@ -173,4 +174,25 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'shroomer0ua@gmail.com'  # Замените на ваш Gmail-адрес
 EMAIL_HOST_PASSWORD = 'eofa witb svwe knyh'  # Пароль приложения или обычный пароль
 
-MARKDOWNX_MARKDOWN_EXTENSIONS = ['extra', 'nl2br']
+TINYMCE_DEFAULT_CONFIG = {
+    'cleanup_on_startup': True,
+    'menubar': False,
+    'plugins': (
+        'advlist autolink lists link charmap preview anchor code '
+        'fullscreen insertdatetime media table help wordcount '
+        'textcolor'  # добавляем плагин textcolor
+    ),
+    'toolbar': (
+        'undo redo | formatselect | bold italic underline | '
+        'forecolor backcolor | '  # добавляем кнопки цвета
+        'bullist numlist | alignleft aligncenter alignright | '
+        'removeformat | code'
+    ),
+    'valid_styles': {
+        '*': 'text-align,color,font-size,background-color',
+    },
+    'valid_classes': {
+        '*': '',
+    },
+    'forced_root_block': 'p',
+}

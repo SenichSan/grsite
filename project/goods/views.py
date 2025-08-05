@@ -1,8 +1,8 @@
 from django.http import Http404
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import DetailView, ListView
 
-from goods.models import Products, Categories
-from goods.utils import q_search
+from .models import Products, Categories
+from .utils import q_search
 
 
 class CatalogView(ListView):
@@ -35,7 +35,7 @@ class CatalogView(ListView):
             goods = goods.order_by(order_by)
 
         return goods
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Home - Каталог"
@@ -45,27 +45,37 @@ class CatalogView(ListView):
 
 
 class ProductView(DetailView):
+    model = Products
     template_name = "goods/product.html"
-    slug_url_kwarg = "product_slug"
     context_object_name = "product"
+    slug_url_kwarg = "product_slug"
 
     def get_queryset(self):
-        # подгружаем все связанные картинки
         return super().get_queryset().prefetch_related('images')
 
-    def get_object(self, queryset=None):
-        product = Products.objects.get(slug=self.kwargs.get(self.slug_url_kwarg))
-        return product
-    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = self.object.name
+        product = self.object
+
+        # Подбираем похожие товары из той же категории, исключая текущий
+        related_products = (
+            Products.objects
+                    .filter(category=product.category)
+                    .exclude(pk=product.pk)
+                    .order_by('?')
+                    [:10]
+        )
+
+        context.update({
+            'title': product.name,
+            'related_products': related_products,
+        })
         return context
 
 
 class CategoriesView(ListView):
-    template_name = 'goods/categories.html'
     model = Categories
+    template_name = 'goods/categories.html'
     context_object_name = 'categories'
 
     def get_context_data(self, **kwargs):

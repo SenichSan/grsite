@@ -8,12 +8,19 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <title>{{ product.name }} | Grownica</title>
-    <meta name="description" content="{{ product.description|truncatechars:300 }}">
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css">
+
     <link rel="stylesheet" href="{% static 'deps/css/product_page.css' %}">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+
 </head>
+
 <body>
 <!-- SVG-спрайт -->
 <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1"
@@ -147,18 +154,20 @@
                             <div class="product-content-numbers-price">{{ product.price }} ₴</div>
                         </div>
 
-                        <p class="product-content-explanation">{{ product.description|linebreaks }}</p>
+                        <p class="product-content-explanation">{{ product.description|safe }}</p>
 
                         <div class="product-content-quantity-selector">
                             <label class="product-quantity-input">
-                                <button type="button" class="button product-quantity-input-decrease" aria-label="decrease quantity">
+                                <button type="button" class="button product-quantity-input-decrease"
+                                        aria-label="decrease quantity">
                                     <svg class="icon icon-minus">
                                         <use xlink:href="#icon-minus"></use>
                                     </svg>
                                 </button>
                                 <input type="number" name="quantity" min="1" value="1"
                                        class="input product-quantity-input-number" required>
-                                <button type="button" class="button product-quantity-input-increase" aria-label="increase quantity">
+                                <button type="button" class="button product-quantity-input-increase"
+                                        aria-label="increase quantity">
                                     <svg class="icon icon-plus">
                                         <use xlink:href="#icon-plus"></use>
                                     </svg>
@@ -169,11 +178,6 @@
                             </button>
                         </div>
 
-                        <div class="product-content-feature">
-                            <div class="meta-cart-features-item">Безкоштовна доставка 2-5 днів</div>
-                            <div class="meta-cart-features-item">Без інструментів для збирання</div>
-                            <div class="meta-cart-features-item">30 днів на повернення</div>
-                        </div>
 
                         <div class="product-content-bottom-wrapper">
                             <button type="button"
@@ -216,18 +220,19 @@
                             <div class="swiper-container product-swiper">
                                 <div class="swiper-wrapper">
                                     {% if product.image %}
-                                        <figure class="swiper-slide">
-                                            <picture>
-                                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                                            </picture>
-                                        </figure>
+                                    <figure class="swiper-slide">
+                                        <picture>
+                                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                        </picture>
+                                    </figure>
                                     {% endif %}
                                     {% for img in product.images.all %}
-                                        <figure class="swiper-slide">
-                                            <picture>
-                                                <img src="{{ img.image.url }}" alt="{{ img.alt_text|default:product.name }}">
-                                            </picture>
-                                        </figure>
+                                    <figure class="swiper-slide">
+                                        <picture>
+                                            <img src="{{ img.image.url }}"
+                                                 alt="{{ img.alt_text|default:product.name }}">
+                                        </picture>
+                                    </figure>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -238,18 +243,19 @@
                             <div class="swiper-container product-thumb-swiper">
                                 <div class="swiper-wrapper">
                                     {% if product.image %}
-                                        <figure class="product-image-nav-item swiper-slide">
-                                            <picture>
-                                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                                            </picture>
-                                        </figure>
+                                    <figure class="product-image-nav-item swiper-slide">
+                                        <picture>
+                                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                        </picture>
+                                    </figure>
                                     {% endif %}
                                     {% for img in product.images.all %}
-                                        <figure class="product-image-nav-item swiper-slide">
-                                            <picture>
-                                                <img src="{{ img.image.url }}" alt="{{ img.alt_text|default:product.name }}">
-                                            </picture>
-                                        </figure>
+                                    <figure class="product-image-nav-item swiper-slide">
+                                        <picture>
+                                            <img src="{{ img.image.url }}"
+                                                 alt="{{ img.alt_text|default:product.name }}">
+                                        </picture>
+                                    </figure>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -260,16 +266,54 @@
             </div>
         </section>
     </main>
+
+
+    <div class="tm-featured-wrapper">
+        <div class="container">
+            <h2>Схожі товари</h2>
+
+            <div class="swiper-container tm-featured-carousel">
+                <div class="swiper-wrapper">
+                    {% for rp in related_products %}
+                    <div class="swiper-slide tm-carousel-item">
+                        <a href="{{ rp.get_absolute_url }}" class="tm-product-link">
+                            <div class="tm-product-card">
+                                <img src="{{ rp.image.url }}" class="tm-card-img" alt="{{ rp.name }}">
+                                <h5 class="tm-card-title">{{ rp.name }}</h5>
+                                <p class="tm-card-price">{{ rp.price }}₴</p>
+                                <button class="add-to-cart-btn" data-product-id="{{ rp.id }}">В корзину</button>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Встраиваем SVG внутрь кнопок -->
+                <button class="swiper-button-prev">
+                    <svg class="icon icon-arrow-left" width="24" height="24" viewBox="0 0 32 32">
+                        <use xlink:href="#icon-arrow-left"></use>
+                    </svg>
+                </button>
+                <button class="swiper-button-next">
+                    <svg class="icon icon-arrow-right" width="24" height="24" viewBox="0 0 32 32">
+                        <use xlink:href="#icon-arrow-right"></use>
+                    </svg>
+                </button>
+
+            </div>
+        </div>
+    </div>
 </div>
+
 
 <!-- Lightbox-модалка -->
 <div id="image-modal" class="image-modal" style="display:none;">
-  <div class="image-modal__backdrop"></div>
-  <span class="image-modal__close">&times;</span>
-  <img class="image-modal__img" src="" alt="Product Image">
+    <div class="image-modal__backdrop"></div>
+    <span class="image-modal__close">&times;</span>
+    <img class="image-modal__img" src="" alt="Product Image">
 </div>
 
-<script src="{% static 'deps/js/product_page_swiper.min.js' %}"></script>
+<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
 <script src="{% static 'deps/js/product_page.js' %}"></script>
 
 

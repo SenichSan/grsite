@@ -131,3 +131,24 @@ document.querySelectorAll('.product-swiper .swiper-slide img').forEach(img => {
 });
 modalClose.addEventListener('click', hideModal);
 modalBg.addEventListener('click', hideModal);
+
+document.addEventListener('DOMContentLoaded', () => {
+  // …существующая инициализация product-swiper…
+
+  // А потом, когда DOM гарантированно готов:
+  if (document.querySelector('.tm-featured-carousel')) {
+    new Swiper('.tm-featured-carousel', {
+      slidesPerView: 4,
+      spaceBetween: 20,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+        320:  { slidesPerView: 1 },
+        640:  { slidesPerView: 2 },
+        1024: { slidesPerView: 4 },
+      },
+    });
+  }
+});
