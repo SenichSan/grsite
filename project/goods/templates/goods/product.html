@@ -230,8 +230,6 @@
                                         </figure>
                                     {% endfor %}
                                 </div>
-                                <div class="swiper-button-prev icon-arrow-left"></div>
-                                <div class="swiper-button-next icon-arrow-right"></div>
                             </div>
                         </div>
 
@@ -262,6 +260,13 @@
             </div>
         </section>
     </main>
+</div>
+
+<!-- Lightbox-модалка -->
+<div id="image-modal" class="image-modal" style="display:none;">
+  <div class="image-modal__backdrop"></div>
+  <span class="image-modal__close">&times;</span>
+  <img class="image-modal__img" src="" alt="Product Image">
 </div>
 
 <script src="{% static 'deps/js/product_page_swiper.min.js' %}"></script>

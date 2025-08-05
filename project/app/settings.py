@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'users',
     'carts',
     'orders.apps.OrdersConfig',
+    'markdownx',
 
 ]
 
@@ -172,3 +173,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'shroomer0ua@gmail.com'  # Замените на ваш Gmail-адрес
 EMAIL_HOST_PASSWORD = 'eofa witb svwe knyh'  # Пароль приложения или обычный пароль
 
+MARKDOWNX_MARKDOWN_EXTENSIONS = ['extra', 'nl2br']
