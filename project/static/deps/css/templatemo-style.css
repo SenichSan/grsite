@@ -31,7 +31,7 @@ background:
     /* 1) ровный полупрозрачный цвет, чтобы «выбелить» текстуру */
     rgba(242,229,215, 0),
     /* 2) сама текстура */
-    url("/static/deps/images/parchment-texture.jpg") repeat;
+    url("/static/deps/images/bg-image-bestsellers.jpg") repeat;
   background-size: auto;
   width: 100%;
   max-width: 1450px;
@@ -821,7 +821,7 @@ address {
   cursor: pointer;
   padding: 10px 20px 6px;
   width: 100%;
-  text-align: left;
+  text-align: center;
   outline: none;
   transition: 0.4s;
 }
@@ -855,16 +855,7 @@ address {
   }
 }
 
-.accordion:after {
-  font-family: 'Font Awesome 5 Free';
-  font-weight: 900;
-  animation: changeIconBack 0.3s linear;
-  content: '\f0d9';
-  font-size: 2rem;
-  color: #999;
-  float: right;
-  margin-left: 5px;
-}
+
 
 .accordion.active:after {
   animation: changeIcon 0.3s linear;
@@ -944,18 +935,26 @@ address {
 
 /* 1. Общая обёртка блока */
 .tm-featured-wrapper {
-  background-color: #cfcdcd;  /* серый фон */
   padding: 40px 0;            /* вертикальные отступы */
   margin: 40px 0;             /* отступы к соседним секциям */
   overflow-x: hidden;         /* скрываем выход по горизонтали */
 }
 
 /* 2. Внутренний .container оставляем прозрачным */
-.tm-featured-wrapper > .container {
-  position: relative;         /* для абсолютных стрелок */
-  background: transparent;    /* убираем текстуру/фон .container */
+/* Фон для блока бестселлеров — явно и с высокой специфичностью */
+.tm-featured-wrapper > .container-bestsellers {
+  position: relative;
   padding: 0;
   box-sizing: border-box;
+
+  /* фон */
+  background-image: url("/static/deps/images/bg-image-bestsellers.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+
+  /* цвет-заполнитель, если картинка не загрузилась */
+  background-color: #F2E5D7;
 }
 
 /* 3. Сброс отступов у карусели */
@@ -1356,3 +1355,4 @@ address {
         flex-direction: column;
         text-align: center;
     }
+

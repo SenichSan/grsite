@@ -1,4 +1,6 @@
 {% load static %}
+{% load promo_tags %}
+
 
 <!DOCTYPE html>
 <html>
@@ -13,7 +15,20 @@
     <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Marck+Script&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Ruslan+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'deps/css/faq.css' %}">
+
     <link href="{% static 'deps/css/templatemo-style.css' %}" rel="stylesheet"/>
+
+
+    {% block extra_css %}
+    <link href="{% static 'deps/css/home_categories.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'deps/css/seo-text.css' %}">
+    <link rel="stylesheet" href="{% static 'css/promo-telegram.css' %}">
+
+
+    {% endblock %}
+
+
 </head>
 <!--
 
@@ -54,18 +69,20 @@ https://templatemo.com/tm-539-simple-house
     </div>
 
     <main>
-
-
         <!-- Кнопки-переключатели категорий -->
         <div class="tm-paging-links">
-            <nav>
+            <nav class="tm-paging-links" aria-label="Категорії">
                 <ul class="tm-paging-list">
                     {% for category in categories %}
                     <li class="tm-paging-item">
-                        <a href="{% url 'catalog:index' category.slug %}" class="tm-paging-link">
-                            <img src="{% static 'deps/icons/'|add:category.slug|add:'.png' %}" alt="{{ category.name }}"
-                                 class="paging-icon"/>
-                            <span class="paging-label">{{ category.name }}</span>
+                        <a href="{% url 'catalog:index' category.slug %}"
+                           class="category-card"
+                           aria-current="{% if category.slug == current_category %}true{% endif %}">
+                            <div class="category-icon-wrap">
+                                <img src="{% static 'deps/icons/'|add:category.slug|add:'.png' %}"
+                                     alt="" class="category-icon" aria-hidden="true"/>
+                            </div>
+                            <div class="category-label">{{ category.name }}</div>
                         </a>
                     </li>
                     {% endfor %}
@@ -76,7 +93,7 @@ https://templatemo.com/tm-539-simple-house
 
 
     <section class="tm-featured-wrapper">
-        <div class="container">
+        <div class="container-bestsellers" data-image-src="{% static 'deps/images/bg-image-bestsellers.jpg' %}">
             <h2 class="text-center tm-section-title">Гровери найчастіше обирають</h2>
             <div class="tm-featured-carousel">
                 {% for product in bestsellers %}
@@ -94,6 +111,20 @@ https://templatemo.com/tm-539-simple-house
                     </a>
                 </div>
                 {% endfor %}
+            </div>
+        </div>
+    </section>
+
+
+    {% include "components/seo_text_section.html" %}
+
+
+    {% render_promos %}
+
+    <section id="faq-section">
+        <div class="faq-container">
+            <div class="accordion">
+                {% include "components/faq.html" %}
             </div>
         </div>
     </section>
@@ -131,6 +162,7 @@ https://templatemo.com/tm-539-simple-house
 <script src="{% static 'deps/js/jquery.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
+<script src="{% static 'deps/js/faq.js' %}"></script>
 
 <script>
     $(function(){

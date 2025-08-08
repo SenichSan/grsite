@@ -1,0 +1,35 @@
+{% load static %}
+
+<section class="promo-block" id="promo-telegram-block">
+    <div class="promo-block__inner">
+        <div class="promo-slider" data-autoplay="5000" data-pause-on-hover="true">
+            <div class="promo-slider__track">
+                {% for p in promos %}
+                <article class="promo-slide" aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
+                         data-index="{{ forloop.counter0 }}">
+                    <div class="promo-slide__left">
+                        <h3 class="promo-slide__title">{{ p.title }}</h3>
+                        {% if p.link %}
+                        <a class="promo-slide__label" href="{{ p.link }}" target="_blank" rel="noopener noreferrer">{{
+                            p.label|default:"Подробнее" }}</a>
+                        {% endif %}
+                        <p class="promo-slide__subtitle">{{ p.subtitle }}</p>
+                        <div class="promo-slide__controls">
+                            {% if p.link %}
+                            <a class="promo-btn" href="{{ p.link }}" target="_blank"
+                               rel="noopener noreferrer">Перейти</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="promo-slide__right">
+                        <img src="{{ p.image.url }}" alt="{{ p.title }}" class="promo-slide__img" loading="lazy">
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            <div class="promo-slider__dots" role="tablist" aria-label="Навигация по слайдам"></div>
+            <button class="promo-slider__nav promo-slider__nav--prev" aria-label="Предыдущий слайд">&lt;</button>
+            <button class="promo-slider__nav promo-slider__nav--next" aria-label="Следующий слайд">&gt;</button>
+        </div>
+    </div>
+</section>
