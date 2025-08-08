@@ -791,6 +791,8 @@ a {
 
 img {
 	vertical-align: middle;
+	min-width: 50px;
+    min-height: 50px;
 }
 
 blockquote,dd,dl,fieldset,figure,form,h1,h2,h3,h4,h5,h6,menu,ol,p,pre,ul {
@@ -982,7 +984,6 @@ body {
 	width: 100%;
 	top: 100%;
 	align-items: center;
-	background-color: #fff;
 	left: 100%;
 	z-index: 1;
 	font-size: .87em;
@@ -1141,7 +1142,6 @@ body {
 		display: flex;
 		align-items: center;
 		padding-left: 40px;
-		border-left: 1px solid rgba(var(--color-dark-rgb),.2);
 	}
 }
 
@@ -1438,7 +1438,7 @@ body {
 }
 
 .button-primary {
-	background-color: var(--color-primary);
+	background-color: #2f956d;
 	text-transform: uppercase;
 	color: #fff;
 	font-weight: var(--font-bold);
@@ -2593,12 +2593,11 @@ background:
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   min-height: 320px;
 }
-
 /* Hover-эффект для карточки */
 .tm-featured-wrapper .tm-product-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  background-color: #2F956D;
+
 }
 
 /* 7. Контент внутри карточки */
@@ -2636,14 +2635,14 @@ background:
   border: 2px solid #a9743d;
   border-radius: 8px;
   color: #4b2e0e;
-  font-family: 'Marck Script', cursive;
+  font-family: 'TagesschriftCyrillic', cursive !important;
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .tm-featured-wrapper .add-to-cart-btn:hover {
-  background-color: #e9d9b9;
+  background-color: #515e30;
 }
 
 /* 8. Стрелки карусели внутри обёртки */
@@ -2725,3 +2724,21 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
+
+@font-face {
+  font-family: 'TagesschriftCyrillic';
+  src: url("/static/deps/webfonts/TagesschriftCyrillic-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* позволяет показывать fallback, пока шрифт грузится */
+}
+
+
+
+
+
+
+
+
+
+

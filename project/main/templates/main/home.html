@@ -9,12 +9,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>Simple House Template</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet"/>
-    <link href="{% static 'deps/css/templatemo-style.css' %}" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Marck+Script&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Ruslan+Display&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'deps/css/hystmodal.min.css' %}">
+    <link href="{% static 'deps/css/templatemo-style.css' %}" rel="stylesheet"/>
 </head>
 <!--
 
@@ -31,10 +30,11 @@ https://templatemo.com/tm-539-simple-house
     <div class="placeholder">
         <div class="parallax-window" data-parallax="scroll"
              data-image-src="{% static 'deps/images/bg-image.jpg' %}">
+            <div class="blur-layer"></div>
             <div class="tm-header">
                 <div class="row tm-header-inner">
                     <div class="col-md-6 col-12">
-                        <img src="{% static 'deps/images/simple-house-logo.png' %}" alt="Logo" class="tm-site-logo"/>
+                        <img src="{% static 'deps/icons/logo.png' %}" alt="Logo" class="tm-site-logo"/>
                         <div class="tm-site-text-box">
                             <h1 class="tm-site-title">Grownica</h1>
                             <h6 class="tm-site-description">Чарівний світ гровінгу</h6>
@@ -53,17 +53,11 @@ https://templatemo.com/tm-539-simple-house
     </div>
 
     <main>
-        <header class="row tm-welcome-section">
-            <h2 class="col-12 text-center tm-section-title">Welcome to Grownica</h2>
-            <p class="col-12 text-center">
-                Total 3 HTML pages are included in this template. Header image has a parallax
-                effect. You can feel free to download, edit and use this TemplateMo layout for your commercial or
-                non-commercial websites.
-            </p>
-        </header>
+
 
         <!-- Кнопки-переключатели категорий -->
         <div class="tm-paging-links">
+            <h2 class="text-center tm-section-title">Категорії</h2>
             <nav>
                 <ul>
                     {% for category in categories %}
@@ -93,7 +87,9 @@ https://templatemo.com/tm-539-simple-house
                             <h5 class="tm-card-title">{{ product.name }}</h5>
                             <p class="tm-card-price">{{ product.price }}₴</p>
 
-                            <button class="add-to-cart-btn" data-product-id="{{ product.id }}">В корзину</button>
+                                <button class="add-to-cart-btn" data-product-id="{{ product.id }}">
+                                    В корзину
+                                </button>
                         </div>
                     </a>
                 </div>

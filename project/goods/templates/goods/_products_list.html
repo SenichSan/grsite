@@ -1,0 +1,65 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul class="product-list">
+    {% for product in goods %}
+    <li class="product-item">
+        <article class="product-card" tabindex="0">
+            <figure class="card-banner">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy" width="312" height="350">
+                {% elif product.images.all|length > 0 %}
+                <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}" loading="lazy" width="312"
+                     height="350">
+                {% else %}
+                <img src="{% static 'deps/images/placeholder.png' %}" alt="placeholder" loading="lazy" width="312"
+                     height="350">
+                {% endif %}
+            </figure>
+
+            <div class="card-content">
+                <h3 class="card-title"><a href="{% url 'goods:product' product.slug %}">{{ product.name }}</a></h3>
+                <div class="price">
+                    {% if product.discount %}
+                    <span class="price-new">{{ product.sell_price }}</span>
+                    <span class="price-old">{{ product.price }}</span>
+                    {% else %}
+                    <span class="price-current">{{ product.price }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+    </li>
+    {% empty %}
+    <li class="product-empty">Нет товаров в этой категории.</li>
+    {% endfor %}
+</ul>
+
+{# Пагинация — сохраняет GET-параметры автоматически (но JS перехватит клики и выполнит AJAX) #}
+{% if is_paginated %}
+<nav class="pagination" aria-label="Навигация по страницам">
+    <ul class="pagination-list">
+        {% if page_obj.has_previous %}
+        <li><a href="?page={{ page_obj.previous_page_number }}" class="pagination-link">← Пред.</a></li>
+        {% endif %}
+
+        {% for num in paginator.page_range %}
+        <li class="{% if num == page_obj.number %}active{% endif %}">
+            <a href="?page={{ num }}" class="pagination-link">{{ num }}</a>
+        </li>
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li><a href="?page={{ page_obj.next_page_number }}" class="pagination-link">След. →</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+</body>
+</html>

@@ -1,4 +1,5 @@
 from django.http import Http404
+from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 
 from .models import Products, Categories
@@ -9,11 +10,12 @@ class CatalogView(ListView):
     model = Products
     template_name = "goods/catalog.html"
     context_object_name = "goods"
-    paginate_by = 3
+    paginate_by = 12
     allow_empty = False
     slug_url_kwarg = "category_slug"
 
     def get_queryset(self):
+        qs = Products.objects.prefetch_related('images').all()
         category_slug = self.kwargs.get(self.slug_url_kwarg)
         on_sale = self.request.GET.get("on_sale")
         order_by = self.request.GET.get("order_by")
@@ -41,7 +43,15 @@ class CatalogView(ListView):
         context["title"] = "Home - Каталог"
         context["slug_url"] = self.kwargs.get(self.slug_url_kwarg)
         context["categories"] = Categories.objects.all()
+        context['current_category'] = self.kwargs.get(self.slug_url_kwarg, 'all')
         return context
+
+
+    def render_to_response(self, context, **response_kwargs):
+        # Если AJAX — возвращаем только partial с товарами
+        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return render(self.request, "goods/_products_list.html", context)
+        return super().render_to_response(context, **response_kwargs)
 
 
 class ProductView(DetailView):
