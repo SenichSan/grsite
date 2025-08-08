@@ -26,21 +26,22 @@ https://templatemo.com/tm-539-simple-house
 
 <div class="container">
     <!-- Top box -->
-    <!-- Logo & Site Name -->
     <div class="placeholder">
         <div class="parallax-window" data-parallax="scroll"
              data-image-src="{% static 'deps/images/bg-image.jpg' %}">
             <div class="blur-layer"></div>
-            <div class="tm-header">
-                <div class="row tm-header-inner">
-                    <div class="col-md-6 col-12">
-                        <img src="{% static 'deps/icons/logo.png' %}" alt="Logo" class="tm-site-logo"/>
+            <div class="container">
+                <div class="tm-header d-flex justify-content-between align-items-center">
+                    <!-- Логотип и текст -->
+                    <div class="d-flex align-items-center">
                         <div class="tm-site-text-box">
                             <h1 class="tm-site-title">Grownica</h1>
                             <h6 class="tm-site-description">Чарівний світ гровінгу</h6>
                         </div>
                     </div>
-                    <nav class="col-md-6 col-12 tm-nav">
+
+                    <!-- Меню -->
+                    <nav class="tm-nav">
                         <ul class="tm-nav-ul">
                             <li class="tm-nav-li"><a href="home.html" class="tm-nav-link active">Home</a></li>
                             <li class="tm-nav-li"><a href="about.html" class="tm-nav-link">About</a></li>
@@ -57,14 +58,13 @@ https://templatemo.com/tm-539-simple-house
 
         <!-- Кнопки-переключатели категорий -->
         <div class="tm-paging-links">
-            <h2 class="text-center tm-section-title">Категорії</h2>
             <nav>
-                <ul>
+                <ul class="tm-paging-list">
                     {% for category in categories %}
                     <li class="tm-paging-item">
                         <a href="{% url 'catalog:index' category.slug %}" class="tm-paging-link">
-                            <img src="{% static 'deps/icons/'|add:category.slug|add:'.png' %}"
-                                 alt="{{ category.name }}" class="paging-icon"/>
+                            <img src="{% static 'deps/icons/'|add:category.slug|add:'.png' %}" alt="{{ category.name }}"
+                                 class="paging-icon"/>
                             <span class="paging-label">{{ category.name }}</span>
                         </a>
                     </li>
@@ -87,9 +87,9 @@ https://templatemo.com/tm-539-simple-house
                             <h5 class="tm-card-title">{{ product.name }}</h5>
                             <p class="tm-card-price">{{ product.price }}₴</p>
 
-                                <button class="add-to-cart-btn" data-product-id="{{ product.id }}">
-                                    В корзину
-                                </button>
+                            <button class="add-to-cart-btn" data-product-id="{{ product.id }}">
+                                В корзину
+                            </button>
                         </div>
                     </a>
                 </div>
@@ -109,7 +109,7 @@ https://templatemo.com/tm-539-simple-house
 
 <!-- КНОПКА КОРЗИНЫ -->
 <button class="custom-cart-button" id="openModal">
-    <img src="{% static 'deps/images/cart-icon.png' %}" alt="Cart" />
+    <img src="{% static 'deps/images/cart-icon.png' %}" alt="Cart"/>
 </button>
 
 <!-- МОДАЛЬНОЕ ОКНО -->
