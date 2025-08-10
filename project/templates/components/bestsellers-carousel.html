@@ -1,13 +1,14 @@
 {% load static %}
 
 <section class="tm-featured-wrapper">
-    <div class="container-bestsellers" data-image-src="{% static 'deps/images/bg-image-bestsellers.jpg' %}">
+    <div class="container-bestsellers">
         <h2 class="text-center tm-section-title">Гровери найчастіше обирають</h2>
-        <div class="tm-featured-carousel">
+
+        <div class="tm-featured-carousel" aria-label="Бестселлеры">
             {% for product in bestsellers %}
             <div class="tm-carousel-item">
-                <a href="{{ product.get_absolute_url }}" class="tm-product-link">
-                    <div class="tm-product-card">
+                <div class="tm-product-card">
+                    <a href="{{ product.get_absolute_url }}" class="tm-product-link" aria-label="{{ product.name }}">
                         <div class="tm-card-image-wrap">
                             <img src="{{ product.image.url }}" alt="{{ product.name }}" class="tm-card-img"/>
                         </div>
@@ -15,11 +16,11 @@
                             <h5 class="tm-card-title">{{ product.name }}</h5>
                             <p class="tm-card-price">{{ product.price }}₴</p>
                         </div>
-                        <button class="add-to-cart-btn" data-product-id="{{ product.id }}">
-                            В корзину
-                        </button>
-                    </div>
-                </a>
+                    </a>
+                    <button class="add-to-cart-btn" data-product-id="{{ product.id }}">
+                        В корзину
+                    </button>
+                </div>
             </div>
             {% endfor %}
         </div>

@@ -1,105 +1,188 @@
-/* Общие настройки блока */
-.container-bestsellers {
-    position: relative;
-    padding: 50px 20px;
-    background: url('..deps/images/bg-image-bestsellers.jpg') center/cover no-repeat;
-    background-attachment: fixed;
-    color: #fff;
+/* bestsellers-carousel-dark.css */
+/* Зависит от :root переменных описанных выше — даёт согласованную палитру с категорией */
+
+:root{
+  --bg-deep-1: #0b0b10;               /* тёмный фон */
+  --bg-deep-2: #15141a;               /* вторичный */
+  --accent-rgba: 181,124,255;         /* фиолет (как в tm-paging-links) */
+  --accent-hex: #B57CFF;
+  --teal-rgba: 0,184,184;             /* бирюза (кнопки) */
+  --teal-hex: #00B8B8;
+  --gold-hex: #FFD700;                /* для цены / акцента */
+  --card-radius: 12px;
+  --text-strong: #F3EFFF;
+  --muted-white: rgba(255,255,255,0.09);
 }
 
-/* Заголовок */
-.tm-section-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 40px;
-    text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+.container-bestsellers{
+  position: relative;
+  padding: 56px 20px;
+  color: var(--text-strong);
+  overflow: visible;
+  /* многослойный фон: глубокий градиент + мягкая текстура/пятна */
+  background:
+    radial-gradient(circle at 12% 30%, rgba(var(--teal-rgba), 0.12), transparent 18%),
+    radial-gradient(circle at 88% 70%, rgba(181,124,255,0.10), transparent 22%),
+    linear-gradient(180deg, var(--bg-deep-1) 0%, var(--bg-deep-2) 100%);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Карусель */
-.tm-featured-carousel {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-bottom: 10px;
-}
-.tm-featured-carousel::-webkit-scrollbar {
-    height: 8px;
-}
-.tm-featured-carousel::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.3);
-    border-radius: 4px;
+/* мягкая зернистая текстура (опционально, подключи повторяемую png в static) */
+.container-bestsellers::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url('{% static "deps/images/noise-1.png" %}');
+  opacity: 0.05;
+  mix-blend-mode: overlay;
 }
 
-/* Карточка */
-.tm-carousel-item {
-    flex: 0 0 auto;
-    width: 250px;
-    scroll-snap-align: start;
+/* ЗАГОЛОВОК */
+.tm-section-title{
+  font-size: 1.9rem;
+  margin: 0 0 28px;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 2;
+  color: var(--text-strong);
+  text-shadow: 0 6px 20px rgba(10,8,18,0.6);
 }
 
-.tm-product-card {
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(8px);
-    border-radius: 15px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 15px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.tm-product-card:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+/* КАРУСЕЛЬ: гибкая строка с snap */
+.tm-featured-carousel{
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Картинка */
-.tm-card-image-wrap {
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-.tm-card-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease;
-}
-.tm-product-card:hover .tm-card-img {
-    transform: scale(1.05);
+/* стиль скролла (тонкий и ненавязчивый) */
+.tm-featured-carousel::-webkit-scrollbar{ height:8px; }
+.tm-featured-carousel::-webkit-scrollbar-thumb{
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
 }
 
-/* Название и цена */
-.tm-card-info {
-    text-align: center;
-    margin-bottom: 10px;
-}
-.tm-card-title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 0;
-}
-.tm-card-price {
-    font-size: 1.1rem;
-    color: #ffd700;
-    font-weight: bold;
+/* элемент карусели (фиксированная ширина для предсказуемости) */
+.tm-carousel-item{
+  flex: 0 0 auto;
+  width: 260px;
+  scroll-snap-align: center;
+  display: flex;
+  justify-content: center;
 }
 
-/* Кнопка */
-.add-to-cart-btn {
-    background: linear-gradient(135deg, #00b8b8, #008080);
-    border: none;
-    color: #fff;
-    padding: 8px 16px;
-    border-radius: 30px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.3s ease, transform 0.2s ease;
+/* КАРТОЧКА продукта — glassmorphism, но чуть ярче чем категория */
+.tm-product-card{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  padding: 14px;
+  border-radius: var(--card-radius);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.04);
+  backdrop-filter: blur(8px) saturate(125%);
+  -webkit-backdrop-filter: blur(8px) saturate(125%);
+  transition: transform 320ms cubic-bezier(.2,.9,.25,1), box-shadow 320ms, border-color 320ms;
+  box-shadow: 0 10px 30px rgba(3,2,8,0.45);
+  position: relative;
 }
-.add-to-cart-btn:hover {
-    background: linear-gradient(135deg, #00d1d1, #009999);
-    transform: translateY(-2px);
+
+/* лёгкая цветная подсветка внизу карточки — связывает с фиолет/бирюзой */
+.tm-product-card::before{
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 6px;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(var(--teal-rgba),0.16), rgba(var(--accent-rgba),0.14));
+  filter: blur(18px);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* hover — приподнятие + усиление свечения */
+.tm-product-card:hover{
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 30px 80px rgba(5,4,12,0.6), 0 0 36px rgba(var(--accent-rgba),0.08);
+  border-color: rgba(181,124,255,0.12);
+  z-index: 4;
+}
+
+/* wrapper картинки и сам img */
+.tm-card-image-wrap{
+  width: 100%;
+  height: 170px;
+  border-radius: calc(var(--card-radius) - 3px);
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.12));
+}
+.tm-card-img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 420ms cubic-bezier(.2,.9,.25,1);
+}
+.tm-product-card:hover .tm-card-img{ transform: scale(1.06); }
+
+/* инфо: название + цена */
+.tm-card-info{ padding: 4px 2px; text-align:center; }
+.tm-card-title{
+  font-size: 0.98rem;
+  margin: 0;
+  color: var(--text-strong);
+  font-weight: 600;
+  line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(2,0,6,0.45);
+}
+.tm-card-price{
+  margin: 7px 0 0;
+  font-weight: 800;
+  color: var(--gold-hex);
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+/* кнопка — использовать твой фирменный градиент из секции кнопок (бирюза) */
+.add-to-cart-btn{
+  appearance: none;
+  border: none;
+  align-self: center;
+  margin-top: 6px;
+  padding: 8px 18px;
+  border-radius: 28px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, rgba(var(--teal-rgba),1), #008080);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.45), 0 0 18px rgba(var(--teal-rgba),0.08);
+  transition: transform 200ms ease, box-shadow 250ms ease;
+}
+.add-to-cart-btn:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 18px 38px rgba(0,0,0,0.55), 0 0 30px rgba(var(--teal-rgba),0.18);
+}
+
+/* маленькие экраны — адаптивность */
+@media (max-width: 992px){
+  .tm-carousel-item{ width: 220px; }
+  .tm-card-image-wrap{ height: 150px; }
+}
+@media (max-width: 576px){
+  .container-bestsellers{ padding: 34px 12px; }
+  .tm-carousel-item{ width: 86%; min-width: 240px; }
+  .tm-card-image-wrap{ height: 160px; }
+  .tm-section-title{ font-size: 1.3rem; margin-bottom: 16px; }
 }
