@@ -1,4 +1,4 @@
-# orders/utils.py
+# orders/validators.py
 
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives

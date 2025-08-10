@@ -376,7 +376,6 @@ p, address {
   font-size: 2rem;
   font-weight: 400;
   margin-bottom: 50px;
-  margin-top: 10px;
 
 }
 
@@ -460,11 +459,6 @@ p, address {
   margin-bottom: 60px;
 }
 
-.tm-paging-links {
-  text-align: center;
-  margin-bottom: 40px;
-  margin-top: 4rem;
-}
 
 .tm-paging-item {
   list-style: none;
@@ -875,51 +869,7 @@ address {
 }
 
 
-.tm-paging-link {
-  display: inline-flex;
-  flex-direction: column;      /* иконка над текстом */
-  align-items: center;
-  justify-content: center;
-  width: 8rem;                 /* квадрат 5×5 rem — подкорректируйте при необходимости */
-  height: 10rem;
-  text-decoration: none;       /* убираем подчёркивание */
-  box-sizing: border-box;
-  vertical-align: middle;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  aspect-ratio: 1 / 1;
-  padding: 0.5em;
-  color: #2F956D;
-  background-color: transparent;
-  padding: 0;
-}
 
-/* Иконка категории */
-.tm-paging-link .paging-icon {
-  width: 5rem;               /* размер иконки */
-  height: auto;
-  margin-bottom: 0.25rem;      /* отступ до текста */
-}
-
-/* Текст под иконкой */
-.tm-paging-link .paging-label {
-  font-family: 'TagesschriftCyrillic';
-  display: block;
-  margin-top: 0rem;
-  font-size: 20px;
-  line-height: 1,2;
-  color: inherit;              /* берёт цвет ссылки */
-  padding: 0.5rem;
-  letter-spacing: 0px;
-}
-
-/* При наведении — приподнимаем и добавляем тень */
-.tm-paging-link:hover {
-  border-radius: 12px;
-  transform: translateY(-14px);
-  box-shadow: 15 15px 15px rgba(0, 0, 0, 0.6);
-  background-color: #2F956D;
-  color: white;
-}
 
 
 @font-face {
@@ -935,8 +885,6 @@ address {
 
 /* 1. Общая обёртка блока */
 .tm-featured-wrapper {
-  padding: 40px 0;            /* вертикальные отступы */
-  margin: 40px 0;             /* отступы к соседним секциям */
   overflow-x: hidden;         /* скрываем выход по горизонтали */
 }
 
@@ -948,8 +896,9 @@ address {
   box-sizing: border-box;
 
   /* фон */
-  background-image: url("/static/deps/images/bg-image-bestsellers.jpg");
-  background-repeat: no-repeat;
+  background: radial-gradient(circle at 20% 50%, rgba(0,184,184,0.2), transparent 40%),
+            radial-gradient(circle at 80% 50%, rgba(0,184,184,0.15), transparent 35%),
+            #000;  background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
 

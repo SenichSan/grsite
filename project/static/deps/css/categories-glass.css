@@ -1,0 +1,131 @@
+.tm-paging-links {
+  /* Поменяйте значения ниже для других палитр (см. пояснения дальше) */
+  --card-bg: rgba(39,18,60,0.12);
+  --card-fallback: #2e2637;
+  --card-border: rgba(255,255,255,0.06);
+  --text-strong: #F3EFFF;
+  --accent-rgba: 181,124,255;
+  --shadow-dark: rgba(30,18,50,0.36);
+}
+
+/* контейнер: даём боковые отступы, чтобы карточки могли "выходить" при hover */
+.tm-paging-links {
+   background: radial-gradient(circle at 20% 50%, rgba(0,184,184,0.2), transparent 40%),
+            radial-gradient(circle at 80% 50%, rgba(0,184,184,0.15), transparent 35%),
+            #000;
+  overflow: visible;
+  padding: 0 26px;
+  box-sizing: border-box;
+}
+
+/* grid: ровно 3 колонки, несколько строк если категорий больше */
+.tm-paging-links .tm-paging-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(140px, auto);
+  gap: 22px;
+  align-items: stretch;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: visible;
+  box-sizing: border-box;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+/* li — растянуть ссылку внутри */
+.tm-paging-list .tm-paging-item {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+/* карточка */
+.tm-paging-list .tm-paging-item .category-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 18px;
+  border-radius: 12px;
+
+  /* glass */
+  background: var(--card-bg);
+  background-color: var(--card-fallback);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+
+  color: var(--text-strong);
+  text-decoration: none;
+
+  transition: transform 320ms cubic-bezier(.2,.9,.25,1), box-shadow 320ms;
+  transform-origin: center;
+  will-change: transform;
+  overflow: visible;
+}
+
+/* soft glow layer */
+.tm-paging-list .tm-paging-item .category-card::before {
+  content: "";
+  position: absolute;
+  left: -30%;
+  top: -40%;
+  width: 200%;
+  height: 160%;
+  background: radial-gradient(600px 300px at 20% 15%, rgba(var(--accent-rgba),0.12), transparent 18%);
+  opacity: 0;
+  transform: translateZ(0);
+  transition: opacity 320ms ease, transform 320ms ease;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* иконка и подпись */
+.category-icon-wrap { height: 120px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; z-index:2; }
+.category-icon { max-width:100%; max-height:100%; transform-origin:center; transition: transform 320ms, filter 320ms; filter: drop-shadow(0 10px 18px rgba(0,0,0,0.28)); }
+.category-label { font-weight:400; font-size:21px; margin:0; z-index:2; text-align:center; color: #fbff38; text-shadow: 0 1px 0 rgba(0,0,0,0.45); }
+
+/* hover / focus */
+.tm-paging-list .tm-paging-item .category-card:hover,
+.tm-paging-list .tm-paging-item .category-card:focus {
+  transform: translateY(-10px) scale(1.04);
+  box-shadow: 0 28px 64px var(--shadow-dark), 0 0 32px rgba(var(--accent-rgba),0.10);
+  z-index: 5;
+}
+.tm-paging-list .tm-paging-item .category-card:hover::before,
+.tm-paging-list .tm-paging-item .category-card:focus::before {
+  opacity: 1;
+  transform: translateY(-6px) scale(1.02);
+}
+.tm-paging-list .tm-paging-item .category-card:hover .category-icon {
+  transform: translateY(-8px) scale(1.06);
+  filter: drop-shadow(0 16px 32px rgba(10,40,36,0.28));
+}
+
+/* active/current */
+.tm-paging-list .tm-paging-item .category-card[aria-current="true"] {
+  outline: 3px solid rgba(var(--accent-rgba),0.12);
+  box-shadow: 0 30px 70px var(--shadow-dark), 0 0 28px rgba(var(--accent-rgba),0.16);
+}
+
+/* responsive */
+@media (max-width:992px){
+  .tm-paging-links{ padding:0 18px; }
+  .tm-paging-list { grid-template-columns: repeat(2,1fr); gap:18px; }
+  .category-icon-wrap{ height:100px; }
+}
+@media (max-width:576px){
+  .tm-paging-links{ padding:0 12px; }
+  .tm-paging-list { grid-template-columns: 1fr; gap:12px; }
+  .category-icon-wrap{ height:78px; }
+}

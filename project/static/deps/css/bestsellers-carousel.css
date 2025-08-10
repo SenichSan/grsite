@@ -1,0 +1,105 @@
+/* Общие настройки блока */
+.container-bestsellers {
+    position: relative;
+    padding: 50px 20px;
+    background: url('..deps/images/bg-image-bestsellers.jpg') center/cover no-repeat;
+    background-attachment: fixed;
+    color: #fff;
+}
+
+/* Заголовок */
+.tm-section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 40px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+/* Карусель */
+.tm-featured-carousel {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 10px;
+}
+.tm-featured-carousel::-webkit-scrollbar {
+    height: 8px;
+}
+.tm-featured-carousel::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.3);
+    border-radius: 4px;
+}
+
+/* Карточка */
+.tm-carousel-item {
+    flex: 0 0 auto;
+    width: 250px;
+    scroll-snap-align: start;
+}
+
+.tm-product-card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px);
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.tm-product-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+/* Картинка */
+.tm-card-image-wrap {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+.tm-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+.tm-product-card:hover .tm-card-img {
+    transform: scale(1.05);
+}
+
+/* Название и цена */
+.tm-card-info {
+    text-align: center;
+    margin-bottom: 10px;
+}
+.tm-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+}
+.tm-card-price {
+    font-size: 1.1rem;
+    color: #ffd700;
+    font-weight: bold;
+}
+
+/* Кнопка */
+.add-to-cart-btn {
+    background: linear-gradient(135deg, #00b8b8, #008080);
+    border: none;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+.add-to-cart-btn:hover {
+    background: linear-gradient(135deg, #00d1d1, #009999);
+    transform: translateY(-2px);
+}

@@ -22,6 +22,8 @@
     <link href="{% static 'deps/css/home_categories.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'deps/css/seo-text.css' %}">
     <link rel="stylesheet" href="{% static 'deps/css/news_slider.css' %}">
+    <link rel="stylesheet" href="{% static 'deps/css/categories-glass.css' %}">
+    <link rel="stylesheet" href="{% static 'deps/css/bestsellers-carousel.css' %}">
 
     {% endblock %}
 
@@ -67,7 +69,7 @@ https://templatemo.com/tm-539-simple-house
 
     <main>
         <!-- Кнопки-переключатели категорий -->
-        <div class="tm-paging-links">
+        <div class="tm-paging-links-wrap">
             <nav class="tm-paging-links" aria-label="Категорії">
                 <ul class="tm-paging-list">
                     {% for category in categories %}
@@ -89,28 +91,8 @@ https://templatemo.com/tm-539-simple-house
     </main>
 
 
-    <section class="tm-featured-wrapper">
-        <div class="container-bestsellers" data-image-src="{% static 'deps/images/bg-image-bestsellers.jpg' %}">
-            <h2 class="text-center tm-section-title">Гровери найчастіше обирають</h2>
-            <div class="tm-featured-carousel">
-                {% for product in bestsellers %}
-                <div class="tm-carousel-item">
-                    <a href="{{ product.get_absolute_url }}" class="tm-product-link">
-                        <div class="tm-product-card">
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="tm-card-img"/>
-                            <h5 class="tm-card-title">{{ product.name }}</h5>
-                            <p class="tm-card-price">{{ product.price }}₴</p>
+    {% include 'components/bestsellers-carousel.html' %}
 
-                            <button class="add-to-cart-btn" data-product-id="{{ product.id }}">
-                                В корзину
-                            </button>
-                        </div>
-                    </a>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </section>
 
 
     <section class="slider-section" id="news-slider-section" aria-label="Новости">
@@ -158,12 +140,13 @@ https://templatemo.com/tm-539-simple-house
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
 
-<script src="{% static 'deps/js/jquery.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
 <script src="{% static 'deps/js/faq.js' %}"></script>
 
 <script src="{% static 'deps/js/news_slider.js' %}"></script>
+
+<script src="{% static 'deps/js/categories-glass.js' %}"></script>
 
 
 <script>
@@ -198,19 +181,30 @@ https://templatemo.com/tm-539-simple-house
     });
 </script>
 
-<script>
-    document.getElementById("openModal").addEventListener("click", function () {
-        document.getElementById("customModal").style.display = "block";
-    });
-
-    document.getElementById("closeModal").addEventListener("click", function () {
-        document.getElementById("customModal").style.display = "none";
-    });
-
-    document.getElementById("modalOverlay").addEventListener("click", function () {
-        document.getElementById("customModal").style.display = "none";
-    });
 </script>
+    const openModalBtn = document.getElementById("openModal");
+    const closeModalBtn = document.getElementById("closeModal");
+    const modalOverlay = document.getElementById("modalOverlay");
+
+    if (openModalBtn) {
+      openModalBtn.addEventListener("click", () => {
+        document.getElementById("customModal").style.display = "block";
+      });
+    }
+
+    if (closeModalBtn) {
+      closeModalBtn.addEventListener("click", () => {
+        document.getElementById("customModal").style.display = "none";
+      });
+    }
+
+    if (modalOverlay) {
+      modalOverlay.addEventListener("click", () => {
+        document.getElementById("customModal").style.display = "none";
+      });
+    }
+</script>
+
 
 <script>
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
