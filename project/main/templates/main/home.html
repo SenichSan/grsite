@@ -1,6 +1,4 @@
 {% load static %}
-{% load promo_tags %}
-
 
 <!DOCTYPE html>
 <html>
@@ -23,8 +21,7 @@
     {% block extra_css %}
     <link href="{% static 'deps/css/home_categories.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'deps/css/seo-text.css' %}">
-    <link rel="stylesheet" href="{% static 'css/promo-telegram.css' %}">
-
+    <link rel="stylesheet" href="{% static 'deps/css/news_slider.css' %}">
 
     {% endblock %}
 
@@ -76,7 +73,7 @@ https://templatemo.com/tm-539-simple-house
                     {% for category in categories %}
                     <li class="tm-paging-item">
                         <a href="{% url 'catalog:index' category.slug %}"
-                           class="category-card"
+                           class="tm-paging-link category-card"
                            aria-current="{% if category.slug == current_category %}true{% endif %}">
                             <div class="category-icon-wrap">
                                 <img src="{% static 'deps/icons/'|add:category.slug|add:'.png' %}"
@@ -116,10 +113,15 @@ https://templatemo.com/tm-539-simple-house
     </section>
 
 
+    <section class="slider-section" id="news-slider-section" aria-label="Новости">
+      <div class="container-slider">
+        {% include "components/news_slider.html" with news_list=news_list %}
+      </div>
+    </section>
+
+
     {% include "components/seo_text_section.html" %}
 
-
-    {% render_promos %}
 
     <section id="faq-section">
         <div class="faq-container">
@@ -138,10 +140,7 @@ https://templatemo.com/tm-539-simple-house
 </div>
 
 
-<!-- КНОПКА КОРЗИНЫ -->
-<button class="custom-cart-button" id="openModal">
-    <img src="{% static 'deps/images/cart-icon.png' %}" alt="Cart"/>
-</button>
+
 
 <!-- МОДАЛЬНОЕ ОКНО -->
 <div class="custom-modal" id="customModal">
@@ -163,6 +162,9 @@ https://templatemo.com/tm-539-simple-house
 <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
 <script src="{% static 'deps/js/faq.js' %}"></script>
+
+<script src="{% static 'deps/js/news_slider.js' %}"></script>
+
 
 <script>
     $(function(){
@@ -249,6 +251,19 @@ https://templatemo.com/tm-539-simple-house
     }
 </script>
 
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/6896970ca4fc79192a7bea9e/1j263s266';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
 
 </body>
 </html>
