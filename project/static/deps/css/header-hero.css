@@ -1,0 +1,228 @@
+/* ---------- header-hero.css (рефакторинг) ---------- */
+
+.header-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 180px; /* можно подправить */
+  box-sizing: border-box;
+  background-color: #07070a;
+  color: #fff;
+  z-index: 5000;
+}
+
+
+.header-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid #ffc75bf2;
+  border-radius: 8px;
+  pointer-events: none;
+  box-shadow: 0 0 20px rgba(255, 199, 91, 0.4);
+  z-index: 1000; /* выше overlay и всего остального */
+}
+
+/* фон и overlay — оставляем прежние слои (вставлены как были) */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-bg picture, .hero-bg img { display:block; width:100%; height:100%; }
+.hero-bg img.hero-image { object-fit: cover; object-position: top center; }
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    /* Ослабленный тёмный градиент */
+    linear-gradient(180deg, rgba(3,3,6,0.18), rgba(3,3,6,0.28)),
+    /* Бирюзовое пятно */
+    radial-gradient(circle at 12% 28%, rgba(0,184,184,0.06), transparent 18%),
+    /* Фиолетовое пятно */
+    radial-gradient(circle at 88% 72%, rgba(181,124,255,0.06), transparent 18%);
+}
+
+
+
+
+/* контейнер содержимого */
+.container-inner.header-hero-content { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+
+/* основной header — relative, чтобы позиционировать внутренние абсолютные блоки */
+.tm-header {
+  position: relative;
+  height: 140px;            /* высота области хедера внутри секции — подправь при необходимости */
+  display: block;
+}
+
+/* ----------------- LEFT: логотип (текстовый) ----------------- */
+/* Лого слева по вертикали центрируем: используем абсолют и translate */
+.tm-header-left {
+  position: absolute;
+  left: 16px;               /* отступ слева */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* текст логотипа */
+.tm-site-title {
+  position: relative;
+  bottom: 1.5rem;
+  left: -4rem;
+  margin: 0;
+  color: #ffc75b;
+  font-size: 3.3rem;
+  font-weight: 700;
+  font-family: 'MedievalSharp', cursive;
+
+
+
+  /* Мягкое магическое свечение */
+  text-shadow:
+    0 0 5px rgba(255, 199, 91, 0.8),    /* базовое свечение в цвет текста */
+    0 0 15px rgba(255, 105, 180, 0.6),  /* розовый ореол */
+    0 0 25px rgba(0, 191, 255, 0.5),    /* голубой слой */
+    0 6px 20px rgba(0,0,0,0.6);         /* тёмная тень вниз, как было */
+}
+
+.tm-site-description {
+  position: relative;
+  left: -1rem;
+  margin: 0;
+  font-size: 1.2rem;
+  color: #dfdfdf;
+  font-weight: 400;
+  bottom: 1rem;
+}
+
+/* ----------------- TOP-RIGHT: соцсети ----------------- */
+/* спектр: абсолютно сверху справа */
+.tm-header-social {
+  position: absolute;
+  bottom: 6rem;
+  right: -29px;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  z-index: 4; /* выше overlay */
+}
+
+
+
+/* иконка-обёртка */
+.tm-social-link {
+  display: inline-flex;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.03);
+      border: 2px solid #515e30; /* цвет полупрозрачной рамки */
+  box-shadow: 0 0 10px rgba(255, 199, 91, 0.3); /* мягкое свечение */
+  text-decoration: none;
+  transition: transform .12s ease, background .12s ease;
+}
+.tm-social-link img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tm-social-link:hover, .tm-social-link:focus { transform: translateY(-3px); background: rgba(255,255,255,0.06); }
+
+
+.tm-social-link:hover,
+.tm-social-link:focus {
+  transform: translateY(-3px);
+  background: #515e30;
+  border-color: rgba(255, 199, 91, 0.8); /* при наведении ярче */
+  box-shadow: 0 0 14px rgba(255, 199, 91, 0.5);
+}
+
+/* ----------------- BOTTOM-RIGHT: навигационные кнопки ----------------- */
+/* отдельный блок внизу справа */
+.tm-header-nav {
+  position: absolute;
+  right: 16px;
+  bottom: 12px;
+  z-index: 4;
+  display: block;
+}
+
+.tm-nav-buttons {
+  position: relative;
+  display: flex;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  align-items: center;
+  bottom: 1.3rem;
+  left: 5rem;
+}
+
+.tm-nav-buttons .tm-nav-li {}
+.tm-nav-buttons .tm-nav-link {
+  display: inline-block;
+  color: rgb(218 194 153);
+  text-decoration: none;
+  font-weight: 800;
+  padding: 8px 10px;
+  border-radius: 6px;
+  transition: color .2s ease, transform .12s ease;
+  background: transparent;
+}
+
+.tm-nav-buttons .tm-nav-link:hover { color: #ffd700; transform: translateY(-2px); }
+.tm-nav-buttons .tm-nav-link.active {
+  color: #ffc75b;
+  background: rgba(255,255,255,0.03);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45), 0 0 18px rgba(0,184,184,0.06);
+}
+
+/* ----------------- адаптив (сохраняем/подправляем прошлые брейкпоинты) ----------------- */
+
+@media (max-width: 992px) {
+  .header-hero { min-height: 360px; }
+  .tm-site-title { font-size: 1.6rem; }
+}
+
+/* На узких экранах: переводим все в поток (stack), чтобы ничего не перекрывалось */
+@media (max-width: 599px) {
+  .container-inner.header-hero-content { padding: 0 12px; }
+  .tm-header { height: auto; padding: 12px 0 18px; }
+
+  /* делаем элементы нормальным документным потоком (не absolute) */
+  .tm-header-left,
+  .tm-header-social,
+  .tm-header-nav {
+    position: static;
+    transform: none;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .tm-header-left { margin: 6px 0 4px; }
+  .tm-header-social { order: 1; margin-bottom: 8px; gap: 12px; }
+  .tm-header-left { order: 2; }
+  .tm-header-nav { order: 3; margin-top: 8px; }
+
+  .tm-nav-buttons { gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .tm-social-link { width: 32px; height: 32px; border-radius: 6px; }
+  .tm-site-title { font-size: 1.25rem; text-align:center; }
+  .tm-site-description { text-align:center; }
+}
+
+/* небольшая подстройка для очень узких экранов */
+@media (max-width: 360px) {
+  .tm-social-link { width: 28px; height: 28px; }
+  .tm-nav-buttons .tm-nav-link { padding: 6px 8px; font-size: 0.95rem; }
+}
+
+

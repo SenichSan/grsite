@@ -33,7 +33,9 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: url('{% static "deps/images/noise-1.png" %}');
+  background: radial-gradient(circle at 80% 50%, rgba(210,190,130,0.08), transparent 40%),
+            radial-gradient(circle at 20% 50%, rgba(160,150,100,0.06), transparent 35%),
+            #292f1b;
   opacity: 0.05;
   mix-blend-mode: overlay;
 }

@@ -1,0 +1,61 @@
+{% load static %}
+
+<section class="header-hero" role="region" aria-label="Главный баннер">
+    <!-- фон -->
+    <div class="hero-bg" aria-hidden="true">
+        <picture>
+            <source media="(max-width:599px)"
+                    srcset="{% static 'deps/images/bg-image-blur-800.jpg' %} 1x, {% static 'deps/images/bg-image-blur-1600.jpg' %} 2x"
+                    type="image/jpeg">
+            <source media="(min-width:600px)"
+                    srcset="{% static 'deps/images/bg-image-blur-1600.jpg' %} 1x, {% static 'deps/images/bg-image-blur-2400.jpg' %} 2x"
+                    type="image/jpeg">
+            <img class="hero-image"
+                 src="{% static 'deps/images/bg-image-blur-1600.jpg' %}" alt=""
+                 loading="lazy" decoding="async">
+        </picture>
+    </div>
+
+    <!-- overlay (оставляем как есть) -->
+    <div class="hero-overlay" aria-hidden="true"></div>
+
+    <!-- контентный контейнер (центрует ширину) -->
+    <div class="container-inner header-hero-content">
+        <header class="tm-header" role="banner" aria-label="Шапка сайта">
+
+            <!-- 1) LEFT: логотип / текст (вертикально выровнен) -->
+            <div class="tm-header-left">
+                <div class="tm-site-text-box">
+                    <h1 class="tm-site-title">Grownica</h1>
+                    <h6 class="tm-site-description">Чарівний світ гровінгу</h6>
+                </div>
+            </div>
+
+            <!-- 2) TOP-RIGHT: соцсети (абсолютно сверху справа) -->
+            <div class="tm-header-social" aria-hidden="false">
+
+                <a href="#" class="tm-social-link" title="Telegram" aria-label="Telegram">
+                    <img src="{% static 'deps/images/telegram.png' %}" alt="Telegram">
+                </a>
+
+                <a href="#" class="tm-social-link" title="Viber" aria-label="Viber">
+                    <img src="{% static 'deps/images/viber.png' %}" alt="Viber">
+                </a>
+
+                <a href="#" class="tm-social-link" title="Whatsapp" aria-label="Whatsapp">
+                    <img src="{% static 'deps/images/whatsapp.png' %}" alt="Whatsapp">
+                </a>
+                <!-- при необходимости добавь ещё ссылки -->
+            </div>
+
+            <!-- 3) BOTTOM-RIGHT: навигация (кнопки) -->
+            <nav class="tm-header-nav" aria-label="Главная навигация">
+                <ul class="tm-nav-buttons">
+                    <li class="tm-nav-li"><a href="#" class="tm-nav-link active">Головна</a></li>
+                    <li class="tm-nav-li"><a href="#" class="tm-nav-link">Про нас</a></li>
+                    <li class="tm-nav-li"><a href="#" class="tm-nav-link">Контакти</a></li>
+                </ul>
+            </nav>
+        </header>
+    </div>
+</section>

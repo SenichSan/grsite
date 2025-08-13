@@ -1,4 +1,10 @@
-
+body {
+   zoom: 0.9;
+   background: url("/static/deps/images/main-bg-back.jpg") center/cover fixed no-repeat, #292f1b;    background-size: cover;       /* растягиваем с сохранением пропорций */
+   background-position: center;  /* центрируем */
+   background-attachment: fixed; /* фон закреплён при скролле (опционально) */
+   background-repeat: no-repeat; /* без повторов */
+}
 
 ul, nav, body, h1, h2, h4, h6, p, figure {
   margin: 0;
@@ -195,8 +201,7 @@ background:
 
 body {
   font-family: 'TagesschriftCyrillic', cursive;
-  font-size: 17px;
-  background-color: #515e30;
+  font-size: 1.2rem;
   overflow-x: hidden;
 }
 
@@ -285,44 +290,10 @@ p, address {
   }
 }
 
-.col-md-6.col-12 {
-  margin-top: 50px;
-}
 
 
-.tm-site-logo {
-    height: 60px;
-    width: auto;
-}
-
-.tm-site-text-box {
-  display: inline-block;
-}
-
-.tm-site-text-box h6 {
-    margin: 0;
-    font-size: 0.9rem;
-    color: white;
-}
-
-.tm-site-text-box h1 {
-    margin: 0;
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #ffcc66;
-}
 
 
-.tm-site-title {
-  font-size: 3rem;
-  font-weight: 400;
-  margin-bottom: 5px;
-  color: #ffc75b;
-  font-family: 'MedievalSharp', cursive;
-  text-shadow:
-    1px 1px 2px rgba(0,0,0,0.4),   /* лёгкая тень для рельефа */
-    0 0 11px rgba(200,166,101,0.6); /* внутреннее свечение */
-}
 
 .tm-site-description {
   font-family: 'TagesschriftCyrillic', cursive;
@@ -967,199 +938,22 @@ address {
 }
 
 
-
-/* =========================
-   PARALLAX & HEADER FIXES (appended overrides)
-   - These rules are safe to append at the end of your main CSS.
-   - They ensure the parallax background is blurred and sits **below** the header text.
-   - They also provide sensible defaults for height and mobile behavior.
-   Edit the values below (min-height, blur) to fine-tune.
-========================= */
-
-/* Base container: keep in flow but reserve visual height */
-.parallax-window {
-  position: relative;
-  overflow: hidden;
-   /* change this to make the parallax taller or shorter */
-  height: auto;      /* allow content to determine final height if necessary */
-  background: transparent;
+/* ---- Brown frame around main container (add at end of templatemo-style.css) ---- */
+.container {
+  position: relative; /* нужно, чтобы псевдоэлемент позиционировался относительно контейнера */
+  z-index: 0; /* не трогаем визуальную иерархию дочерних элементов */
+  box-sizing: border-box; /* на всякий случай (в вашем файле уже есть глобально) */
 }
 
-/* If plugin creates a .parallax-mirror element (parallax.js),
-   make sure it's below content and add blur/brightness.
-   We use !important only where necessary to override the plugin. */
-.parallax-mirror {
-  z-index: 0 !important;
-  pointer-events: none;
-  -webkit-filter: brightness(0.75) blur(6px) !important;
-  filter: brightness(0.75) blur(6px) !important;
-  transform: translateZ(0);
-}
-
-/* Optional internal blur layer (use only if you insert <div class="blur-layer"> inside .parallax-window) */
-.parallax-window .blur-layer {
+/* псевдоэлемент, который рисует рамку поверх содержимого, но не мешает кликам */
+.container::after {
+  content: "";
   position: absolute;
-  inset: 0; /* top:0; right:0; bottom:0; left:0; */
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  filter: blur(6px);
-  transform: scale(1.06);
-  z-index: 0;
-  pointer-events: none;
+  inset: 0;                    /* равномерно по всем сторонам */
+  pointer-events: none;        /* не мешать кликам по внутренним элементам */
+  border: 2px solid #ddc69a;   /* коричневый цвет — подберите оттенок по вкусу */
+  border-radius: 8px;          /* если нужно скругление */
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.06) inset; /* лёгкий внутренний контур для глубины */
+  z-index: 100;               /* быть выше большинства элементов по визуали */
 }
-
-/* Ensure header content sits above background */
-.parallax-window .tm-header,
-.parallax-window > .tm-header {
-  position: relative; /* keep header in normal flow but above the blurred bg */
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 12px 1rem; /* tune as needed */
-  box-sizing: border-box;
-  color: #ffffff;
-}
-
-/* If you prefer the header positioned at the bottom of the parallax,
-   give it a dedicated helper class "absolute-bottom" and tune bottom offset */
-.parallax-window .tm-header.absolute-bottom {
-  position: absolute;
-  bottom: -8px; /* negative to drop slightly below the parallax edge */
-  left: 0;
-  width: 100%;
-  z-index: 2;
-  padding: 10px 1rem;
-}
-
-
-.parallax-window .tm-site-title {
-  margin: 0;
-  font-size: 2.9rem;
-  line-height: 1;
-  padding-left: 70px;
-  padding-bottom: 10px;
-  letter-spacing: 0.25rem;
-}
-
-.parallax-window .tm-site-description {
-  margin: 0;
-  font-size: 1.4rem;
-  opacity: 0.95;
-  padding-left: 4.9rem;
-  margin-bottom: 99px
-}
-
-/* Ensure the parallax background doesn't capture pointer events */
-.parallax-mirror,
-.parallax-window .blur-layer {
-  pointer-events: none;
-}
-
-
-.tm-nav-li {
-  margin: 0;
-  padding: 0 12px;
-}
-
-/* Small screen adjustments */
-@media (max-width: 991px) {
-  .parallax-window { min-height: 90px; }
-  .parallax-window .tm-site-title { font-size: 1.4rem; }
-  .parallax-window .tm-site-logo { max-width: 80px; }
-  /* collapse nav if needed */
-  .tm-nav-ul { display: none; }
-}
-
-/* Quick helpers to change height and blur at one place:
-   - Edit .parallax-window { min-height: ... } to set visible height.
-   - Edit .parallax-mirror { filter: blur(Xpx) ... } to adjust blur radius.
-*/
-
-.placeholder {
-    width: 100%;
-    background-color: #556E5B;
-}
-
-.parallax-window {
-    height: 200px;
-    min-height: 200px;
-    background: transparent;
-    position: relative;
-    overflow: hidden;
-}
-
-.blur-layer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('/static/deps/images/bg-image.jpg');
-    background-size: cover;
-    background-position: center;
-    filter: blur(5px);
-    transform: scale(1.05);
-    z-index: 0;
-}
-
-.tm-header {
-    position: relative;
-    z-index: 1;
-    padding: 20px 0;
-    color: white;
-}
-
-.tm-site-logo {
-    max-width: 100px;
-    max-height: 200px;
-    margin-right: 10px;
-}
-
-.tm-site-title {
-    font-size: 3rem;
-    font-weight: 400;
-    margin-bottom: 5px;
-    color: #ffc75b;
-    font-family: 'MedievalSharp', cursive;
-    text-shadow:
-        1px 1px 2px rgba(0,0,0,0.4),
-        0 0 11px rgba(200,166,101,0.6);
-}
-
-.tm-site-description {
-    font-family: 'TagesschriftCyrillic', cursive;
-    font-size: 1.1rem;
-    font-weight: 400;
-}
-
-.tm-nav-ul {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    justify-content: center;
-    padding-bottom: 70px;
-    padding-right: 50px
-    }
-}
-
-.tm-nav-li {
-    padding: 0 20px;
-}
-
-.tm-nav-link {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 1.5rem;
-}
-
-@media (max-width: 991px) {
-    .tm-header {
-        flex-direction: column;
-        text-align: center;
-    }
 
