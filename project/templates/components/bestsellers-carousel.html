@@ -1,27 +1,33 @@
 {% load static %}
 
 <section class="tm-featured-wrapper">
-    <div class="container-bestsellers">
-        <h2 class="text-center tm-section-title">Гровери найчастіше обирають</h2>
+    <div class="container-bestsellers basic-grid" role="region" aria-labelledby="bestsellers-title">
+        <h2 id="bestsellers-title" class="text-center tm-section-title">Гровери найчастіше обирають</h2>
 
-        <div class="tm-featured-carousel" aria-label="Бестселлеры">
+        <div class="tm-featured-grid" role="list" aria-label="Бестселлеры">
             {% for product in bestsellers %}
-            <div class="tm-carousel-item">
-                <div class="tm-product-card">
-                    <a href="{{ product.get_absolute_url }}" class="tm-product-link" aria-label="{{ product.name }}">
-                        <div class="tm-card-image-wrap">
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="tm-card-img"/>
-                        </div>
-                        <div class="tm-card-info">
-                            <h5 class="tm-card-title">{{ product.name }}</h5>
-                            <p class="tm-card-price">{{ product.price }}₴</p>
-                        </div>
-                    </a>
-                    <button class="add-to-cart-btn" data-product-id="{{ product.id }}">
+            <article class="tm-product-card" role="listitem" aria-labelledby="prod-title-{{ product.id }}">
+                <a href="{{ product.get_absolute_url }}" class="tm-product-link" aria-label="{{ product.name }}">
+                    <div class="tm-card-image-wrap">
+                        <img src="{{ product.image.url }}"
+                             alt="{{ product.name }}"
+                             class="tm-card-img"
+                             loading="lazy"
+                             width="400" height="300"/>
+                    </div>
+
+                    <div class="tm-card-info">
+                        <h3 id="prod-title-{{ product.id }}" class="tm-card-title">{{ product.name }}</h3>
+                        <p class="tm-card-price">{{ product.price }}₴</p>
+                    </div>
+                </a>
+
+                <div class="tm-card-actions">
+                    <button class="add-to-cart-btn" data-product-id="{{ product.id }}" aria-pressed="false">
                         В корзину
                     </button>
                 </div>
-            </div>
+            </article>
             {% endfor %}
         </div>
     </div>

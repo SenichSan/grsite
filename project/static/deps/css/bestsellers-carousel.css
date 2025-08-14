@@ -1,190 +1,161 @@
-/* bestsellers-carousel-dark.css */
-/* Зависит от :root переменных описанных выше — даёт согласованную палитру с категорией */
+/* ---------------------------
+  Минималка: стили для блока бестселлеров и карточек
+  - Очень простой код, без переменных
+  - Рамка сделана через box-shadow (вне элемента) — не перекрывается внутренними фонами
+  - Изменить толщину рамки: поменяй значение 2px в box-shadow (поиск: "BORDER_THICKNESS")
+  --------------------------- */
 
-:root{
-  --bg-deep-1: #0b0b10;               /* тёмный фон */
-  --bg-deep-2: #15141a;               /* вторичный */
-  --accent-rgba: 181,124,255;         /* фиолет (как в tm-paging-links) */
-  --accent-hex: #B57CFF;
-  --teal-rgba: 0,184,184;             /* бирюза (кнопки) */
-  --teal-hex: #00B8B8;
-  --gold-hex: #FFD700;                /* для цены / акцента */
-  --card-radius: 12px;
-  --text-strong: #F3EFFF;
-  --muted-white: rgba(255,255,255,0.09);
-}
+/* ---------- базовый сброс ---------- */
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; padding: 0; }
+body {
 
-.container-bestsellers{
-  position: relative;
-  padding: 56px 20px;
-  color: var(--text-strong);
-  overflow: visible;
-  /* многослойный фон: глубокий градиент + мягкая текстура/пятна */
-  background:
-    radial-gradient(circle at 12% 30%, rgba(var(--teal-rgba), 0.12), transparent 18%),
-    radial-gradient(circle at 88% 70%, rgba(181,124,255,0.10), transparent 22%),
-    linear-gradient(180deg, var(--bg-deep-1) 0%, var(--bg-deep-2) 100%);
+  color: #F3EFFF;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.4;
 }
 
-/* мягкая зернистая текстура (опционально, подключи повторяемую png в static) */
-.container-bestsellers::after{
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(circle at 80% 50%, rgba(210,190,130,0.08), transparent 40%),
-            radial-gradient(circle at 20% 50%, rgba(160,150,100,0.06), transparent 35%),
-            #292f1b;
-  opacity: 0.05;
-  mix-blend-mode: overlay;
+/* ---------- секция и заголовок ---------- */
+.container-bestsellers.basic-grid {
+  padding: 48px;
+  background:
+  url('/static/deps/images/bestsellers-carousel-bg.jpg') center/contain no-repeat;
+  background-size: 100% 100%;
 }
 
-/* ЗАГОЛОВОК */
-.tm-section-title{
-  font-size: 1.9rem;
-  margin: 0 0 28px;
+
+.tm-section-title {
   text-align: center;
+  margin: 0 0 18px;
+  font-size: 1.8rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  position: relative;
-  z-index: 2;
-  color: var(--text-strong);
-  text-shadow: 0 6px 20px rgba(10,8,18,0.6);
+  color: #F3EFFF;
 }
 
-/* КАРУСЕЛЬ: гибкая строка с snap */
-.tm-featured-carousel{
-  position: relative;
-  z-index: 2;
-  display: flex;
-  gap: 18px;
-  overflow-x: auto;
-  padding-bottom: 8px;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
+/* ---------- сетка карточек ---------- */
+.tm-featured-grid {
+  display: grid;
+  gap: 1.5em;
+  grid-template-columns: repeat(2, 1fr); /* fallback для мобильных */
+  align-items: stretch;
+  margin-bottom: 3.2rem;
 }
+@media (min-width: 768px) { .tm-featured-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 992px) { .tm-featured-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 1200px) { .tm-featured-grid { grid-template-columns: repeat(5, 1fr); } }
+@media (min-width: 1400px) { .tm-featured-grid { grid-template-columns: repeat(6, 1fr); } }
 
-/* стиль скролла (тонкий и ненавязчивый) */
-.tm-featured-carousel::-webkit-scrollbar{ height:8px; }
-.tm-featured-carousel::-webkit-scrollbar-thumb{
-  background: rgba(255,255,255,0.08);
-  border-radius: 999px;
-}
-
-/* элемент карусели (фиксированная ширина для предсказуемости) */
-.tm-carousel-item{
-  flex: 0 0 auto;
-  width: 260px;
-  scroll-snap-align: center;
-  display: flex;
-  justify-content: center;
-}
-
-/* КАРТОЧКА продукта — glassmorphism, но чуть ярче чем категория */
-.tm-product-card{
-  width: 100%;
+/* ---------- карточка — базовый вид ---------- */
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card {
+  position: relative;               /* важно для корректного слоя содержимого */
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  gap: 12px;
-  padding: 14px;
-  border-radius: var(--card-radius);
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border: 1px solid rgba(255,255,255,0.04);
-  backdrop-filter: blur(8px) saturate(125%);
-  -webkit-backdrop-filter: blur(8px) saturate(125%);
-  transition: transform 320ms cubic-bezier(.2,.9,.25,1), box-shadow 320ms, border-color 320ms;
-  box-shadow: 0 10px 30px rgba(3,2,8,0.45);
-  position: relative;
+  justify-content: space-between;
+
+  min-height: 320px;
+  padding: 12px;
+  background: #2f2f33;              /* фон карточки */
+  border-radius: 2em;
+  overflow: visible;                /* чтобы внешняя тень/рамка не резалась */
+  transition: transform .18s ease, box-shadow .18s ease, filter .12s ease;
+
+  /* ---------- ЗДЕСЬ рисуется рамка: outer box-shadow ----------
+     BORDER_THICKNESS = 2px (замени на 1px or 3px если нужно)
+     GOLD = #E6BF5A
+     ---------------------------------------------------------- */
+  box-shadow:
+    0 0 0 2px #E6BF5A,            /* наружная «рамка» */
+    0 8px 22px rgba(0,0,0,0.5);   /* обычная тень */
 }
 
-/* лёгкая цветная подсветка внизу карточки — связывает с фиолет/бирюзой */
-.tm-product-card::before{
-  content: "";
-  position: absolute;
-  left: 8%;
-  right: 8%;
-  bottom: 6px;
-  height: 8px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(var(--teal-rgba),0.16), rgba(var(--accent-rgba),0.14));
-  filter: blur(18px);
-  opacity: 0.9;
-  pointer-events: none;
-}
+/* Если хочешь 1px рамку — используй вместо предыдущего блока:
+   box-shadow: 0 0 0 1px #E6BF5A, 0 8px 22px rgba(0,0,0,0.5);
+*/
 
-/* hover — приподнятие + усиление свечения */
-.tm-product-card:hover{
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 30px 80px rgba(5,4,12,0.6), 0 0 36px rgba(var(--accent-rgba),0.08);
-  border-color: rgba(181,124,255,0.12);
-  z-index: 4;
-}
-
-/* wrapper картинки и сам img */
-.tm-card-image-wrap{
+/* ---------- картинка ---------- */
+.container-bestsellers.basic-grid .tm-featured-grid .tm-card-image-wrap {
   width: 100%;
-  height: 170px;
-  border-radius: calc(var(--card-radius) - 3px);
+  height: 160px;
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.12));
+  border-radius: 8px;
+  background: #222;               /* на случай, если картинка не загрузилась */
 }
-.tm-card-img{
+.container-bestsellers.basic-grid .tm-featured-grid .tm-card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 420ms cubic-bezier(.2,.9,.25,1);
+  transition: transform .4s ease;
 }
-.tm-product-card:hover .tm-card-img{ transform: scale(1.06); }
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:hover .tm-card-img {
+  transform: scale(1.04);
+}
 
-/* инфо: название + цена */
-.tm-card-info{ padding: 4px 2px; text-align:center; }
-.tm-card-title{
-  font-size: 0.98rem;
+/* ---------- информация и кнопка ---------- */
+.container-bestsellers.basic-grid .tm-featured-grid .tm-card-info {
+  text-align: center;
+  padding: 10px 6px;
+  color: #F3EFFF;
+}
+.container-bestsellers.basic-grid .tm-featured-grid .tm-card-title {
   margin: 0;
-  color: var(--text-strong);
-  font-weight: 600;
-  line-height: 1.2;
-  text-shadow: 0 2px 8px rgba(2,0,6,0.45);
-}
-.tm-card-price{
-  margin: 7px 0 0;
-  font-weight: 800;
-  color: var(--gold-hex);
-  font-size: 1.05rem;
-  letter-spacing: 0.02em;
-}
-
-/* кнопка — использовать твой фирменный градиент из секции кнопок (бирюза) */
-.add-to-cart-btn{
-  appearance: none;
-  border: none;
-  align-self: center;
-  margin-top: 6px;
-  padding: 8px 18px;
-  border-radius: 28px;
   font-weight: 700;
-  cursor: pointer;
-  color: #fff;
-  background: linear-gradient(135deg, rgba(var(--teal-rgba),1), #008080);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.45), 0 0 18px rgba(var(--teal-rgba),0.08);
-  transition: transform 200ms ease, box-shadow 250ms ease;
+  font-size: 0.91rem;
+  line-height: 1.2;
 }
-.add-to-cart-btn:hover{
-  transform: translateY(-3px);
-  box-shadow: 0 18px 38px rgba(0,0,0,0.55), 0 0 30px rgba(var(--teal-rgba),0.18);
+.container-bestsellers.basic-grid .tm-featured-grid .tm-card-price {
+  margin-top: 6px;
+  color: #E6BF5A;
+  font-weight: 800;
+  font-size: 1.02rem;
 }
 
-/* маленькие экраны — адаптивность */
-@media (max-width: 992px){
-  .tm-carousel-item{ width: 220px; }
-  .tm-card-image-wrap{ height: 150px; }
+.container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
 }
-@media (max-width: 576px){
-  .container-bestsellers{ padding: 34px 12px; }
-  .tm-carousel-item{ width: 86%; min-width: 240px; }
-  .tm-card-image-wrap{ height: 160px; }
-  .tm-section-title{ font-size: 1.3rem; margin-bottom: 16px; }
+.container-bestsellers.basic-grid .tm-featured-grid .add-to-cart-btn {
+  background: #014103;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.45);
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s;
 }
+.container-bestsellers.basic-grid .tm-featured-grid .add-to-cart-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.55);
+}
+
+/* мобильные */
+@media (max-width:480px){
+  .container-bestsellers.basic-grid .tm-featured-grid .tm-card-image-wrap { height: 120px; }
+  .container-bestsellers.basic-grid .tm-featured-grid .tm-product-card { min-height: 260px; padding: 10px; }
+}
+
+/* ---------- hover эффект для рамки ---------- */
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 0 0 2px #E6BF5A,            /* оставляем ту же рамку при hover */
+    0 20px 50px rgba(0,0,0,0.6);  /* усиление тени */
+  filter: saturate(1.04) contrast(1.02);
+}
+
+/* ---------- защитные правила (если где-то фоны дочерних элементов мешают) ---------- */
+/* делаем ссылку и контейнер картинки прозрачными по фону и наследующими радиус */
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card > a,
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card .tm-card-image-wrap {
+  background: transparent;
+  border-radius: inherit;
+  position: relative;
+  z-index: 1;
+}
+
+/* Если где-то в проекте есть inline-style с border-radius, оставляем это — радиусы наследуются.
+   Конец минимального файла. */
