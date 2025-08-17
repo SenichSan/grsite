@@ -15,24 +15,50 @@ document.addEventListener("DOMContentLoaded", function () {
     // Кнопка удаления может содержать свой data-cart-remove-url, иначе fallback к общему
     const removeDefaultUrl = modalRoot ? modalRoot.dataset.cartRemoveUrl : null; // name: carts:cart_remove
 
-    // Без ключевых элементов — выходим тихо
-    if (!cartButton || !modal || !overlay || !itemsContainer) {
+    // Если нет самой кнопки — выходим. Счётчик и модалка зависят от наличия кнопки.
+    if (!cartButton) {
         return;
     }
 
-    // Открыть модалку
+    // Синхронизация с legacy-частью: реагируем на внешние события обновления корзины
+    document.addEventListener('cart:updated', function () {
+        loadCartCounter();
+    });
+
+    // Инициализируем счётчик сразу при загрузке страницы,
+    // чтобы не показывать "0" до первого открытия модалки.
+    if (cartViewUrl) {
+        loadCartCounter();
+        // При возврате на страницу из истории (bfcache) — пересчитать
+        window.addEventListener('pageshow', function () {
+            loadCartCounter();
+        });
+        // При переключении вкладки назад — пересчитать
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') {
+                loadCartCounter();
+            }
+        });
+    }
+
+    // Открыть модалку (только если структура модалки присутствует на странице)
     cartButton.addEventListener('click', function () {
-        openModal();
-        loadCart();
+        if (modal && overlay && modalRoot) {
+            openModal();
+            loadCart();
+        }
     });
 
     // Закрыть модалку
     if (modalCloseBtn) {
         modalCloseBtn.addEventListener('click', closeModal);
     }
-    overlay.addEventListener('click', closeModal);
+    if (overlay) {
+        overlay.addEventListener('click', closeModal);
+    }
 
     function openModal() {
+        if (!overlay || !modal || !modalRoot) return;
         overlay.hidden = false;
         modal.hidden = false;
         modalRoot.classList.add('open');
@@ -41,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function closeModal() {
+        if (!overlay || !modal || !modalRoot) return;
         overlay.hidden = true;
         modal.hidden = true;
         modalRoot.classList.remove('open');
@@ -51,16 +78,33 @@ document.addEventListener("DOMContentLoaded", function () {
     // Загрузка содержимого корзины
     function loadCart() {
         if (!cartViewUrl) return;
-        fetch(cartViewUrl, { credentials: 'same-origin' })
+        fetch(cartViewUrl, { credentials: 'same-origin', cache: 'no-store' })
             .then((r) => r.json())
             .then((data) => {
-                if (typeof data.cart_items_html !== 'undefined') {
+                if (itemsContainer && typeof data.cart_items_html !== 'undefined') {
                     itemsContainer.innerHTML = data.cart_items_html;
                 }
                 if (counterEl && typeof data.total_quantity !== 'undefined') {
                     counterEl.textContent = data.total_quantity;
                 }
                 // Итого в модалке, если есть отдельный элемент
+                const totalSumEl = document.getElementById('tm-cart-total-sum');
+                if (totalSumEl && typeof data.total_sum !== 'undefined') {
+                    totalSumEl.textContent = data.total_sum;
+                }
+            })
+            .catch(() => {});
+    }
+
+    // Лёгкая версия загрузки: только обновить счётчик и, если есть, сумму
+    function loadCartCounter() {
+        if (!cartViewUrl) return;
+        fetch(cartViewUrl, { credentials: 'same-origin' })
+            .then((r) => r.json())
+            .then((data) => {
+                if (counterEl && typeof data.total_quantity !== 'undefined') {
+                    counterEl.textContent = data.total_quantity;
+                }
                 const totalSumEl = document.getElementById('tm-cart-total-sum');
                 if (totalSumEl && typeof data.total_sum !== 'undefined') {
                     totalSumEl.textContent = data.total_sum;

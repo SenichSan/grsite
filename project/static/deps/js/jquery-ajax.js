@@ -53,6 +53,9 @@ $(document).ready(function () {
                     $tmItems.html(data.cart_items_html);
                 }
 
+                // Сообщаем новому компоненту о том, что корзина обновилась
+                document.dispatchEvent(new Event('cart:updated'));
+
             },
 
             error: function (data) {
@@ -119,6 +122,9 @@ $(document).ready(function () {
                 if ($tmItems.length && typeof data.cart_items_html !== 'undefined') {
                     $tmItems.html(data.cart_items_html);
                 }
+
+                // Сообщаем новому компоненту о том, что корзина обновилась
+                document.dispatchEvent(new Event('cart:updated'));
 
             },
 

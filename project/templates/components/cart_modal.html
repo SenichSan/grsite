@@ -1,13 +1,16 @@
+{% load static %}
 {# templates/components/cart_modal.html #}
 {# Если у тебя есть явные URL для апдейта/удаления — пропиши их здесь. Иначе можно оставить пустыми. #}
 <div id="tm-cart-modal-root"
      class="tm-cart-modal-root"
+     style="--cart-bg-image: url('{% static 'deps/images/cart-modal-bg.jpg' %}');"
      data-cart-update-url="{% url 'carts:cart_change' %}"
      data-cart-remove-url="{% url 'carts:cart_remove' %}">
   <div class="tm-cart-overlay" hidden></div>
 
   <div class="tm-cart-modal" role="dialog" aria-modal="true" aria-labelledby="tmCartTitle" hidden>
     <div class="tm-cart-modal-dialog">
+      <div class="tm-cart-bg-blur" aria-hidden="true"></div>
       <div class="tm-cart-modal-header">
         <h3 id="tmCartTitle" class="tm-cart-title">Корзина</h3>
         <button class="tm-cart-modal-close" type="button" aria-label="Закрыть">×</button>
@@ -23,6 +26,12 @@
       <div class="tm-cart-modal-footer">
         <div class="tm-cart-total">Итого: <span id="tm-cart-total-sum">0</span></div>
       </div>
+
+      <div class="tm-cart-checkout-bar">
+        <a class="tm-checkout-btn" href="{% url 'orders:create_order' %}">Оформить</a>
+      </div>
     </div>
   </div>
 </div>
+
+
