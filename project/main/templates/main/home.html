@@ -1,5 +1,6 @@
 {% load static %}
 
+
 <!DOCTYPE html>
 <html>
 
@@ -25,11 +26,12 @@
     <link rel="stylesheet" href="{% static 'deps/css/categories-glass.css' %}">
     <link rel="stylesheet" href="{% static 'deps/css/bestsellers-carousel.css' %}">
     <link rel="stylesheet" href="{% static 'deps/css/header-hero.css' %}">
+    <link rel="stylesheet" href="{% static 'deps/css/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'deps/css/cart-component.css' %}">
     {% endblock %}
 
 
 </head>
-
 
 
 <body>
@@ -39,38 +41,32 @@
     <!-- Top box -->
     {% include 'components/header-hero.html' %}
 
-        <!-- Кнопки-переключатели категорий -->
-        <div class="tm-paging-links-wrap">
-            <nav class="tm-paging-links" aria-label="Категорії">
-                <h2 class="text-center category-section-title">Оберіть бажану категорію</h2>
-                <ul class="tm-paging-list">
-                    {% for category in categories %}
-                    <li class="tm-paging-item">
-                        <a href="{% url 'catalog:index' category.slug %}"
-                           class="tm-paging-link category-card"
-                           aria-current="{% if category.slug == current_category %}true{% endif %}">
-                            <div class="category-icon-wrap">
-                                <img src="{% static 'deps/icons/'|add:category.slug|add:'.png' %}"
-                                     alt="" class="category-icon" aria-hidden="true"/>
-                            </div>
-                            <div class="category-label">{{ category.name }}</div>
-                        </a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </nav>
-        </div>
+    <!-- Кнопки-переключатели категорий -->
+    <div class="tm-paging-links-wrap">
+        <nav class="tm-paging-links" aria-label="Категорії">
+            <h2 class="text-center category-section-title">Оберіть бажану категорію</h2>
+            <ul class="tm-paging-list">
+                {% for category in categories %}
+                <li class="tm-paging-item">
+                    <a href="{% url 'catalog:index' category.slug %}"
+                       class="tm-paging-link category-card"
+                       aria-current="{% if category.slug == current_category %}true{% endif %}">
+                        <div class="category-icon-wrap">
+                            <img src="{% static 'deps/icons/'|add:category.slug|add:'.png' %}"
+                                 alt="" class="category-icon" aria-hidden="true"/>
+                        </div>
+                        <div class="category-label">{{ category.name }}</div>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
 
 
     {% include 'components/bestsellers-carousel.html' %}
 
-
-
-    <section class="slider-section" id="news-slider-section" aria-label="Новости">
-      <div class="container-slider">
-        {% include "components/news_slider.html" with news_list=news_list %}
-      </div>
-    </section>
+    {% include "components/news_slider.html" with news_list=news_list %}
 
 
     {% include "components/seo_text_section.html" %}
@@ -85,25 +81,12 @@
     </section>
 
 
-    <footer class="tm-footer text-center">
-        <p>Copyright &copy; 2025 Grownica
+    {% include 'components/footer.html' %}
 
-            | Design: <a rel="nofollow" href="https://t.me/SenichSan">SenichSan</a></p>
-    </footer>
 </div>
 
-
-
-
-<!-- МОДАЛЬНОЕ ОКНО -->
-<div class="custom-modal" id="customModal">
-    <div class="custom-modal-overlay" id="modalOverlay"></div>
-    <div class="custom-modal-content">
-        <button class="custom-close" id="closeModal">&times;</button>
-        <h2>Ваша корзина</h2>
-        <p>Пока здесь пусто. Но скоро появятся товары!</p>
-    </div>
-</div>
+{% include 'components/cart_button.html' %}
+{% include 'components/cart_modal.html' %}
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
@@ -118,6 +101,9 @@
 <script src="{% static 'deps/js/categories-glass.js' %}"></script>
 
 <script src="{% static 'deps/js/bestsellers-carousel.js' %}"></script>
+
+
+<script src="{% static 'deps/js/cart-component.js' %}"></script>
 
 
 <script>
@@ -153,58 +139,17 @@
 </script>
 
 
-
-
-<script>
-    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            const productId = this.dataset.productId;
-
-            fetch(`/cart/add/${productId}/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken'),
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({})
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Товар добавлен в корзину!');
-                } else {
-                    alert('Ошибка при добавлении товара.');
-                }
-            });
-        });
-    });
-
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-</script>
-
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/6896970ca4fc79192a7bea9e/1j263s266';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/6896970ca4fc79192a7bea9e/1j263s266';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
 </script>
 <!--End of Tawk.to Script-->
 

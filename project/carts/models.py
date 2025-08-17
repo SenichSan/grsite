@@ -1,48 +1,56 @@
 from django.db import models
+from django.db.models import Sum, F
 from goods.models import Products
-
 from users.models import User
 
 
-class CartQueryset(models.QuerySet):
-    
-    def total_price(self):
-        return sum(cart.products_price() for cart in self)
-
-    def total_discount(self):
-        return sum(cart.product.discount for cart in self)
+class CartQuerySet(models.QuerySet):
+    def with_products(self):
+        return self.select_related('product')
 
     def total_quantity(self):
-        if self:
-            return sum(cart.quantity for cart in self)
-        return 0
-    
+        return self.aggregate(total=Sum('quantity'))['total'] or 0
+
+    def total_price(self):
+        # считаем на питоне, т.к. sell_price() — метод модели
+        return sum(item.product.sell_price() * item.quantity for item in self.with_products())
+
+    def total_discount(self):
+        # если у Products есть price_discount()/discount — учитываем, иначе можно убрать
+        return sum(
+            getattr(item.product, 'price_discount', lambda: 0)() * item.quantity
+            for item in self.with_products()
+        )
+
 
 class Cart(models.Model):
-
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE, blank=True, null=True, verbose_name='Пользователь')
-    product = models.ForeignKey(to=Products, on_delete=models.CASCADE, verbose_name='Товар')
-    quantity = models.PositiveSmallIntegerField(default=0, verbose_name='Количество')
-    session_key = models.CharField(max_length=32, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Пользователь')
+    session_key = models.CharField(max_length=40, null=True, blank=True, db_index=True)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, verbose_name='Товар')
+    quantity = models.PositiveIntegerField(default=1, verbose_name='Количество')
     created_timestamp = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
+
+    objects = CartQuerySet.as_manager()
 
     class Meta:
         db_table = 'cart'
         verbose_name = "Корзина"
         verbose_name_plural = "Корзина"
         ordering = ("id",)
-
-    objects = CartQueryset().as_manager()
+        constraints = [
+            # одна запись на user+product или на session_key+product
+            models.UniqueConstraint(fields=['user', 'product'], name='uniq_user_product', condition=~models.Q(user=None)),
+            models.UniqueConstraint(fields=['session_key', 'product'], name='uniq_session_product', condition=~models.Q(session_key=None)),
+        ]
 
     def products_price(self):
         return round(self.product.sell_price() * self.quantity, 2)
 
     def product_discount(self):
-        return round(self.product.price_discount() * self.quantity, 2)
+        if hasattr(self.product, 'price_discount'):
+            return round(self.product.price_discount() * self.quantity, 2)
+        return 0
 
     def __str__(self):
-        if self.user:
-            return f'Корзина {self.user.username} | Товар {self.product.name} | Количество {self.quantity}'
-            
-        return f'Анонимная корзина | Товар {self.product.name} | Количество {self.quantity}'
-
+        owner = self.user.username if self.user else "Аноним"
+        return f'Корзина {owner} | {self.product.name} x{self.quantity}'

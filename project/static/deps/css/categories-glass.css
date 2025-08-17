@@ -11,9 +11,9 @@ position: relative;
 
 /* контейнер: даём боковые отступы, чтобы карточки могли "выходить" при hover */
 .tm-paging-links {
-       background: radial-gradient(circle at 20% 50%, rgba(0,184,184,0.2), transparent 40%),
-                radial-gradient(circle at 80% 50%, rgba(0,184,184,0.15), transparent 35%),
-                #000;
+  background:
+  url('/static/deps/images/categories-bg.jpg') center/contain no-repeat;
+  background-size: 100% 100%;
   overflow: visible;
   padding: 0 26px;
   padding-top: 4rem;
@@ -135,7 +135,7 @@ position: relative;
   left: 0;
   right: 0;
   bottom: -6px; /* расстояние между текстом и полоской */
-  height: 3px;  /* толщина полосы */
+  height: 1.5px;  /* толщина полосы */
   background: linear-gradient(90deg, #2f2d28, #ab9964, #2f2d28); /* золотистый градиент */
 }
 /* иконка и подпись */

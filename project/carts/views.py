@@ -1,171 +1,168 @@
+# carts/views.py
+from django.views import View
+from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-from django.urls import reverse
-from django.views import View
-from carts.mixins import CartMixin
-from carts.models import Cart
-from carts.utils import get_user_carts
+from django.db import transaction
+
+from .models import Cart
+from .utils import get_user_carts
 
 from goods.models import Products
 
 
-class CartAddView(CartMixin, View):
+def _owner_filter(request):
+    """Возвращаем фильтр для запросов: по user или session_key"""
+    if request.user.is_authenticated:
+        return {'user': request.user}
+    if not request.session.session_key:
+        request.session.create()
+    return {'session_key': request.session.session_key}
+
+
+class CartAddView(View):
+    """
+    Ожидает POST: product_id, quantity (опционально)
+    Если запись уже есть -> увеличивает quantity.
+    Возвращает JSON с cart_items_html, total_quantity, total_sum, message.
+    """
     def post(self, request):
-        product_id = request.POST.get("product_id")
-        product = Products.objects.get(id=product_id)
+        product_id = request.POST.get('product_id') or request.POST.get('id')
+        try:
+            qty = int(request.POST.get('quantity', 1))
+        except (TypeError, ValueError):
+            qty = 1
 
-        cart = self.get_cart(request, product=product)
+        if not product_id:
+            return JsonResponse({'error': 'product_id is required'}, status=400)
 
-        if cart:
-            cart.quantity += 1
-            cart.save()
-        else:
-            Cart.objects.create(user=request.user if request.user.is_authenticated else None,
-                                session_key=request.session.session_key if not request.user.is_authenticated else None,
-                                product=product, quantity=1)
-        
-        response_data = {
-            "message": "Товар добавлен в корзину",
-            'cart_items_html': self.render_cart(request)
-        }
+        product = get_object_or_404(Products, id=product_id)
+        owner = _owner_filter(request)
 
-        return JsonResponse(response_data)
+        with transaction.atomic():
+            cart_qs = Cart.objects.filter(product=product, **owner)
+            cart_item = cart_qs.first()
+            if cart_item:
+                # увеличиваем
+                cart_item.quantity = cart_item.quantity + qty
+                cart_item.save(update_fields=['quantity'])
+            else:
+                cart_item = Cart.objects.create(product=product, quantity=qty, **owner)
+
+        # рендерим обновлённый список корзины
+        carts = get_user_carts(request)
+        # вычисляем суммарные значения
+        total_quantity = sum(item.quantity for item in carts)
+        total_sum = round(sum(float(item.product.sell_price()) * item.quantity for item in carts), 2)
+        # рендерим HTML с уже посчитанными итогами
+        html = render_to_string(
+            'carts/includes/included_cart.html',
+            {'carts': carts, 'total_quantity': total_quantity, 'total_sum': total_sum},
+            request=request,
+        )
+
+        return JsonResponse({
+            'message': 'Товар добавлен в корзину',
+            'cart_items_html': html,
+            'total_quantity': total_quantity,
+            'total_sum': total_sum,
+        })
 
 
-class CartChangeView(CartMixin, View):
+class CartChangeView(View):
+    """
+    Меняет количество одной строки корзины.
+    Ожидает POST: cart_id, action (increment/decrement) или quantity (число).
+    Возвращает JSON с обновлённым cart_items_html, total_quantity, total_sum
+    """
     def post(self, request):
-        cart_id = request.POST.get("cart_id")
-        
-        cart = self.get_cart(request, cart_id=cart_id)
+        cart_id = request.POST.get('cart_id')
+        if not cart_id:
+            return JsonResponse({'error': 'cart_id required'}, status=400)
 
-        cart.quantity = request.POST.get("quantity")
-        cart.save()
+        # фильтруем по владельцу — чтобы нельзя было трогать чужие строки
+        owner = _owner_filter(request)
+        cart_item = get_object_or_404(Cart, id=cart_id, **owner)
 
-        quantity = cart.quantity
+        action = request.POST.get('action')
+        qty = request.POST.get('quantity')
+        try:
+            if action == 'increment':
+                cart_item.quantity += 1
+                cart_item.save(update_fields=['quantity'])
+            elif action == 'decrement':
+                cart_item.quantity -= 1
+                if cart_item.quantity <= 0:
+                    cart_item.delete()
+                else:
+                    cart_item.save(update_fields=['quantity'])
+            elif qty is not None:
+                new_qty = max(0, int(qty))
+                if new_qty == 0:
+                    cart_item.delete()
+                else:
+                    cart_item.quantity = new_qty
+                    cart_item.save(update_fields=['quantity'])
+            else:
+                return JsonResponse({'error': 'action or quantity required'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
 
-        response_data = {
-            "message": "Количество изменено",
-            "quantity": quantity,
-            'cart_items_html': self.render_cart(request)
-        }
+        carts = get_user_carts(request)
+        total_quantity = sum(item.quantity for item in carts)
+        total_sum = round(sum(float(item.product.sell_price()) * item.quantity for item in carts), 2)
+        html = render_to_string(
+            'carts/includes/included_cart.html',
+            {'carts': carts, 'total_quantity': total_quantity, 'total_sum': total_sum},
+            request=request,
+        )
 
-        return JsonResponse(response_data)
+        return JsonResponse({
+            'message': 'Количество обновлено',
+            'cart_items_html': html,
+            'total_quantity': total_quantity,
+            'total_sum': total_sum,
+        })
 
 
-class CartRemoveView(CartMixin, View):
+class CartRemoveView(View):
+    """
+    Удаляет строку корзины. Ожидает POST: cart_id.
+    """
     def post(self, request):
-        cart_id = request.POST.get("cart_id")
-        
-        cart = self.get_cart(request, cart_id=cart_id)
-        quantity = cart.quantity
-        cart.delete()
+        cart_id = request.POST.get('cart_id')
+        if not cart_id:
+            return JsonResponse({'error': 'cart_id required'}, status=400)
+        owner = _owner_filter(request)
+        cart_item = get_object_or_404(Cart, id=cart_id, **owner)
+        cart_item.delete()
 
-        response_data = {
-            "message": "Товар удален из корзины",
-            "quantity_deleted": quantity,
-            'cart_items_html': self.render_cart(request)
-        }
+        carts = get_user_carts(request)
+        total_quantity = sum(item.quantity for item in carts)
+        total_sum = round(sum(float(item.product.sell_price()) * item.quantity for item in carts), 2)
+        html = render_to_string(
+            'carts/includes/included_cart.html',
+            {'carts': carts, 'total_quantity': total_quantity, 'total_sum': total_sum},
+            request=request,
+        )
 
-        return JsonResponse(response_data)
-
-# def cart_add(request):
-
-#     product_id = request.POST.get("product_id")
-
-#     product = Products.objects.get(id=product_id)
-    
-#     if request.user.is_authenticated:
-#         carts = Cart.objects.filter(user=request.user, product=product)
-
-#         if carts.exists():
-#             cart = carts.first()
-#             if cart:
-#                 cart.quantity += 1
-#                 cart.save()
-#         else:
-#             Cart.objects.create(user=request.user, product=product, quantity=1)
-
-#     else:
-#         carts = Cart.objects.filter(
-#             session_key=request.session.session_key, product=product)
-
-#         if carts.exists():
-#             cart = carts.first()
-#             if cart:
-#                 cart.quantity += 1
-#                 cart.save()
-#         else:
-#             Cart.objects.create(
-#                 session_key=request.session.session_key, product=product, quantity=1)
-    
-#     user_cart = get_user_carts(request)
-#     cart_items_html = render_to_string(
-#         "carts/includes/included_cart.html", {"carts": user_cart}, request=request)
-
-#     response_data = {
-#         "message": "Товар добавлен в корзину",
-#         "cart_items_html": cart_items_html,
-#     }
-
-#     return JsonResponse(response_data)
-            
-
-# def cart_change(request):
-#     cart_id = request.POST.get("cart_id")
-#     quantity = request.POST.get("quantity")
-
-#     cart = Cart.objects.get(id=cart_id)
-
-#     cart.quantity = quantity
-#     cart.save()
-#     updated_quantity = cart.quantity
-
-#     user_cart = get_user_carts(request)
-
-#     context = {"carts": user_cart}
-
-#     # if referer page is create_order add key orders: True to context
-#     referer = request.META.get('HTTP_REFERER')
-#     if reverse('orders:create_order') in referer:
-#         context["order"] = True
-
-#     cart_items_html = render_to_string(
-#         "carts/includes/included_cart.html", context, request=request)
-
-#     response_data = {
-#         "message": "Количество изменено",
-#         "cart_items_html": cart_items_html,
-#         "quantity": updated_quantity,
-#     }
-
-#     return JsonResponse(response_data)
+        return JsonResponse({
+            'message': 'Товар удалён',
+            'cart_items_html': html,
+            'total_quantity': total_quantity,
+            'total_sum': total_sum,
+        })
 
 
-
-# def cart_remove(request):
-    
-#     cart_id = request.POST.get("cart_id")
-
-    # cart = Cart.objects.get(id=cart_id)
-    # quantity = cart.quantity
-    # cart.delete()
-
-    # user_cart = get_user_carts(request)
-
-    # context = {"carts": user_cart}
-
-    # # if referer page is create_order add key orders: True to context
-    # referer = request.META.get('HTTP_REFERER')
-    # if reverse('orders:create_order') in referer:
-    #     context["order"] = True
-
-    # cart_items_html = render_to_string(
-    #     "carts/includes/included_cart.html", context, request=request)
-
-    # response_data = {
-    #     "message": "Товар удален",
-    #     "cart_items_html": cart_items_html,
-    #     "quantity_deleted": quantity,
-    # }
-
-    # return JsonResponse(response_data)
+# Optional: CartDetailView для GET /cart/view/
+class CartDetailView(View):
+    def get(self, request):
+        carts = get_user_carts(request)
+        total_quantity = sum(item.quantity for item in carts)
+        total_sum = round(sum(float(item.product.sell_price()) * item.quantity for item in carts), 2)
+        html = render_to_string(
+            'carts/includes/included_cart.html',
+            {'carts': carts, 'total_quantity': total_quantity, 'total_sum': total_sum},
+            request=request,
+        )
+        return JsonResponse({'cart_items_html': html, 'total_quantity': total_quantity, 'total_sum': total_sum})

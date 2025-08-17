@@ -1,0 +1,22 @@
+
+
+{% load static %}
+<footer class="site-footer site-footer--parchment" role="contentinfo" aria-labelledby="footer-heading">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <p class="brand-title parchment-title">YourSite</p>
+            <p class="brand-sub">Короткая подпись или слоган</p>
+        </div>
+
+        <nav class="footer-nav" aria-label="Footer navigation">
+            <a href="/about/">Про нас</a>
+            <a href="/contact/">Контакти</a>
+            <a href="/privacy/">Політика</a>
+        </nav>
+
+        <div class="footer-meta">
+            <p class="copy">© {% now "Y" %} YourCompany. Всі права захищені.</p>
+            <p class="small">Підтримка: <a href="mailto:hello@yoursite.example">hello@yoursite.example</a></p>
+        </div>
+    </div>
+</footer>

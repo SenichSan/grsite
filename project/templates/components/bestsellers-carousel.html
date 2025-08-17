@@ -23,12 +23,19 @@
                 </a>
 
                 <div class="tm-card-actions">
-                    <button class="add-to-cart-btn" data-product-id="{{ product.id }}" aria-pressed="false">
+                    <button class="add-to-cart-btn"
+                            data-product-id="{{ product.id }}"
+                            data-cart-add-url="{% url 'carts:cart_add' %}">
                         В корзину
                     </button>
                 </div>
+
             </article>
+
             {% endfor %}
+
         </div>
+
     </div>
+
 </section>

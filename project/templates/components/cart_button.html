@@ -1,0 +1,12 @@
+{# templates/components/cart_button.html #}
+{% load static %}
+<div id="tm-cart-component"
+     class="tm-cart-component"
+     data-cart-view-url="{% url 'carts:cart_view' %}">
+  <button type="button" class="tm-cart-button" aria-label="Открыть корзину" aria-haspopup="dialog">
+    <span class="tm-cart-button-inner">
+      <img class="tm-cart-button-img" src="{% static 'deps/images/cart.png' %}" alt="Корзина" width="44" height="44" loading="lazy">
+      <span class="tm-cart-count" id="tm-cart-count" aria-hidden="true">0</span>
+    </span>
+  </button>
+</div>
