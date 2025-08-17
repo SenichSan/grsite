@@ -43,6 +43,16 @@ $(document).ready(function () {
                 var cartItemsContainer = $("#cart-items-container");
                 cartItemsContainer.html(data.cart_items_html);
 
+                // Обновляем новый виджет, если присутствует
+                var $tmCounter = $("#tm-cart-count");
+                if ($tmCounter.length && typeof data.total_quantity !== 'undefined') {
+                    $tmCounter.text(data.total_quantity);
+                }
+                var $tmItems = $("#tm-cart-items-container");
+                if ($tmItems.length && typeof data.cart_items_html !== 'undefined') {
+                    $tmItems.html(data.cart_items_html);
+                }
+
             },
 
             error: function (data) {
@@ -58,6 +68,12 @@ $(document).ready(function () {
     $(document).on("click", ".remove-from-cart", function (e) {
         // Блокируем его базовое действие
         e.preventDefault();
+
+        // Если клик произошёл внутри нового модального компонента —
+        // даём сработать новой логике cart-component.js и выходим
+        if ($(this).closest('#tm-cart-modal-root').length) {
+            return;
+        }
 
         // Берем элемент счетчика в значке корзины и берем оттуда значение
         var goodsInCartCount = $("#goods-in-cart-count");
@@ -93,6 +109,16 @@ $(document).ready(function () {
                 // Меняем содержимое корзины на ответ от django (новый отрисованный фрагмент разметки корзины)
                 var cartItemsContainer = $("#cart-items-container");
                 cartItemsContainer.html(data.cart_items_html);
+
+                // Обновляем новый виджет, если присутствует
+                var $tmCounter = $("#tm-cart-count");
+                if ($tmCounter.length && typeof data.total_quantity !== 'undefined') {
+                    $tmCounter.text(data.total_quantity);
+                }
+                var $tmItems = $("#tm-cart-items-container");
+                if ($tmItems.length && typeof data.cart_items_html !== 'undefined') {
+                    $tmItems.html(data.cart_items_html);
+                }
 
             },
 
@@ -171,6 +197,16 @@ $(document).ready(function () {
                 // Меняем содержимое корзины
                 var cartItemsContainer = $("#cart-items-container");
                 cartItemsContainer.html(data.cart_items_html);
+
+                // Обновляем новый виджет, если присутствует
+                var $tmCounter = $("#tm-cart-count");
+                if ($tmCounter.length && typeof data.total_quantity !== 'undefined') {
+                    $tmCounter.text(data.total_quantity);
+                }
+                var $tmItems = $("#tm-cart-items-container");
+                if ($tmItems.length && typeof data.cart_items_html !== 'undefined') {
+                    $tmItems.html(data.cart_items_html);
+                }
 
             },
             error: function (data) {

@@ -35,13 +35,17 @@ document.addEventListener("DOMContentLoaded", function () {
     function openModal() {
         overlay.hidden = false;
         modal.hidden = false;
+        modalRoot.classList.add('open');
         document.body.style.overflow = 'hidden';
+        document.body.setAttribute('data-modal-open', 'true');
     }
 
     function closeModal() {
         overlay.hidden = true;
         modal.hidden = true;
+        modalRoot.classList.remove('open');
         document.body.style.overflow = '';
+        document.body.removeAttribute('data-modal-open');
     }
 
     // Загрузка содержимого корзины
