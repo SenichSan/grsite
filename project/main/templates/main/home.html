@@ -1,6 +1,5 @@
 {% load static %}
 
-
 <!DOCTYPE html>
 <html>
 
@@ -30,13 +29,23 @@
     <link rel="stylesheet" href="{% static 'deps/css/cart-component.css' %}">
     {% endblock %}
 
+    <style>
+      /* Нежная тонкая кремово-золотая рамка для всего контейнера на главной */
+      .home-framed {
+        border: 1px solid rgba(217, 183, 122, 0.65); /* мягкое золото → кремовый подтон */
+        border-radius: 14px;
+        box-shadow: 0 0 0 1px rgba(217, 183, 122, 0.12) inset; /* едва заметный внутренний обвод */
+        overflow: hidden; /* чтобы скругление работало для вложенных блоков */
+      }
+    </style>
+
 
 </head>
 
 
 <body>
 
-<div class="container">
+<div class="container home-framed">
 
     <!-- Top box -->
     {% include 'components/header-hero.html' %}

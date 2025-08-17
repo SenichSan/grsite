@@ -64,8 +64,59 @@ $(document).ready(function () {
         });
     });
 
+    // Новый обработчик для кнопок в tm-featured-wrapper
+    // Кнопка — <button class="add-to-cart-btn" data-product-id data-cart-add-url>
+    $(document).on("click", ".add-to-cart-btn", function (e) {
+        e.preventDefault();
 
+        var goodsInCartCount = $("#goods-in-cart-count");
+        var cartCount = parseInt(goodsInCartCount.text() || 0);
 
+        var product_id = $(this).data("product-id");
+        var add_to_cart_url = $(this).data("cart-add-url");
+        if (!add_to_cart_url || !product_id) {
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: add_to_cart_url,
+            data: {
+                product_id: product_id,
+                csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
+            },
+            success: function (data) {
+                // Сообщение
+                successMessage.html(data.message);
+                successMessage.fadeIn(400);
+                setTimeout(function () { successMessage.fadeOut(400); }, 7000);
+
+                // Увеличиваем количество товаров в корзине (legacy виджет)
+                cartCount++;
+                goodsInCartCount.text(cartCount);
+
+                // Обновляем legacy контейнер
+                var cartItemsContainer = $("#cart-items-container");
+                cartItemsContainer.html(data.cart_items_html);
+
+                // Обновляем новый виджет, если присутствует
+                var $tmCounter = $("#tm-cart-count");
+                if ($tmCounter.length && typeof data.total_quantity !== 'undefined') {
+                    $tmCounter.text(data.total_quantity);
+                }
+                var $tmItems = $("#tm-cart-items-container");
+                if ($tmItems.length && typeof data.cart_items_html !== 'undefined') {
+                    $tmItems.html(data.cart_items_html);
+                }
+
+                // Уведомим новый компонент
+                document.dispatchEvent(new Event('cart:updated'));
+            },
+            error: function () {
+                console.log("Ошибка при добавлении товара в корзину (tm-featured)");
+            }
+        });
+    });
 
     // Ловим собыитие клика по кнопке удалить товар из корзины
     $(document).on("click", ".remove-from-cart", function (e) {
