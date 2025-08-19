@@ -7,8 +7,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Footcap - Find your footware</title>
+    <title>Каталог</title>
+    <!-- Global styles matching home (container visuals) -->
+    <link href="{% static 'deps/css/templatemo-style.css' %}" rel="stylesheet"/>
+    <!-- Page-specific (currently empty/minimal) -->
     <link rel="stylesheet" href="{% static 'deps/css/catalog.css' %}">
+    <link rel="stylesheet" href="{% static 'deps/css/header-hero.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -22,33 +26,32 @@
 </head>
 
 <body>
-<main>
-    <div class="tm-paging-links">
-        <nav>
-            <ul>
+<div class="container home-framed">
+    {% include 'components/header-hero.html' %}
+    
+    <!-- Catalog categories block (new, catalog-scoped) -->
+    <div class="catalog-categories">
+        <nav class="catalog-categories-nav" aria-label="Категории">
+            <h1 class="catalog-title">Каталог</h1>
+            <h2 class="catalog-categories-subtitle"> Натисніть на категорію для фільтрації товарі</h2>
+            <ul class="catalog-categories-list">
                 {% for category in categories %}
-                <li class="tm-paging-item {% if category.slug == current_category %}active{% endif %}">
+                <li class="catalog-category-item">
                     <a href="{% url 'goods:catalog_by_category' category.slug %}"
-                       class="tm-paging-link"
-                       data-slug="{{ category.slug }}"
+                       class="catalog-category-card"
                        aria-current="{% if category.slug == current_category %}true{% endif %}">
-                        <img src="{% static 'deps/icons/'|add:category.slug|add:'.png' %}"
-                             alt="{{ category.name }}" class="paging-icon" width="48" height="48"/>
-                        <span class="paging-label">{{ category.name }}</span>
+                        <div class="catalog-category-icon-wrap">
+                            <img src="{% static 'deps/icons/'|add:category.slug|add:'.png' %}"
+                                 alt="{{ category.name }}" class="catalog-category-icon" aria-hidden="true"/>
+                        </div>
+                        <div class="catalog-category-label">{{ category.name }}</div>
                     </a>
                 </li>
                 {% endfor %}
             </ul>
         </nav>
     </div>
-
-    {# Контейнер, который мы будем подгружать по AJAX #}
-    <section id="products-block" aria-live="polite">
-        {% include "goods/_products_list.html" %}
-    </section>
-</main>
-
-<script src="{% static 'deps/js/catalog_ajax.js' %}" defer></script>
+</div>
 </body>
 
 </html>

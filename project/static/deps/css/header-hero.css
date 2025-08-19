@@ -3,7 +3,7 @@
 .header-hero {
   position: relative;
   overflow: hidden;
-  min-height: 180px; /* можно подправить */
+  min-height: 160px; /* smaller overall header height */
   box-sizing: border-box;
   background-color: #07070a;
   color: #fff;
@@ -55,7 +55,7 @@
 /* основной header — relative, чтобы позиционировать внутренние абсолютные блоки */
 .tm-header {
   position: relative;
-  height: 140px;            /* высота области хедера внутри секции — подправь при необходимости */
+  height: 120px;            /* smaller inner header height */
   display: block;
 }
 
@@ -78,7 +78,7 @@
   bottom: 1.5rem;
   left: -4rem;
   margin: 0;
-  color: #337f21;
+  color: #e5ce1a;
   font-size: 3.3rem;
   font-weight: 700;
   font-family: 'MedievalSharp', cursive;
@@ -87,10 +87,7 @@
 
   /* Мягкое магическое свечение */
   text-shadow:
-    0 0 5px rgba(4, 145, 12, 0.8),    /* базовое свечение в цвет текста */
-    0 0 15px rgba(255, 105, 180, 0.6),  /* розовый ореол */
-    0 0 25px rgba(0, 191, 255, 0.5),    /* голубой слой */
-    0 6px 20px rgba(0,0,0,0.6);         /* тёмная тень вниз, как было */
+  0 0 5px rgb(133 0 255), 0 0 15px rgba(255, 105, 180, 0.6), 0 0 25px rgba(0, 191, 255, 0.5), 0 6px 20px rgba(0, 0, 0, 0.6)
 }
 
 .tm-site-description {
@@ -98,7 +95,7 @@
   left: -1rem;
   margin: 0;
   font-size: 1.3rem;
-  color: #dfdfdf;
+  color: #dac299;
   font-weight: 400;
   bottom: 1.6rem;
 }
@@ -107,7 +104,7 @@
 /* спектр: абсолютно сверху справа */
 .tm-header-social {
   position: absolute;
-  bottom: 6rem;
+  bottom: 5.5rem; /* adjust for reduced header height */
   right: -29px;
   display: flex;
   gap: 30px;
