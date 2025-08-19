@@ -161,6 +161,80 @@ body[data-modal-open="true"] #tm-cart-component { opacity: 0; pointer-events: no
   transform: scale(1.06);
   border-radius: var(--radius-lg);
 }
+
+/* ===== Theme: Fantasy Velvet (toggle via .tm-theme-fantasy-velvet on root) ===== */
+.tm-cart-modal-root.tm-theme-fantasy-velvet .tm-cart-overlay {
+  /* stronger warm vignette for cozy evening mood */
+  background:
+    radial-gradient(ellipse at center, rgba(0,0,0,0.45) 10%, rgba(0,0,0,0.78) 80%),
+    linear-gradient(180deg, rgba(26,20,16,0.16), rgba(255,244,230,0.04));
+}
+
+.tm-cart-modal-root.tm-theme-fantasy-velvet .tm-cart-modal-dialog {
+  /* darker warm graphite-brown base, low contrast */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.00) 18%),
+    linear-gradient(180deg, rgba(36,30,26,0.96), rgba(14,12,10,0.98));
+  border: 1px solid rgba(110,92,70,0.35);
+  outline: 1px solid rgba(60,50,40,0.6);
+}
+
+.tm-cart-modal-root.tm-theme-fantasy-velvet .tm-cart-bg-blur {
+  /* Velvet-like worn leather texture with subtle floral emboss and vignette */
+  background:
+    /* subtle central lift for readability */
+    radial-gradient(60% 45% at 50% 45%, rgba(255,240,210,0.06), rgba(0,0,0,0.00) 70%),
+    /* soft velvety sheen */
+    linear-gradient(140deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.00) 38%),
+    /* faint plant ornaments (abstract, barely visible) */
+    radial-gradient(180px 140px at 30% 30%, rgba(120,100,80,0.10), transparent 70%),
+    radial-gradient(160px 120px at 70% 60%, rgba(120,100,80,0.08), transparent 70%),
+    radial-gradient(140px 120px at 20% 75%, rgba(120,100,80,0.06), transparent 75%),
+    /* gentle wear/distress */
+    linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.10)),
+    /* base tone */
+    linear-gradient(180deg, rgba(34,28,24,0.98), rgba(18,15,13,0.98)),
+    var(--cart-bg-image, none);
+  background-blend-mode: soft-light, screen, overlay, overlay, overlay, multiply, normal, normal;
+}
+
+.tm-cart-modal-root.tm-theme-fantasy-velvet .tm-cart-modal-header {
+  background:
+    linear-gradient(180deg, rgba(217,183,122,0.06), rgba(217,183,122,0) 28%),
+    linear-gradient(180deg, #1c1815, #14110e);
+  border-bottom: 1px solid rgba(110,92,70,0.45);
+}
+
+.tm-cart-modal-root.tm-theme-fantasy-velvet .tm-cart-modal-footer,
+.tm-cart-modal-root.tm-theme-fantasy-velvet .tm-cart-checkout-bar {
+  background:
+    linear-gradient(180deg, rgba(110,92,70,0.10), rgba(110,92,70,0.00) 38%),
+    linear-gradient(180deg, rgba(18,16,14,0.06), rgba(12,10,8,0.20));
+  border-top: 1px solid rgba(110,92,70,0.28);
+}
+
+.tm-cart-modal-root.tm-theme-fantasy-velvet #tm-cart-total-sum { color: #d9c08b; }
+
+.tm-cart-modal-root.tm-theme-fantasy-velvet .tm-checkout-btn {
+  /* slightly warmer gold to match leather tone */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 18%),
+    linear-gradient(135deg, #c4a255 0%, #a6863f 45%, #7d6a2e 100%);
+  border: 1px solid rgba(200,170,110,0.55);
+}
+
+.tm-cart-modal-root.tm-theme-fantasy-velvet .cart-row {
+  background: #191715;
+  border-color: rgba(200,170,110,0.18);
+}
+
+.tm-cart-modal-root.tm-theme-fantasy-velvet .qty-btn { background: #1f1b18; border-color: rgba(200,170,110,0.22); }
+.tm-cart-modal-root.tm-theme-fantasy-velvet .qty-input { background: #141210; border-color: rgba(200,170,110,0.18); }
+
+.tm-cart-modal-root.tm-theme-fantasy-velvet .tm-cart-modal-dialog::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #a78552, #6d5436);
+  border: 1px solid rgba(200,170,110,0.28);
+}
 /* Контент поверх blur-слоя */
 .tm-cart-modal-root .tm-cart-modal-dialog > * { position: relative; z-index: 1; }
 

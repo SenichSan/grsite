@@ -103,6 +103,9 @@
     <!-- Ensure cart modal styles load LAST to win cascade over global/theme libs -->
     <link rel="stylesheet" href="{% static 'deps/css/cart-component.css' %}">
 
+<!-- jQuery core (needed for jquery-ajax.js handlers) -->
+<script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
 <script src="{% static 'deps/js/faq.js' %}"></script>
@@ -110,6 +113,9 @@
 <script src="{% static 'deps/js/news_slider.js' %}"></script>
 
 <script src="{% static 'deps/js/categories-glass.js' %}"></script>
+
+<!-- Global AJAX handlers for cart actions (legacy + .add-to-cart-btn) -->
+<script src="{% static 'deps/js/jquery-ajax.js' %}"></script>
 
 <script src="{% static 'deps/js/bestsellers-carousel.js' %}"></script>
 

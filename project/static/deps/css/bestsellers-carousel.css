@@ -113,7 +113,9 @@ body {
 
 /* 🔽 здесь расширил селекторы: */
 .container-bestsellers.basic-grid .tm-featured-grid .add-to-cart,
+.container-bestsellers.basic-grid .tm-featured-grid .add-to-cart-btn,
 button.add-to-cart,
+button.add-to-cart-btn,
 button.btn-add-to-cart,
 button.cart-button {
   background: #00590370;
@@ -127,7 +129,9 @@ button.cart-button {
 }
 
 .container-bestsellers.basic-grid .tm-featured-grid .add-to-cart:hover,
+.container-bestsellers.basic-grid .tm-featured-grid .add-to-cart-btn:hover,
 button.add-to-cart:hover,
+button.add-to-cart-btn:hover,
 button.btn-add-to-cart:hover,
 button.cart-button:hover {
   transform: translateY(-3px);

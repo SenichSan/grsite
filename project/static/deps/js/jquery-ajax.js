@@ -1,5 +1,20 @@
 // Когда html документ готов (прорисован)
 $(document).ready(function () {
+    // Вспомогательная функция получения CSRF из cookie (на некоторых страницах нет скрытого input)
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
     // берем в переменную элемент разметки с id jq-notification для оповещений от ajax
     var successMessage = $("#jq-notification");
 
@@ -26,6 +41,7 @@ $(document).ready(function () {
                 product_id: product_id,
                 csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
             },
+            headers: { 'X-CSRFToken': getCookie('csrftoken') },
             success: function (data) {
                 // Сообщение
                 successMessage.html(data.message);
@@ -85,6 +101,7 @@ $(document).ready(function () {
                 product_id: product_id,
                 csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
             },
+            headers: { 'X-CSRFToken': getCookie('csrftoken') },
             success: function (data) {
                 // Сообщение
                 successMessage.html(data.message);
@@ -147,6 +164,7 @@ $(document).ready(function () {
                 cart_id: cart_id,
                 csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
             },
+            headers: { 'X-CSRFToken': getCookie('csrftoken') },
             success: function (data) {
                 // Сообщение
                 successMessage.html(data.message);
@@ -235,6 +253,7 @@ $(document).ready(function () {
                 quantity: quantity,
                 csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
             },
+            headers: { 'X-CSRFToken': getCookie('csrftoken') },
 
             success: function (data) {
                 // Сообщение
