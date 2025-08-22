@@ -128,6 +128,8 @@ body {
   display: flex;
   justify-content: center;
   padding-top: 8px;
+  position: relative;
+  z-index: 3; /* выше, чем ссылка внутри карточки */
 }
 
 /* Remove link underline and purple coloring inside product cards */
@@ -218,14 +220,14 @@ body {
 }
 
 /* ---------- hover эффект для рамки ---------- */
-.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:hover,
-.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:focus,
-.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:focus-within,
+.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:not([data-tilt-active]):hover,
+.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:not([data-tilt-active]):focus,
+.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:not([data-tilt-active]):focus-within,
 /* hover/фокус на ссылке внутри карточки */
-.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:has(a.tm-product-link:hover),
-.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:has(a.tm-product-link:focus),
+.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:not([data-tilt-active]):has(a.tm-product-link:hover),
+.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:not([data-tilt-active]):has(a.tm-product-link:focus),
 /* hover на зоне кнопок тоже поднимает карточку */
-.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:has(.tm-card-actions:hover) {
+.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:not([data-tilt-active]):has(.tm-card-actions:hover) {
   transform: translateY(-10px) scale(1.05) rotateX(6deg) rotateY(4deg);
   box-shadow:
     0 0 0 2px #E6BF5A,
@@ -236,12 +238,12 @@ body {
 }
 
 /* Fallback: ensure effect applies even if other styles override transform */
-.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:hover,
-.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:focus,
-.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:focus-within,
-.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:has(a.tm-product-link:hover),
-.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:has(a.tm-product-link:focus),
-.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:has(.tm-card-actions:hover) {
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:not([data-tilt-active]):hover,
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:not([data-tilt-active]):focus,
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:not([data-tilt-active]):focus-within,
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:not([data-tilt-active]):has(a.tm-product-link:hover),
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:not([data-tilt-active]):has(a.tm-product-link:focus),
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:not([data-tilt-active]):has(.tm-card-actions:hover) {
   transform: translateY(-10px) scale(1.05) rotateX(6deg) rotateY(4deg) !important;
   z-index: 5 !important;
 }
@@ -253,4 +255,16 @@ body {
   border-radius: inherit;
   position: relative;
   z-index: 1;
+}
+
+/* Ссылка не должна перекрывать область кнопок действий */
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card > a.tm-product-link {
+  position: relative;
+  z-index: 1; /* ниже .tm-card-actions (z-index:3) */
+  display: block;
+}
+
+/* На всякий случай явно разрешаем события указателя на кнопке */
+.container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart-btn {
+  pointer-events: auto;
 }
