@@ -22,7 +22,11 @@
   color: var(--parchment-warm);
   padding: 2rem 1rem;
   box-sizing: border-box;
-  border-top: 1px solid rgba(255,255,255,0.03);
+  /* FAQ-like frame */
+  border: 2px solid #4f463e;
+  border-radius: 10px;
+  overflow: hidden; /* clean rounded corners */
+  /* subtle top line preserved via inner shadow below */
 
   /* внутренние тени — делают край "старым" и дают глубину */
   box-shadow: inset 0 30px 60px rgba(0,0,0,0.45), inset 0 -18px 40px rgba(0,0,0,0.32);

@@ -1,4 +1,3 @@
-
 /* Основные селекторы (несколько вариантов на случай разной структуры в проекте) */
 html body #seo-text-section,
 section#seo-text-section,
@@ -13,6 +12,9 @@ section#seo-text-section,
   font-family: 'Hind', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   color: #f3eade;          /* основной кремовый тон */
   line-height: 1.65;
+  /* FAQ-like frame */
+  border: 2px solid #4f463e;
+  border-radius: 10px;
 }
 
 /* Контейнер текста поверх фоновых слоёв */

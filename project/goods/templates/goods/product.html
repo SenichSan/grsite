@@ -16,6 +16,8 @@
 
     <link rel="stylesheet" href="{% static 'deps/css/product_page.css' %}">
 
+    <link rel="stylesheet" href="{% static 'deps/css/header-hero.css' %}">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
 
@@ -128,45 +130,10 @@
 </svg>
 
 
-<div class="container page-wrapper">
-    <header class="header">
-        <figure class="header-logo"><a title="Home" href="index.html">
-            <picture><img src="{% static 'deps/icons/logo.png' %}" alt="Logo"></picture>
-        </a></figure>
-        <nav class="header-menu"><a title="Shop" href="index.html" class="header-menu-title">Shop</a> <a
-                title="Collective"
-                href="index.html"
-                class="header-menu-title">Collective</a>
-            <a title="Designers" href="index.html" class="header-menu-title">Designers</a> <a title="About Us"
-                                                                                              href="mailto:test@test.com"
-                                                                                              class="header-menu-title">About
-                Us</a> <a title="Contact Us" href="tel:123456789" class="header-menu-title">Contact Us</a></nav>
-        <div class="header-button">
-            <button aria-label="Menu" class="button header-button-item header-button-hamburger">
-                <svg class="icon icon-menu">
-                    <use xlink:href="#icon-menu"></use>
-                </svg>
-                <svg class="icon icon-close">
-                    <use xlink:href="#icon-close"></use>
-                </svg>
-            </button>
-            <button aria-label="Search" class="button header-button-item header-button-search">
-                <svg class="icon icon-search">
-                    <use xlink:href="#icon-search"></use>
-                </svg>
-            </button>
-            <div class="header-button-item header-button-cart"><a title="Cart" href="cart-detail.html">
-                <svg class="icon icon-cart">
-                    <use xlink:href="#icon-cart"></use>
-                </svg>
-            </a></div>
-            <input type="text" name="search-text" class="input header-button-search-input"
-                   placeholder="Search anything..">
-        </div>
-    </header>
+<div class="container product-page page-wrapper">
+    {% include 'components/header-hero.html' %}
     <main class="main">
         <section class="product-detail">
-            <div class="container">
                 <div class="product-detail-wrapper">
 
                     <!-- product-detail-header -->
@@ -301,13 +268,12 @@
                     </div>
                     <!-- /Блок мульти-изображений -->
                 </div>
-            </div>
         </section>
     </main>
 
 
     <div class="tm-featured-wrapper">
-        <div class="container">
+        <div class="tm-featured">
             <h2>Схожі товари</h2>
 
             <div class="swiper-container tm-featured-carousel">

@@ -3,6 +3,10 @@
   background:
   url('/static/deps/images/news-slider-bg.jpg') center/contain no-repeat;
   background-size: 100% 100%;
+  /* FAQ-like frame */
+  border: 2px solid #4f463e;
+  border-radius: 10px;
+  box-sizing: border-box;
 
 }
 
@@ -10,13 +14,16 @@
 .fantasy-news-slider {
     position: relative;
     background: #0000007a;
-    border: 4px solid #ddc69a;
-    border-radius: 3rem;
+    /* как у FAQ: без внутренней рамки, скругление наследуем от контейнера */
+    border: none;
+    border-radius: inherit;
     overflow: hidden;
     max-width: 76rem;
     margin: 30px auto;
-    box-shadow: 0 0 20px rgb(255 255 255 / 50%);
+    /* убираем внутреннее свечение, чтобы осталась только внешняя рамка контейнера */
+    box-shadow: none;
     font-family: 'Cinzel', serif;
+}
 
 .fantasy-slide {
     display: none;

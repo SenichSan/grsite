@@ -402,10 +402,24 @@ p, address {
 /* Home page only: frame the main container with a gentle creamy-gold border.
    Using :has() to scope to pages that include the home-only element .tm-paging-links-wrap */
 .container:has(.tm-paging-links-wrap) {
-  border: 1px solid rgba(217, 183, 122, 0.65);
-  border-radius: 14px;
-  box-shadow: 0 0 0 1px rgba(217, 183, 122, 0.12) inset;
+  /* frame disabled per request */
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+
+/* FAQ-like frame for the paging links wrapper */
+.tm-paging-links-wrap {
+  box-sizing: border-box;
+  border: 2px solid #4f463e;
+  border-radius: 10px;
+  /* ensure corners render cleanly like FAQ */
+  position: relative;
   overflow: hidden;
+  background-image: url('/static/deps/images/seo-text-bg.jpg');
+  background-size: cover;
+  background-position: center;
 }
 
 .tm-gallery-img {
@@ -470,15 +484,6 @@ p, address {
   background:
   url('/static/deps/images/bg-image-blur-800.jpg') center/contain no-repeat;
   background-size: 100%;
-}
-
-.tm-footer a {
-  color: #626364;
-  text-decoration: none;
-}
-
-.tm-footer a:hover {
-  color: #1A6692;
 }
 
 /* About */
@@ -802,4 +807,9 @@ address {
 }
 
 
+
+/* Small vertical gap between sections on the home page only */
+.container.home-framed > * + * {
+  margin-top: 5px;
+}
 

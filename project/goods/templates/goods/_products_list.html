@@ -1,45 +1,56 @@
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<ul class="product-list">
-    {% for product in goods %}
-    <li class="product-item">
-        <article class="product-card" tabindex="0">
-            <figure class="card-banner">
-                {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy" width="312" height="350">
-                {% elif product.images.all|length > 0 %}
-                <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}" loading="lazy" width="312"
-                     height="350">
-                {% else %}
-                <img src="{% static 'deps/images/placeholder.png' %}" alt="placeholder" loading="lazy" width="312"
-                     height="350">
-                {% endif %}
-            </figure>
+<div class="catalog-current-title">
+    {% if current_category and current_category != 'all' %}
+        {% for cat in categories %}
+            {% if cat.slug == current_category %}
+                <h2 class="catalog-category-heading">Товари категорії <span>{{ cat.name }}</span></h2>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <h2 class="catalog-category-heading">Всі товари</h2>
+    {% endif %}
+    
+</div>
 
-            <div class="card-content">
-                <h3 class="card-title"><a href="{% url 'goods:product' product.slug %}">{{ product.name }}</a></h3>
-                <div class="price">
-                    {% if product.discount %}
-                    <span class="price-new">{{ product.sell_price }}</span>
-                    <span class="price-old">{{ product.price }}</span>
-                    {% else %}
-                    <span class="price-current">{{ product.price }}</span>
-                    {% endif %}
-                </div>
+<div class="tm-featured-grid" role="list" aria-label="Товары">
+    {% for product in goods %}
+    <article class="tm-product-card" role="listitem" aria-labelledby="prod-title-{{ product.id }}">
+        <a href="{% url 'goods:product' product.slug %}" class="tm-product-link" aria-label="{{ product.name }}">
+            <div class="tm-card-image-wrap">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="tm-card-img" loading="lazy" width="400" height="300"/>
+                {% elif product.images.all|length > 0 %}
+                <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}" class="tm-card-img" loading="lazy" width="400" height="300"/>
+                {% else %}
+                <img src="{% static 'deps/images/placeholder.png' %}" alt="placeholder" class="tm-card-img" loading="lazy" width="400" height="300"/>
+                {% endif %}
             </div>
-        </article>
-    </li>
+
+            <div class="tm-card-info">
+                <h3 id="prod-title-{{ product.id }}" class="tm-card-title">{{ product.name }}</h3>
+                <p class="tm-card-price">
+                    {% if product.discount %}
+                        {{ product.sell_price }}₴
+                    {% else %}
+                        {{ product.price }}₴
+                    {% endif %}
+                </p>
+            </div>
+        </a>
+
+        <div class="tm-card-actions">
+            <button class="add-to-cart-btn"
+                    data-product-id="{{ product.id }}"
+                    data-cart-add-url="{% url 'carts:cart_add' %}">
+                В корзину
+            </button>
+        </div>
+    </article>
     {% empty %}
-    <li class="product-empty">Нет товаров в этой категории.</li>
+    <div class="product-empty">Нет товаров в этой категории.</div>
     {% endfor %}
-</ul>
+</div>
 
 {# Пагинация — сохраняет GET-параметры автоматически (но JS перехватит клики и выполнит AJAX) #}
 {% if is_paginated %}
@@ -61,5 +72,3 @@
     </ul>
 </nav>
 {% endif %}
-</body>
-</html>

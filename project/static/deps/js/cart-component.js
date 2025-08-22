@@ -25,6 +25,107 @@ document.addEventListener("DOMContentLoaded", function () {
         loadCartCounter();
     });
 
+    // =================== Живой пересчёт при вводе количества ===================
+    // Дебаунс для снижения числа POST-запросов при наборе
+    const debouncers = new Map();
+    function debouncePost(cartId, qty) {
+        clearTimeout(debouncers.get(cartId));
+        const t = setTimeout(() => postChange(cartId, qty), 300);
+        debouncers.set(cartId, t);
+    }
+
+    // Утилиты формата/парсинга
+    function parseNumber(text) {
+        // оставить цифры и точку/запятую, заменить запятую на точку
+        const cleaned = String(text).replace(/[^0-9.,]/g, '').replace(',', '.');
+        const n = parseFloat(cleaned);
+        return isNaN(n) ? 0 : n;
+    }
+    function formatMoney(n) {
+        // Всегда целые значения (без копеек)
+        const rounded = Math.round(Number(n) || 0);
+        return String(rounded);
+    }
+
+    function normalizeAllPrices() {
+        // Привести все цены в модалке к целым: строки, юнит-цены и итоги
+        if (!itemsContainer) return;
+        // Строки (с валютой внутри элемента)
+        itemsContainer.querySelectorAll('.cart-prod-price').forEach((el) => {
+            const value = parseNumber(el.textContent);
+            el.textContent = formatMoney(value) + ' ₴';
+        });
+        // Юнит-цены (валюта снаружи strong)
+        itemsContainer.querySelectorAll('.cart-prod-unit-price strong').forEach((el) => {
+            const value = parseNumber(el.textContent);
+            el.textContent = formatMoney(value);
+        });
+        // Итоги
+        const totalSumEl = document.getElementById('tm-cart-total-sum');
+        if (totalSumEl) totalSumEl.textContent = formatMoney(parseNumber(totalSumEl.textContent));
+        const summarySumEl = document.getElementById('cart-summary-sum');
+        if (summarySumEl) summarySumEl.textContent = formatMoney(parseNumber(summarySumEl.textContent));
+    }
+
+    function recalcRow(rowEl) {
+        if (!rowEl) return { qty: 0, sum: 0 };
+        const qtyInput = rowEl.querySelector('.qty-input');
+        const unitEl = rowEl.querySelector('.cart-prod-unit-price strong');
+        const priceEl = rowEl.querySelector('.cart-prod-price');
+        const qty = Math.max(1, parseInt(qtyInput?.value || '1', 10) || 1);
+        const unit = parseNumber(unitEl ? unitEl.textContent : '0');
+        const line = unit * qty;
+        if (priceEl) priceEl.textContent = formatMoney(line) + ' ₴';
+        // нормализуем значение инпута (без ведущих нулей)
+        if (qtyInput && String(qtyInput.value) !== String(qty)) qtyInput.value = qty;
+        return { qty, sum: line };
+    }
+
+    function recalcTotals() {
+        const rows = itemsContainer ? itemsContainer.querySelectorAll('.cart-row') : [];
+        let totalQty = 0;
+        let totalSum = 0;
+        rows.forEach((row) => {
+            const { qty, sum } = recalcRow(row);
+            totalQty += qty;
+            totalSum += sum;
+        });
+        const totalSumEl = document.getElementById('tm-cart-total-sum');
+        if (totalSumEl) totalSumEl.textContent = formatMoney(totalSum);
+        const summaryQtyEl = document.getElementById('cart-summary-quantity');
+        if (summaryQtyEl) summaryQtyEl.textContent = String(totalQty);
+        const summarySumEl = document.getElementById('cart-summary-sum');
+        if (summarySumEl) summarySumEl.textContent = formatMoney(totalSum);
+    }
+
+    // Слушаем ввод количества: мгновенно пересчитываем строку и итог, отправляем POST с дебаунсом
+    document.addEventListener('input', function (e) {
+        const target = e.target;
+        if (!(target instanceof HTMLElement)) return;
+        if (!target.classList.contains('qty-input')) return;
+        const input = target;
+        const row = input.closest('.cart-row');
+        const cartId = input.dataset.cartId;
+        const qty = Math.max(1, parseInt(input.value || '1', 10) || 1);
+        recalcRow(row);
+        recalcTotals();
+        if (cartId) debouncePost(cartId, qty);
+    });
+
+    // На change/blur фиксируем минимумы и ещё раз отправляем
+    document.addEventListener('change', function (e) {
+        const target = e.target;
+        if (!(target instanceof HTMLElement)) return;
+        if (!target.classList.contains('qty-input')) return;
+        const input = target;
+        const row = input.closest('.cart-row');
+        const cartId = input.dataset.cartId;
+        const qty = Math.max(1, parseInt(input.value || '1', 10) || 1);
+        recalcRow(row);
+        recalcTotals();
+        if (cartId) debouncePost(cartId, qty);
+    });
+
     // Инициализируем счётчик сразу при загрузке страницы,
     // чтобы не показывать "0" до первого открытия модалки.
     if (cartViewUrl) {
@@ -90,8 +191,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Итого в модалке, если есть отдельный элемент
                 const totalSumEl = document.getElementById('tm-cart-total-sum');
                 if (totalSumEl && typeof data.total_sum !== 'undefined') {
-                    totalSumEl.textContent = data.total_sum;
+                    totalSumEl.textContent = formatMoney(parseNumber(data.total_sum));
                 }
+                normalizeAllPrices();
             })
             .catch(() => {});
     }
@@ -107,8 +209,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
                 const totalSumEl = document.getElementById('tm-cart-total-sum');
                 if (totalSumEl && typeof data.total_sum !== 'undefined') {
-                    totalSumEl.textContent = data.total_sum;
+                    totalSumEl.textContent = formatMoney(parseNumber(data.total_sum));
                 }
+                normalizeAllPrices();
             })
             .catch(() => {});
     }
@@ -191,8 +294,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         const totalSumEl = document.getElementById('tm-cart-total-sum');
         if (totalSumEl && typeof data.total_sum !== 'undefined') {
-            totalSumEl.textContent = data.total_sum;
+            totalSumEl.textContent = formatMoney(parseNumber(data.total_sum));
         }
+        // Обновим блоки итогов внизу partial'а, если они присутствуют
+        const summaryQtyEl = document.getElementById('cart-summary-quantity');
+        if (summaryQtyEl && typeof data.total_quantity !== 'undefined') {
+            summaryQtyEl.textContent = String(data.total_quantity);
+        }
+        const summarySumEl = document.getElementById('cart-summary-sum');
+        if (summarySumEl && typeof data.total_sum !== 'undefined') {
+            summarySumEl.textContent = formatMoney(parseNumber(data.total_sum));
+        }
+        normalizeAllPrices();
     }
 
     // Вспомогательная функция получения CSRF

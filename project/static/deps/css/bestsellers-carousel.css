@@ -7,12 +7,23 @@ body {
   line-height: 1.4;
 }
 
+/* Frame around the whole bestsellers block */
+.tm-featured-wrapper {
+  box-sizing: border-box;
+  border: 2px solid #4f463e;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden; /* ensure clean rounded corners */
+  perspective: 800px; /* enable subtle 3D depth for child cards */
+}
+
 /* ---------- секция и заголовок ---------- */
 .container-bestsellers.basic-grid {
   padding: 48px;
   background:
   url('/static/deps/images/bestsellers-carousel-bg.jpg') center/contain no-repeat;
   background-size: 100% 100%;
+  perspective: 900px; /* strengthen 3D for direct children */
 }
 
 .tm-section-title {
@@ -41,6 +52,7 @@ body {
   grid-template-columns: repeat(2, 1fr); /* fallback для мобильных */
   align-items: stretch;
   margin-bottom: 3.2rem;
+  perspective: 900px; /* ensure 3D also applies at grid level */
 }
 @media (min-width: 768px) { .tm-featured-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 992px) { .tm-featured-grid { grid-template-columns: repeat(4, 1fr); } }
@@ -59,7 +71,12 @@ body {
   background: #2f2f33;
   border-radius: 2em;
   overflow: visible;
-  transition: transform .18s ease, box-shadow .18s ease, filter .12s ease;
+  transition: transform 320ms cubic-bezier(.2,.9,.25,1), box-shadow 220ms ease, filter 180ms ease;
+  transform-origin: center;
+  will-change: transform;
+  transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 
   /* ---------- ЗДЕСЬ рисуется рамка ---------- */
   box-shadow:
@@ -97,6 +114,8 @@ body {
   font-weight: 700;
   font-size: 0.91rem;
   line-height: 1.2;
+  font-style: italic;
+  color: #dac291;
 }
 .container-bestsellers.basic-grid .tm-featured-grid .tm-card-price {
   margin-top: 6px;
@@ -111,32 +130,86 @@ body {
   padding-top: 8px;
 }
 
+/* Remove link underline and purple coloring inside product cards */
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card a.tm-product-link,
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card a.tm-product-link:visited,
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card a.tm-product-link:hover,
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card a.tm-product-link:focus {
+  text-decoration: none;
+  color: inherit;
+}
+
 /* 🔽 здесь расширил селекторы: */
 .container-bestsellers.basic-grid .tm-featured-grid .add-to-cart,
-.container-bestsellers.basic-grid .tm-featured-grid .add-to-cart-btn,
-button.add-to-cart,
-button.add-to-cart-btn,
-button.btn-add-to-cart,
-button.cart-button {
-  background: #00590370;
-  color: #fff;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 20px;
+.container-bestsellers.basic-grid .tm-featured-grid .add-to-cart-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  min-width: 140px;
   cursor: pointer;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.45);
-  transition: transform .12s ease, box-shadow .12s ease, opacity .12s;
+
+  /* Hand-painted fantasy look */
+  font-family: 'Ruslan Display', 'Marck Script', 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 0.98rem;
+  letter-spacing: .2px;
+  color: #dac299;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.28);
+
+  background:
+    radial-gradient(100% 180% at 50% 0%, rgba(255,255,255,0.06), rgba(255,255,255,0) 60%),
+    linear-gradient(180deg, #3a8255, #2d6b49 60%, #25543d);
+  border: 2px solid #d2b879; /* warm golden rim */
+  border-radius: 18px;
+  box-shadow:
+    0 8px 20px rgba(0,0,0,0.35),
+    0 1px 0 rgba(255,255,255,0.08) inset,
+    0 -2px 6px rgba(0,0,0,0.18) inset; /* soft inner shading */
+
+  transition: transform .16s cubic-bezier(.2,.9,.24,1),
+              box-shadow .16s ease,
+              background .18s ease,
+              filter .18s ease;
 }
 
 .container-bestsellers.basic-grid .tm-featured-grid .add-to-cart:hover,
-.container-bestsellers.basic-grid .tm-featured-grid .add-to-cart-btn:hover,
-button.add-to-cart:hover,
-button.add-to-cart-btn:hover,
-button.btn-add-to-cart:hover,
-button.cart-button:hover {
+.container-bestsellers.basic-grid .tm-featured-grid .add-to-cart-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 14px 34px rgba(0,0,0,0.55);
+  background:
+    radial-gradient(100% 180% at 50% 0%, rgba(255,255,255,0.10), rgba(255,255,255,0) 62%),
+    linear-gradient(180deg, #439762, #338056 60%, #2a6347);
+  box-shadow:
+    0 14px 30px rgba(0,0,0,0.48),
+    0 1px 0 rgba(255,255,255,0.10) inset,
+    0 -3px 8px rgba(0,0,0,0.20) inset;
 }
+
+/* pressed */
+.container-bestsellers.basic-grid .tm-featured-grid .add-to-cart:active,
+.container-bestsellers.basic-grid .tm-featured-grid .add-to-cart-btn:active {
+  transform: translateY(0);
+  box-shadow:
+    0 8px 18px rgba(0,0,0,0.40),
+    0 1px 0 rgba(255,255,255,0.06) inset,
+    0 -1px 4px rgba(0,0,0,0.16) inset;
+  filter: saturate(0.98);
+}
+
+/* focus ring */
+.container-bestsellers.basic-grid .tm-featured-grid .add-to-cart:focus-visible,
+.container-bestsellers.basic-grid .tm-featured-grid .add-to-cart-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(210,184,121,0.45),
+    0 12px 26px rgba(0,0,0,0.5),
+    0 1px 0 rgba(255,255,255,0.08) inset,
+    0 -2px 6px rgba(0,0,0,0.18) inset;
+}
+
+/* decorative leaf tips removed for a cleaner, hand-painted look */
 
 /* мобильные */
 @media (max-width:480px){
@@ -145,12 +218,32 @@ button.cart-button:hover {
 }
 
 /* ---------- hover эффект для рамки ---------- */
-.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:hover {
-  transform: translateY(-6px);
+.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:hover,
+.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:focus,
+.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:focus-within,
+/* hover/фокус на ссылке внутри карточки */
+.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:has(a.tm-product-link:hover),
+.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:has(a.tm-product-link:focus),
+/* hover на зоне кнопок тоже поднимает карточку */
+.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:has(.tm-card-actions:hover) {
+  transform: translateY(-10px) scale(1.05) rotateX(6deg) rotateY(4deg);
   box-shadow:
     0 0 0 2px #E6BF5A,
+    0 0 14px rgba(221, 198, 154, 0.85),
     0 20px 50px rgba(0,0,0,0.6);
   filter: saturate(1.04) contrast(1.02);
+  z-index: 5;
+}
+
+/* Fallback: ensure effect applies even if other styles override transform */
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:hover,
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:focus,
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:focus-within,
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:has(a.tm-product-link:hover),
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:has(a.tm-product-link:focus),
+.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:has(.tm-card-actions:hover) {
+  transform: translateY(-10px) scale(1.05) rotateX(6deg) rotateY(4deg) !important;
+  z-index: 5 !important;
 }
 
 /* ---------- защитные правила ---------- */

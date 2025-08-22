@@ -12,7 +12,10 @@
     <link href="{% static 'deps/css/templatemo-style.css' %}" rel="stylesheet"/>
     <!-- Page-specific (currently empty/minimal) -->
     <link rel="stylesheet" href="{% static 'deps/css/catalog.css' %}">
+    <link rel="stylesheet" href="{% static 'deps/css/bestsellers-carousel.css' %}">
     <link rel="stylesheet" href="{% static 'deps/css/header-hero.css' %}">
+    <link rel="stylesheet" href="{% static 'deps/css/cart-component.css' %}">
+    <link rel="stylesheet" href="{% static 'deps/css/footer.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -33,12 +36,13 @@
     <div class="catalog-categories">
         <nav class="catalog-categories-nav" aria-label="Категории">
             <h1 class="catalog-title">Каталог</h1>
-            <h2 class="catalog-categories-subtitle"> Натисніть на категорію для фільтрації товарі</h2>
+            <h2 class="catalog-categories-subtitle"> Натисніть на категорію для фільтрації товарів</h2>
             <ul class="catalog-categories-list">
                 {% for category in categories %}
                 <li class="catalog-category-item">
                     <a href="{% url 'goods:catalog_by_category' category.slug %}"
                        class="catalog-category-card"
+                       data-category="{{ category.slug }}"
                        aria-current="{% if category.slug == current_category %}true{% endif %}">
                         <div class="catalog-category-icon-wrap">
                             <img src="{% static 'deps/icons/'|add:category.slug|add:'.png' %}"
@@ -51,7 +55,125 @@
             </ul>
         </nav>
     </div>
+
+    <!-- Products container: initial SSR render; later replaced via AJAX -->
+    <section id="catalog-products" class="catalog-products container-bestsellers basic-grid" aria-live="polite">
+        {% include 'goods/_products_list.html' %}
+    </section>
+
+    {% include 'components/footer.html' %}
 </div>
+
+{% include 'components/cart_button.html' %}
+{% include 'components/cart_modal.html' %}
+
+<!-- jQuery core (needed for jquery-ajax.js handlers) -->
+<script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
+
+<!-- Global AJAX handlers for cart actions (legacy + .add-to-cart-btn) -->
+<script src="{% static 'deps/js/jquery-ajax.js' %}"></script>
+
+<!-- New cart component (modal + counter sync) -->
+<script src="{% static 'deps/js/cart-component.js' %}"></script>
+
+<script>
+(function() {
+  const productsEl = document.getElementById('catalog-products');
+  const categoriesWrap = document.querySelector('.catalog-categories');
+
+  function setActiveCategory(slug) {
+    document.querySelectorAll('.catalog-category-card').forEach(a => {
+      const isActive = a.getAttribute('data-category') === slug;
+      if (isActive) {
+        a.setAttribute('aria-current', 'true');
+        a.classList.add('is-active');
+      } else {
+        a.removeAttribute('aria-current');
+        a.classList.remove('is-active');
+      }
+    });
+  }
+
+  function buildURL(href, page) {
+    try {
+      const url = new URL(href, window.location.origin);
+      if (page) url.searchParams.set('page', String(page));
+      return url.toString();
+    } catch (e) {
+      return href; // fallback
+    }
+  }
+
+  async function loadProducts(url, {pushState=true} = {}) {
+    if (!productsEl) return;
+    const controller = new AbortController();
+    const loadingHTML = '<div class="loading" role="status">Загрузка…</div>';
+    productsEl.innerHTML = loadingHTML;
+    try {
+      const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }, signal: controller.signal });
+      if (!res.ok) throw new Error('Network error');
+      const html = await res.text();
+      productsEl.innerHTML = html;
+
+      // scroll into view for better UX
+      productsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Bind pagination clicks inside the newly injected content
+      bindPagination();
+
+      if (pushState) {
+        history.pushState({ url }, '', url);
+      }
+    } catch (err) {
+      productsEl.innerHTML = '<div class="error">Не удалось загрузить товары. <button type="button" class="retry">Повторить</button></div>';
+      const btn = productsEl.querySelector('.retry');
+      if (btn) btn.addEventListener('click', () => loadProducts(url, {pushState:false}));
+    }
+  }
+
+  function onCategoryClick(e) {
+    const a = e.target.closest('a.catalog-category-card');
+    if (!a) return;
+    // Allow Ctrl/Meta click to open in new tab
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    const slug = a.getAttribute('data-category');
+    setActiveCategory(slug);
+    const url = buildURL(a.href, 1);
+    loadProducts(url, {pushState:true});
+  }
+
+  function bindPagination() {
+    productsEl.querySelectorAll('a.pagination-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        const url = buildURL(this.href);
+        loadProducts(url, {pushState:true});
+      });
+    });
+  }
+
+  // Initial bindings
+  if (categoriesWrap) {
+    categoriesWrap.addEventListener('click', onCategoryClick);
+  }
+  bindPagination();
+
+  // Handle back/forward
+  window.addEventListener('popstate', (e) => {
+    const url = (e.state && e.state.url) ? e.state.url : window.location.href;
+    loadProducts(url, {pushState:false});
+    // Try to sync active category based on URL path
+    try {
+      const u = new URL(url, window.location.origin);
+      const pathParts = u.pathname.split('/').filter(Boolean);
+      const slug = pathParts[pathParts.length - 1]; // expects .../catalog/<slug>/
+      if (slug) setActiveCategory(slug);
+    } catch (_) {}
+  });
+})();
+</script>
 </body>
 
 </html>
