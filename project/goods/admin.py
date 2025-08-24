@@ -6,7 +6,16 @@ from .models import Categories, Products, ProductImage
 @admin.register(Categories)
 class CategoriesAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ["name"]
+    list_display = ["name", "sort_order"]
+    list_editable = ["sort_order"]
+    search_fields = ["name", "short_description"]
+    fields = [
+        "name",
+        "slug",
+        "short_description",
+        "image",
+        "sort_order",
+    ]
 
 
 class ProductImageInline(admin.TabularInline):
@@ -20,12 +29,13 @@ class ProductsAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     list_display = ["name", "quantity", "price", "discount"]
     list_editable = ["discount"]
-    search_fields = ["name", "description"]
+    search_fields = ["name", "short_description", "description"]
     list_filter = ["discount", "quantity", "category"]
     fields = [
         "name",
         "category",
         "slug",
+        "short_description",
         "description",
         "image",
         ("price", "discount"),

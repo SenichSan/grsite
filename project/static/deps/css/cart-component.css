@@ -396,20 +396,34 @@ html body .tm-cart-modal-root .tm-cart-title::after { right: 6%; left: auto; }
 }
 
 .tm-cart-modal-root .tm-checkout-btn {
-  /* Простой белый прямоугольник без текста и эффектов */
-  display: inline-block;
-  width: 140px;
+  /* Видимая кнопка с подписью */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 160px;
   height: 44px;
+  padding: 0 16px; margin: 0;
   background: #ffffff;
-  border: none;
-  color: transparent; /* скрываем текст визуально */
-  font-size: 0;       /* исключаем влияние текста на размер */
-  line-height: 0;
+  border: 1px solid rgba(200,170,110,0.55);
+  border-radius: var(--radius-md);
+  color: #1a1712;                /* тёмный текст на белом фоне */
+  font-size: 16px;                /* возвращаем размер шрифта */
+  line-height: 1;
+  font-weight: 700;
   text-decoration: none;
   position: relative;
-  padding: 0; margin: 0;
   box-shadow: none; filter: none; backdrop-filter: none;
-  clip-path: none; transition: none;
+  clip-path: none; transition: background-color .12s ease, border-color .12s ease, color .12s ease;
+}
+
+.tm-cart-modal-root .tm-checkout-btn:hover {
+  background: #f8f8f6;
+  border-color: rgba(200,170,110,0.75);
+}
+
+.tm-cart-modal-root .tm-checkout-btn:active {
+  background: #f0efe9;
+  border-color: rgba(200,170,110,0.85);
 }
 
 

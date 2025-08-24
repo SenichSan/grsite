@@ -3,7 +3,7 @@
 .header-hero {
   position: relative;
   overflow: hidden;
-  min-height: 160px; /* smaller overall header height */
+  min-height: 122px; /* reduced by 25px */
   box-sizing: border-box;
   background-color: #07070a;
   color: #fff;
@@ -56,7 +56,7 @@
 /* основной header — relative, чтобы позиционировать внутренние абсолютные блоки */
 .tm-header {
   position: relative;
-  height: 120px;            /* smaller inner header height */
+  height: 95px;             /* reduced by 25px; nav/social/logo remain vertically centered */
   display: block;
 }
 
@@ -76,11 +76,11 @@
 /* текст логотипа */
 .tm-site-title {
   position: relative;
-  bottom: 1.5rem;
-  left: -4rem;
+  bottom: 1.9rem;
+  left: -5rem;
   margin: 0;
   color: #e5ce1a;
-  font-size: 3.3rem;
+  font-size: 3rem;
   font-weight: 700;
   font-family: 'MedievalSharp', cursive;
 
@@ -95,22 +95,24 @@
   position: relative;
   left: -1rem;
   margin: 0;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: #dac299;
   font-weight: 400;
-  bottom: 1.6rem;
+  bottom: 2.6rem;
 }
 
 /* ----------------- TOP-RIGHT: соцсети ----------------- */
 /* спектр: абсолютно сверху справа */
 .tm-header-social {
   position: absolute;
-  bottom: 5.5rem; /* adjust for reduced header height */
-  right: -29px;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
   display: flex;
   gap: 30px;
   align-items: center;
-  z-index: 4; /* выше overlay */
+  z-index: 4;
+  padding-bottom: 3rem;
 }
 
 
@@ -118,8 +120,8 @@
 /* иконка-обёртка */
 .tm-social-link {
   display: inline-flex;
-  width: 46px;
-  height: 46px;
+  width: 53px;
+  height:53px;
   border-radius: 12px;
   overflow: hidden;
   align-items: center;
@@ -146,8 +148,9 @@
 /* отдельный блок внизу справа */
 .tm-header-nav {
   position: absolute;
-  right: 16px;
-  bottom: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 4;
   display: block;
 }
@@ -160,8 +163,8 @@
   padding: 0;
   list-style: none;
   align-items: center;
-  bottom: 1.3rem;
-  left: 5rem;
+  justify-content: center;
+  margin-bottom: 3rem;
 }
 
 .tm-nav-buttons .tm-nav-li {}
@@ -170,7 +173,9 @@
   color: rgb(218 194 153);
   text-decoration: none;
   font-weight: 800;
-  padding: 8px 10px;
+  /* Простое явное увеличение ~15% */
+  font-size: 1.3rem;
+  padding: 10px 14px;
   border-radius: 6px;
   transition: color .2s ease, transform .12s ease;
   background: transparent;
@@ -220,7 +225,7 @@
 /* небольшая подстройка для очень узких экранов */
 @media (max-width: 360px) {
   .tm-social-link { width: 28px; height: 28px; }
-  .tm-nav-buttons .tm-nav-link { padding: 6px 8px; font-size: 0.95rem; }
+  .tm-nav-buttons .tm-nav-link { padding: 7px 10px; font-size: 1rem; }
 }
 
 

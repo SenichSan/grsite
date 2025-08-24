@@ -12,7 +12,7 @@ class HomeView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Categories.objects.order_by('name')
+        context['categories'] = Categories.objects.order_by('sort_order', 'name')
         context['bestsellers'] = Products.objects.filter(is_bestseller=True).order_by('name')
         return context
 

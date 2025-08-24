@@ -42,7 +42,7 @@ class CatalogView(ListView):
         context = super().get_context_data(**kwargs)
         context["title"] = "Home - Каталог"
         context["slug_url"] = self.kwargs.get(self.slug_url_kwarg)
-        context["categories"] = Categories.objects.all()
+        context["categories"] = Categories.objects.order_by('sort_order', 'name')
         context['current_category'] = self.kwargs.get(self.slug_url_kwarg, 'all')
         return context
 
@@ -91,5 +91,5 @@ class CategoriesView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Все категории"
-        context["categories"] = Categories.objects.all()
+        context["categories"] = Categories.objects.order_by('sort_order', 'name')
         return context

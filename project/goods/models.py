@@ -6,13 +6,15 @@ from tinymce.models import HTMLField
 class Categories(models.Model):
     name = models.CharField(max_length=150, unique=True, verbose_name='Название')
     slug = models.SlugField(max_length=200, unique=True, blank=True, null=True, verbose_name='URL')
+    short_description = models.CharField(max_length=300, blank=True, null=True, verbose_name='Краткое описание')
     image = models.ImageField(upload_to='categories_images', blank=True, null=True, verbose_name='Изображение')
+    sort_order = models.PositiveIntegerField(default=100, db_index=True, verbose_name='Порядок')
 
     class Meta:
         db_table = 'category'
         verbose_name = 'Категорию'
         verbose_name_plural = 'Категории'
-        ordering = ("id",)
+        ordering = ("sort_order", "id")
 
     def __str__(self):
         return self.name
@@ -21,6 +23,7 @@ class Categories(models.Model):
 class Products(models.Model):
     name = models.CharField(max_length=255, unique=True, verbose_name='Название')
     slug = models.SlugField(max_length=200, unique=True, blank=True, null=True, verbose_name='URL')
+    short_description = models.CharField(max_length=300, blank=True, null=True, verbose_name='Краткое описание')
     description = HTMLField(blank=True, null=True, verbose_name='Описание')
     image = models.ImageField(upload_to="products/", blank=True, null=True)
     price = models.DecimalField(default=0.00, max_digits=7, decimal_places=2, verbose_name='Цена')

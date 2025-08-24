@@ -8,11 +8,11 @@
 /* Внешний заголовок (вне рамки) */
 .faq-heading {
   font-family: 'PT Serif', serif;
-  font-size: 1.6rem;
+  font-size: 1.4rem; /* компактнее заголовок */
   font-weight: 700;
   color: #f3eade;
   text-align: center;
-  margin: 0 0 1rem;
+  margin: 0 0 0.5rem; /* меньше отступов */
   line-height: 1.2;
   letter-spacing: 0.2px;
   text-shadow:
@@ -29,19 +29,19 @@
   background-size: cover;
   background-position: center;
   color: #f3eade;
-  padding: 2.5rem 1rem;
+  padding: 1.5rem 0.75rem; /* меньше вертикальных и горизонтальных полей */
   text-align: center;
   box-sizing: border-box;
-  /* Если не хотите фиксированную высоту — оставьте закомментированным */
-  /* min-height: 850px; */
 }
+/* Если не хотите фиксированную высоту — оставьте закомментированным */
+/* min-height: 850px; */
 
 /* Обёртка внутреннего контента */
 #faq-section .faq-container {
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 1rem 0.5rem; /* компактнее внутренние поля */
   width: 100%;
-  max-width: 960px;
+  max-width: 820px; /* умеренно компактный контейнер */
   box-sizing: border-box;
 }
 
@@ -58,7 +58,7 @@
 #faq-section .accordion .accordion-item {
   position: relative;
   border-bottom: 1px solid rgba(255,255,255,0.04);
-  padding: 0.6rem 0;
+  padding: 0.3rem 0; /* меньше вертикального отступа между пунктами */
 }
 
 /* Кнопка заголовка */
@@ -67,9 +67,9 @@
   display: block;
   margin: 0 auto;
   width: 100%;
-  padding: 1rem 3.5rem 1rem 1rem;
+  padding: 0.6rem 2rem 0.6rem 0.6rem; /* компактнее поля кнопки */
   color: rgba(243,234,222,0.98);
-  font-size: 1.32rem;
+  font-size: 1rem; /* компактнее шрифт заголовка */
   font-weight: 600;
   border: none;
   background: transparent;
@@ -77,7 +77,7 @@
   cursor: pointer;
   font-family: 'PT Serif', serif;
   text-align: center;
-  line-height: 2rem;
+  line-height: 1.4rem; /* плотнее межстрочный интервал */
   letter-spacing: 0.2px;
   text-shadow:
     0 2px 6px rgba(0,0,0,0.65),
@@ -99,10 +99,10 @@
 #faq-section .accordion button .icon {
   position: absolute;
   top: 50%;
-  right: 0.6rem;
+  right: 0.4rem;
   transform: translateY(-50%);
-  width: 30px;
-  height: 30px;
+  width: 20px; /* меньшая иконка */
+  height: 20px;
   border-radius: 50%;
   border: 1px solid rgba(243,234,222,0.12);
   color: rgba(243,234,222,0.95);
@@ -112,14 +112,14 @@
   align-items: center;
   justify-content: center;
   transition: background .12s ease, border-color .12s ease, box-shadow .12s ease;
-  font-size: 14px;
+  font-size: 10px;
 }
 
 /* горизонтальная и вертикальная черты в иконке */
 #faq-section .accordion button .icon::before {
   content: "";
   display: block;
-  width: 12px;
+  width: 10px;
   height: 2px;
   background: currentColor;
   border-radius: 1px;
@@ -128,7 +128,7 @@
   content: "";
   display: block;
   width: 2px;
-  height: 12px;
+  height: 10px;
   background: currentColor;
   border-radius: 1px;
   position: absolute;
@@ -166,20 +166,20 @@
 /* Когда открыт (в JS мы тоже управляем max-height) */
 #faq-section .accordion .accordion-item button[aria-expanded='true'] + .accordion-content {
   opacity: 1;
-  margin-top: 0.6rem;
-  padding-top: 0.8rem;
-  /* max-height управляется через JS для точного измерения */
+  margin-top: 0.4rem; /* меньше отступов вокруг контента */
+  padding-top: 0.5rem;
 }
+/* max-height управляется через JS для точного измерения */
 
 /* Параграфы */
 #faq-section .accordion .accordion-content p {
   font-family: 'Open Sans', sans-serif;
-  margin: 0.6rem auto 1.1rem;
-  font-size: 1.12rem;
+  margin: 0.4rem auto 0.7rem; /* компактнее вертикальные отступы */
+  font-size: 0.95rem; /* слегка меньше текст */
   font-weight: 300;
   color: rgba(243,234,222,0.95);
-  line-height: 1.85;
-  max-width: 82ch;
+  line-height: 1.65; /* плотнее строки */
+  max-width: 70ch; /* чуть уже для компактности */
   text-align: center;
   text-shadow: 0 2px 6px rgba(0,0,0,0.6), 0 0 6px rgba(0,0,0,0.12);
 }
@@ -191,7 +191,7 @@
   color: rgba(243,234,222,0.9);
   background-color: transparent;
   border: none;
-  margin: 0.6rem 0;
+  margin: 0.4rem 0; /* меньше общий вертикальный отступ */
   cursor: pointer;
   padding: 8px 14px;
   width: 100%;
@@ -215,8 +215,8 @@
 
 /* Адаптив */
 @media (max-width: 768px) {
-  #faq-section .faq-container { padding: 1.25rem; }
-  #faq-section .accordion button { font-size: 1.12rem; padding-right: 3rem; line-height: 1.6; }
-  #faq-section .accordion button .icon { width: 26px; height: 26px; right: 0.6rem; }
-  #faq-section .accordion .accordion-content p { font-size: 1rem; line-height: 1.9; max-width: 44ch; }
+  #faq-section .faq-container { padding: 0.75rem; }
+  #faq-section .accordion button { font-size: 0.98rem; padding-right: 2rem; line-height: 1.5; }
+  #faq-section .accordion button .icon { width: 18px; height: 18px; right: 0.4rem; }
+  #faq-section .accordion .accordion-content p { font-size: 0.92rem; line-height: 1.6; max-width: 40ch; }
 }

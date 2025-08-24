@@ -49,6 +49,9 @@
                                  alt="{{ category.name }}" class="catalog-category-icon" aria-hidden="true"/>
                         </div>
                         <div class="catalog-category-label">{{ category.name }}</div>
+                        {% if category.short_description %}
+                        <div class="catalog-category-subtitle tm-card-subtitle">{{ category.short_description }}</div>
+                        {% endif %}
                     </a>
                 </li>
                 {% endfor %}

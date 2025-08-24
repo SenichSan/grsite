@@ -29,6 +29,9 @@
 
             <div class="tm-card-info">
                 <h3 id="prod-title-{{ product.id }}" class="tm-card-title">{{ product.name }}</h3>
+                {% if product.short_description %}
+                <p class="tm-card-subtitle">{{ product.short_description }}</p>
+                {% endif %}
                 <p class="tm-card-price">
                     {% if product.discount %}
                         {{ product.sell_price }}₴

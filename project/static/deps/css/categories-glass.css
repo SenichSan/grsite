@@ -18,6 +18,33 @@ position: relative;
   padding: 0 26px;
   padding-top: 4rem;
   box-sizing: border-box;
+  text-align: center; /* center the heading inline-block */
+}
+/* Heading style — mirror bestsellers title (.tm-section-title) */
+.category-section-title,
+.tm-paging-links .category-section-title { /* bump specificity */
+  position: relative;
+  text-align: center;
+  display: inline-block;     /* shrink to text width */
+  margin: 0 auto 3rem;       /* center inline-block */
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #dcc49a;
+}
+
+/* Narrow, centered underline a bit wider than text */
+.category-section-title::after,
+.tm-paging-links .category-section-title::after,
+.tm-paging-links .tm-section-title.category-section-title::after { /* override global */
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  transform: translateX(-50%);
+  width: 115%;                 /* чуть шире, чем текст */
+  max-width: 520px;            /* ограничение, чтобы не расползалось на гигантских экранах */
+  height: 2px;
+  background: linear-gradient(90deg, #2f2d28, #ab9964, #2f2d28);
 }
 
 /* grid: ровно 3 колонки, несколько строк если категорий больше */
@@ -34,7 +61,7 @@ position: relative;
     list-style: none;
     overflow: visible;
     box-sizing: border-box;
-    padding-top: 55px;
+    padding-top: 10px;
     padding-bottom: 90px;
 }
 
@@ -62,7 +89,7 @@ position: relative;
   border-radius: 12px;
 
   background: var(--card-bg);
-  background-color: var(--card-fallback);
+  background-color: #2f26397d;
 
   /* Тонкая мягкая рамка в указанных тонах */
   border: 0.8px solid #ddc69a;
@@ -82,7 +109,20 @@ position: relative;
   overflow: visible;
 }
 
-/* hover / focus */
+/* иконка и подпись */
+.category-icon-wrap { height: 150px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; z-index:2; }
+.category-icon { max-width:100%; max-height:100%; transform-origin:center; transition: transform 320ms, filter 320ms; filter: drop-shadow(0 10px 18px rgba(0,0,0,0.28)); }
+.category-label { font-weight:400; font-size:1.2rem; margin:0; z-index:2; text-align:center; color: #ddc69a; text-shadow: 0 1px 0 #ddc69a; }
+
+/* Subtitle under category name — match product card subtitle */
+.category-subtitle {
+  margin: 4px 0 0;
+  font-size: 0.92rem;
+  line-height: 1.3;
+  color: #9C9EA8;
+  text-align: center;
+}
+
 /* hover / focus */
 .tm-paging-list .tm-paging-item .category-card:hover,
 .tm-paging-list .tm-paging-item .category-card:focus {
@@ -99,55 +139,6 @@ position: relative;
   box-shadow: 0 0 14px rgba(221, 198, 154, 0.85),
               0 0 28px rgba(120, 60, 180, 0.35);
 
-  z-index: 5;
-}
-
-
-
-.category-section-title {
-  font-size: 1.9rem;
-  display: block;
-  width: max-content;
-  margin: 0 auto 1rem;
-  text-align: center;
-
-  /* Делать тоньше */
-  font-weight: 600;                    /* было bold — 700/800; ставим 600 или 500 */
-  letter-spacing: 0.15em;              /* чуть больше воздуха между буквами */
-  color: #ddc69a;
-
-  /* Уменьшаем тяжёлую тень */
-  text-shadow: 0 4px 12px rgba(10,8,18,0.45);
-
-  /* если используешь scaleY, оставь поменьше */
-  transform-origin: center center;
-  transform: scaleY(1.1);             /* уменьшили с 1.3 до 1.15 */
-
-  -webkit-font-smoothing: antialiased;  /* сглаживание */
-  -moz-osx-font-smoothing: grayscale;
-
-  position: relative;
-}
-
-.category-section-title::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -6px; /* расстояние между текстом и полоской */
-  height: 1.5px;  /* толщина полосы */
-  background: linear-gradient(90deg, #2f2d28, #ab9964, #2f2d28); /* золотистый градиент */
-}
-/* иконка и подпись */
-.category-icon-wrap { height: 120px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; z-index:2; }
-.category-icon { max-width:100%; max-height:100%; transform-origin:center; transition: transform 320ms, filter 320ms; filter: drop-shadow(0 10px 18px rgba(0,0,0,0.28)); }
-.category-label { font-weight:400; font-size:1.2rem; margin:0; z-index:2; text-align:center; color: #ddc69a; text-shadow: 0 1px 0 #ddc69a; }
-
-/* hover / focus */
-.tm-paging-list .tm-paging-item .category-card:hover,
-.tm-paging-list .tm-paging-item .category-card:focus {
-  transform: translateY(-10px) scale(1.04);
-  box-shadow: 0 28px 64px var(--shadow-dark), 0 0 32px rgba(var(--accent-rgba),0.10);
   z-index: 5;
 }
 .tm-paging-list .tm-paging-item .category-card:hover::before,
