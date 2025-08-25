@@ -106,7 +106,7 @@
 .tm-header-social {
   position: absolute;
   top: 50%;
-  right: 16px;
+  right: -3rem;
   transform: translateY(-50%);
   display: flex;
   gap: 30px;
