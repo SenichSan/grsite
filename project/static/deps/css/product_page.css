@@ -1446,7 +1446,7 @@ body {
 
 @media (min-width:1200px) {
 	.product-image {
-		align-items: flex-end;
+		align-items: flex-start;
 	}
 }
 
@@ -2015,7 +2015,7 @@ body {
 	.product-detail-wrapper {
 		--gutter: 90px;
 		grid-template-columns: repeat(2,calc(50% - var(--gutter)));
-		grid-template-areas: "product-detail-header product-detail-content" "product-detail-image product-detail-content";
+		grid-template-areas: "product-detail-header product-detail-header" "product-detail-image product-detail-content";
 		-moz-column-gap: calc(var(--gutter) * 2);
 		column-gap: calc(var(--gutter) * 2);
 		row-gap: 32px;
@@ -2057,6 +2057,7 @@ body {
 
 .product-content {
 	grid-area: product-detail-content;
+	align-self: start;
 }
 
 .product-content-title {
@@ -2502,10 +2503,12 @@ body {
 }
 
 .tm-featured-wrapper .add-to-cart-btn:hover {
-  transform: translateY(-1px);
-  background-color: #E3D0A8;        /* немного темнее на ховере */
-  border-color: #9b7f33 !important; /* тон темнее для видимости */
-  box-shadow: 0 0 0 1px rgba(173,149,80,0.32), inset 0 0 0 1px rgba(58,47,31,0.12);
+  /* сплошная зелёная заливка на hover (тёмнее) */
+  transform: none;
+  background-color: #2FA66F; /* darker green */
+  color: #ffffff;            /* высокий контраст */
+  border-color: #1E8B5D;     /* тёмная зелёная рамка */
+  box-shadow: none;          /* без теней/свечений */
 }
 
 .tm-featured-wrapper .add-to-cart-btn:active {

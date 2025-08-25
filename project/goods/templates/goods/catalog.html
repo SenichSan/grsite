@@ -49,9 +49,7 @@
                                  alt="{{ category.name }}" class="catalog-category-icon" aria-hidden="true"/>
                         </div>
                         <div class="catalog-category-label">{{ category.name }}</div>
-                        {% if category.short_description %}
-                        <div class="catalog-category-subtitle tm-card-subtitle">{{ category.short_description }}</div>
-                        {% endif %}
+                        {# Removed short description from catalog category card #}
                     </a>
                 </li>
                 {% endfor %}
@@ -72,6 +70,91 @@
 
 <!-- jQuery core (needed for jquery-ajax.js handlers) -->
 <script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
+
+<!-- Toast notifications stack and helper -->
+<script>
+  (function(){
+    // create stack once per page
+    let stack = document.querySelector('.tm-toast-stack');
+    if (!stack) {
+      stack = document.createElement('div');
+      stack.className = 'tm-toast-stack';
+      stack.setAttribute('aria-live', 'polite');
+      stack.setAttribute('aria-atomic', 'true');
+      document.body.appendChild(stack);
+    }
+
+    function showToast(options){
+      const o = typeof options === 'string' ? { message: options } : (options || {});
+      const title = o.title || '';
+      const message = o.message || '';
+      const actionText = o.actionText || '';
+      const onAction = typeof o.onAction === 'function' ? o.onAction : null;
+      const duration = Math.max(1200, Math.min(6000, o.duration || 2000));
+      const variant = o.variant || 'bare'; // 'bare' | 'default'
+      const closable = o.closable !== false && variant !== 'bare';
+
+      let toast = document.createElement('div');
+      toast.className = 'tm-toast';
+      toast.setAttribute('role', 'status');
+
+      const content = document.createElement('div');
+      content.className = 'tm-toast-content';
+      if (title) {
+        const h = document.createElement('div');
+        h.className = 'tm-toast-title';
+        h.textContent = title;
+        content.appendChild(h);
+      }
+      const p = document.createElement('div');
+      p.className = 'tm-toast-message';
+      p.textContent = message;
+      content.appendChild(p);
+
+      let closeBtn = null;
+      if (closable) {
+        closeBtn = document.createElement('button');
+        closeBtn.className = 'tm-toast-close';
+        closeBtn.type = 'button';
+        closeBtn.setAttribute('aria-label', 'Закрыть');
+        closeBtn.innerHTML = '&times;';
+      }
+
+      let actionBtn = null;
+      if (actionText && variant !== 'bare') {
+        actionBtn = document.createElement('button');
+        actionBtn.type = 'button';
+        actionBtn.className = 'tm-toast-action';
+        actionBtn.textContent = actionText;
+      }
+
+      toast.appendChild(content);
+      if (actionBtn) toast.appendChild(actionBtn);
+      if (closeBtn) toast.appendChild(closeBtn);
+      if (variant === 'bare') toast.classList.add('tm-toast--bare');
+      stack.appendChild(toast);
+
+      requestAnimationFrame(() => toast.classList.add('visible'));
+
+      let timer = setTimeout(dismiss, duration);
+      function dismiss(){
+        if (!toast) return;
+        toast.classList.remove('visible');
+        setTimeout(() => { if (toast) toast.remove(); toast = null; }, 220);
+      }
+      if (closeBtn) closeBtn.addEventListener('click', dismiss);
+      toast.addEventListener('mouseenter', () => { clearTimeout(timer); });
+      toast.addEventListener('mouseleave', () => { timer = setTimeout(dismiss, 900); });
+      if (actionBtn && onAction) {
+        actionBtn.addEventListener('click', () => { try { onAction(); } catch(_){} dismiss(); });
+      }
+
+      return { dismiss };
+    }
+
+    window.showToast = showToast;
+  })();
+</script>
 
 <!-- Global AJAX handlers for cart actions (legacy + .add-to-cart-btn) -->
 <script src="{% static 'deps/js/jquery-ajax.js' %}"></script>
@@ -94,6 +177,63 @@
         a.removeAttribute('aria-current');
         a.classList.remove('is-active');
       }
+    });
+  }
+
+  // Dynamic 3D tilt similar to bestsellers; safe to call repeatedly
+  function initTilt(){
+    if (!productsEl) return;
+    const cards = productsEl.querySelectorAll('.tm-featured-grid article.tm-product-card');
+    if (!cards.length) return;
+    const maxTilt = 8;     // degrees
+    const maxTrans = 10;   // px for image parallax
+
+    function onMove(e, card){
+      const rect = card.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const px = (clientX - rect.left) / rect.width;   // 0..1
+      const py = (clientY - rect.top) / rect.height;   // 0..1
+      const rotateY = (px - 0.5) * (maxTilt * 2) * -1; // left/right
+      const rotateX = (py - 0.5) * (maxTilt * 2);      // up/down
+      card.setAttribute('data-tilt-active', '1');
+      card.style.transform = `perspective(900px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale(1.03)`;
+      card.style.willChange = 'transform';
+      const img = card.querySelector('.tm-card-img');
+      if (img) {
+        const tx = (px - 0.5) * maxTrans;
+        const ty = (py - 0.5) * maxTrans * -1;
+        img.style.transform = `translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px) scale(1.04)`;
+        img.style.willChange = 'transform';
+      }
+    }
+
+    function onLeave(card){
+      // remove active flag immediately so glow disappears at once
+      card.removeAttribute('data-tilt-active');
+      // smoothly return transform
+      card.style.transition = 'transform 420ms cubic-bezier(.2,.9,.25,1)';
+      card.style.transform = '';
+      const img = card.querySelector('.tm-card-img');
+      if (img) {
+        img.style.transition = 'transform 420ms cubic-bezier(.2,.9,.25,1)';
+        img.style.transform = '';
+      }
+      setTimeout(() => {
+        card.style.transition = '';
+        card.style.willChange = '';
+        if (img) { img.style.transition = ''; img.style.willChange = ''; }
+      }, 450);
+    }
+
+    cards.forEach(card => {
+      if (card.dataset.tiltBound) return; // avoid double-binding
+      card.dataset.tiltBound = '1';
+      card.addEventListener('mousemove', (e) => onMove(e, card));
+      card.addEventListener('mouseleave', () => onLeave(card));
+      card.addEventListener('touchstart', (e) => onMove(e, card), {passive: true});
+      card.addEventListener('touchmove', (e) => onMove(e, card), {passive: true});
+      card.addEventListener('touchend', () => onLeave(card));
     });
   }
 
@@ -123,6 +263,9 @@
 
       // Bind pagination clicks inside the newly injected content
       bindPagination();
+
+      // Re-init tilt handlers for newly injected cards
+      initTilt();
 
       if (pushState) {
         history.pushState({ url }, '', url);
@@ -162,6 +305,7 @@
     categoriesWrap.addEventListener('click', onCategoryClick);
   }
   bindPagination();
+  initTilt();
 
   // Handle back/forward
   window.addEventListener('popstate', (e) => {

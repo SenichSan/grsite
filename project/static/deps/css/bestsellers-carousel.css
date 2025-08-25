@@ -24,6 +24,23 @@ body {
   url('/static/deps/images/bestsellers-carousel-bg.jpg') center/contain no-repeat;
   background-size: 100% 100%;
   perspective: 900px; /* strengthen 3D for direct children */
+  position: relative;          /* for overlay */
+}
+
+/* Semi-transparent creamy overlay like categories block */
+.container-bestsellers.basic-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(28, 18, 3, 0.33);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure content sits above overlay */
+.container-bestsellers.basic-grid > * {
+  position: relative;
+  z-index: 1;
 }
 
 .tm-section-title {
@@ -83,8 +100,24 @@ body {
 
   /* ---------- ЗДЕСЬ рисуется рамка ---------- */
   box-shadow:
-    0 0 0 2px #E6BF5A,
-    0 8px 22px rgba(0,0,0,0.5);
+    0 0 0 2px #E6BF5A; /* базово только золотое кольцо, без внешней тени */
+}
+
+/* Димим ТОЛЬКО неактивные карточки, когда наведена конкретная карточка */
+.container-bestsellers.basic-grid .tm-featured-grid:has(article.tm-product-card:hover) article.tm-product-card:not(:hover) {
+  filter: brightness(0.78) contrast(0.98) saturate(0.95);
+  /* у неактивных карточек — только контур без свечения */
+  box-shadow: 0 0 0 2px #E6BF5A;
+}
+
+/* Наведённая карточка — наоборот светлее и чуть теплее */
+.container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:hover {
+  filter: brightness(1.12) contrast(1.05) saturate(1.06);
+  /* мягкая кремовая подсветка, чтобы выделить выбранную */
+  box-shadow:
+    0 10px 24px rgba(0,0,0,0.45),
+    0 0 22px rgba(255, 233, 176, 0.45),
+    0 0 0 2px #E6BF5A;
 }
 
 /* ---------- картинка ---------- */
@@ -190,10 +223,12 @@ body {
 
 .container-bestsellers.basic-grid .tm-featured-grid .add-to-cart:hover,
 .container-bestsellers.basic-grid .tm-featured-grid .add-to-cart-btn:hover {
-  transform: translateY(-1px);
-  background-color: #E3D0A8;  /* слегка темнее на ховере */
-  border-color: #9b7f33 !important;          /* ховер: золото чуть темнее */
-  box-shadow: 0 0 0 1px rgba(203,179,107,0.32), inset 0 0 0 1px rgba(58,47,31,0.12);
+  /* сплошная зелёная заливка на hover */
+  transform: none;
+  background-color: #238B5C; /* even darker green */
+  color: #ffffff;            /* высокий контраст */
+  border-color: #176E49;     /* ещё темнее рамка */
+  box-shadow: none;          /* без теней/свечений */
 }
 
 /* pressed */
@@ -223,7 +258,12 @@ body {
 
 .container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart:hover,
 .container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart-btn:hover {
-  border-color: #9b7f33 !important;
+  /* сплошная зелёная заливка на hover (в зоне действий) */
+  transform: none;
+  background-color: #238B5C;
+  color: #ffffff;
+  border-color: #176E49;
+  box-shadow: none;
 }
 
 .container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart:active,
@@ -247,34 +287,15 @@ body {
   .container-bestsellers.basic-grid .tm-featured-grid .tm-product-card { min-height: 260px; padding: 10px; }
 }
 
-/* ---------- hover эффект для рамки ---------- */
-.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:not([data-tilt-active]):hover,
-.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:not([data-tilt-active]):focus,
-.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:not([data-tilt-active]):focus-within,
-/* hover/фокус на ссылке внутри карточки */
-.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:not([data-tilt-active]):has(a.tm-product-link:hover),
-.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:not([data-tilt-active]):has(a.tm-product-link:focus),
-/* hover на зоне кнопок тоже поднимает карточку */
-.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:not([data-tilt-active]):has(.tm-card-actions:hover) {
+/* ---------- hover эффект для рамки: только при наведении, без доп. тени (её задаёт правило ниже) ---------- */
+.tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:not([data-tilt-active]):hover {
   transform: translateY(-10px) scale(1.05) rotateX(6deg) rotateY(4deg);
-  box-shadow:
-    0 0 0 2px #E6BF5A,
-    0 0 14px rgba(221, 198, 154, 0.85),
-    0 20px 50px rgba(0,0,0,0.6);
   filter: saturate(1.04) contrast(1.02);
   z-index: 5;
 }
 
 /* Fallback: ensure effect applies even if other styles override transform */
-.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:not([data-tilt-active]):hover,
-.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:not([data-tilt-active]):focus,
-.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:not([data-tilt-active]):focus-within,
-.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:not([data-tilt-active]):has(a.tm-product-link:hover),
-.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:not([data-tilt-active]):has(a.tm-product-link:focus),
-.container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:not([data-tilt-active]):has(.tm-card-actions:hover) {
-  transform: translateY(-10px) scale(1.05) rotateX(6deg) rotateY(4deg) !important;
-  z-index: 5 !important;
-}
+
 
 /* ---------- защитные правила ---------- */
 .container-bestsellers.basic-grid .tm-featured-grid .tm-product-card > a,

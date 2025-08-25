@@ -10,7 +10,7 @@ class CatalogView(ListView):
     model = Products
     template_name = "goods/catalog.html"
     context_object_name = "goods"
-    paginate_by = 12
+    paginate_by = 10
     allow_empty = False
     slug_url_kwarg = "category_slug"
 

@@ -8,20 +8,46 @@
   border-radius: 10px;
   box-sizing: border-box;
 
+  /* for overlay */
+  position: relative;
 }
 
+
+.fantasy-news-slider-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(28, 18, 3, 0.40); /* match bestsellers overlay */
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ensure inner content stays above overlay */
+.fantasy-news-slider-container > * {
+    position: relative;
+    z-index: 1;
+}
 
 .fantasy-news-slider {
     position: relative;
     background: #0000007a;
     /* как у FAQ: без внутренней рамки, скругление наследуем от контейнера */
-    border: none;
+    /* объёмная слегка золотистая рамка */
+    border: 2px solid #ddc69a;             /* мягкое золото в тон проекта */
     border-radius: inherit;
+    background-clip: padding-box;           /* чтобы фон не перекрывал рамку */
     overflow: hidden;
     max-width: 76rem;
     margin: 30px auto;
-    /* убираем внутреннее свечение, чтобы осталась только внешняя рамка контейнера */
-    box-shadow: none;
+    /* объём: лёгкий кремовый ореол + фаски внутри */
+    box-shadow:
+      /* внешняя мягкая подсветка золота */
+      0 0 0 1px rgba(221,198,154,0.28),
+      0 10px 24px rgba(0,0,0,0.35),
+      0 0 12px rgba(221,198,154,0.22),
+      /* внутренние фаски для 3D-эффекта */
+      inset 0 1px 0 rgba(255,255,255,0.12),   /* верхний блик */
+      inset 0 -1px 0 rgba(110,75,0,0.28);     /* нижняя тень */
     font-family: 'Cinzel', serif;
 }
 
@@ -54,7 +80,7 @@
 
 .fantasy-btn {
     display: inline-block;
-    background: linear-gradient(90deg, #ffeb00, #ffeb00cf);
+    background: linear-gradient(90deg, #f9ef7ecc, #fff79dcf);
     color: #000;
     padding: 10px 24px;
     border-radius: 6px;
@@ -65,7 +91,10 @@
 }
 
 .fantasy-btn:hover {
-    box-shadow: 0 0 20px rgba(57, 255, 20, 1);
+    /* тёплое жёлтое свечение в тон градиенту кнопки */
+    box-shadow: 0 0 0 2px rgba(255, 247, 157, 0.35),
+                0 0 14px rgba(249, 239, 126, 0.75),
+                0 0 28px rgba(255, 247, 157, 0.55);
     transform: scale(1.05);
 }
 
@@ -145,7 +174,7 @@
     background: linear-gradient(90deg, #e6bf5a, #e6bf5a););
     color: #000;
     font-weight: 700;
-    box-shadow: 0 0 10px rgb(255 18 18 / 60%);
+    box-shadow: 0 0 10px rgb(255 221 0 / 60%);
     transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
     user-select: none;
 }
@@ -166,8 +195,11 @@
 /* Hover / active эффекты */
 .fantasy-arrow:hover {
     transform: translateY(-2px) scale(1.03);
-    box-shadow: 0 0 18px rgba(57,255,20,0.8);
-    filter: saturate(1.1);
+    /* тёплое жёлтое свечение в тон .fantasy-btn */
+    box-shadow: 0 0 0 2px rgba(255, 247, 157, 0.35),
+                0 0 14px rgba(249, 239, 126, 0.75),
+                0 0 28px rgba(255, 247, 157, 0.55);
+    filter: saturate(1.05);
 }
 .fantasy-arrow:active {
     transform: translateY(0) scale(.99);

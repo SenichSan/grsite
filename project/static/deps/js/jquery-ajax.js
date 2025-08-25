@@ -18,6 +18,99 @@ $(document).ready(function () {
     // берем в переменную элемент разметки с id jq-notification для оповещений от ajax
     var successMessage = $("#jq-notification");
 
+    // === Minimal global styles fallback (toasts + cart anim) for pages without catalog.css ===
+    function ensureGlobalUiStyles() {
+        if (!document.getElementById('tm-global-ui-styles')) {
+            var css = "" +
+            ".tm-toast-stack{position:fixed;top:20px;right:24px;z-index:12000;display:flex;flex-direction:column;gap:8px;pointer-events:none}"+
+            ".tm-toast{pointer-events:auto;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(-8px);transition:opacity .18s ease,transform .18s ease}"+
+            ".tm-toast.visible{opacity:1;transform:translateY(0)}"+
+            ".tm-toast--bare .tm-toast-message{color:#FFF2C2;font-weight:700;font-size:16px;letter-spacing:.2px;text-shadow:0 1px 2px rgba(0,0,0,.35),0 0 10px rgba(255,233,176,.55)}"+
+            "@keyframes tm-cart-shake{0%{transform:translateZ(0) rotate(0) scale(1)}15%{transform:rotate(-8deg) scale(1.04)}30%{transform:rotate(6deg) scale(1.04)}45%{transform:rotate(-4deg) scale(1.03)}60%{transform:rotate(3deg) scale(1.02)}75%{transform:rotate(-2deg) scale(1.01)}100%{transform:rotate(0) scale(1)}}"+
+            "@keyframes tm-cart-bump{0%{transform:translateZ(0) scale(1)}30%{transform:scale(1.18)}60%{transform:scale(0.98)}100%{transform:scale(1)}}"+
+            "#tm-cart-component .tm-cart-button.tm-cart-button--shake{animation:tm-cart-shake .6s cubic-bezier(.2,.9,.25,1)}"+
+            "#tm-cart-count.tm-cart-count--bump,#tm-cart-component .tm-cart-count.tm-cart-count--bump{animation:tm-cart-bump .5s cubic-bezier(.25,.8,.25,1)}";
+            var style = document.createElement('style');
+            style.id = 'tm-global-ui-styles';
+            style.type = 'text/css';
+            style.appendChild(document.createTextNode(css));
+            document.head.appendChild(style);
+        }
+    }
+    ensureGlobalUiStyles();
+
+    // === Global bare toast fallback if not provided elsewhere ===
+    if (typeof window.showToast !== 'function') {
+        window.showToast = function(options){
+            ensureGlobalUiStyles();
+            var o = typeof options === 'string' ? { message: options } : (options || {});
+            var message = o.message || '';
+            var duration = Math.max(1200, Math.min(6000, o.duration || 2000));
+
+            var stack = document.getElementById('tm-toast-stack');
+            if (!stack) {
+                stack = document.createElement('div');
+                stack.id = 'tm-toast-stack';
+                stack.className = 'tm-toast-stack';
+                stack.setAttribute('aria-live', 'polite');
+                stack.setAttribute('aria-atomic', 'true');
+                document.body.appendChild(stack);
+            }
+
+            var toast = document.createElement('div');
+            toast.className = 'tm-toast tm-toast--bare';
+            toast.setAttribute('role','status');
+
+            var msg = document.createElement('div');
+            msg.className = 'tm-toast-message';
+            msg.textContent = message;
+            toast.appendChild(msg);
+            stack.appendChild(toast);
+            requestAnimationFrame(function(){ toast.classList.add('visible'); });
+
+            var timer = setTimeout(dismiss, duration);
+            function dismiss(){
+                if (!toast) return;
+                toast.classList.remove('visible');
+                setTimeout(function(){ if (toast) toast.remove(); toast = null; }, 220);
+            }
+            toast.addEventListener('mouseenter', function(){ clearTimeout(timer); });
+            toast.addEventListener('mouseleave', function(){ timer = setTimeout(dismiss, 900); });
+            return { dismiss: dismiss };
+        };
+    }
+
+    // Небольшая функция для анимации корзины (в шапке и во float-виджете)
+    function triggerCartAnim() {
+        ensureGlobalUiStyles();
+        try {
+            var btn = document.querySelector('#tm-cart-component .tm-cart-button');
+            var floatBadge = document.querySelector('#tm-cart-component .tm-cart-count');
+            var headerBadge = document.getElementById('tm-cart-count');
+
+            if (btn) {
+                btn.classList.remove('tm-cart-button--shake');
+                // перезапуск анимации
+                void btn.offsetWidth;
+                btn.classList.add('tm-cart-button--shake');
+                btn.addEventListener('animationend', function onEnd(){
+                    btn.classList.remove('tm-cart-button--shake');
+                    btn.removeEventListener('animationend', onEnd);
+                });
+            }
+            [floatBadge, headerBadge].forEach(function(el){
+                if (!el) return;
+                el.classList.remove('tm-cart-count--bump');
+                void el.offsetWidth;
+                el.classList.add('tm-cart-count--bump');
+                el.addEventListener('animationend', function onEnd(){
+                    el.classList.remove('tm-cart-count--bump');
+                    el.removeEventListener('animationend', onEnd);
+                });
+            });
+        } catch (e) { /* no-op */ }
+    }
+
     // Ловим собыитие клика по кнопке добавить в корзину
     $(document).on("click", ".add-to-cart", function (e) {
         // Блокируем его базовое действие
@@ -51,6 +144,15 @@ $(document).ready(function () {
                     successMessage.fadeOut(400);
                 }, 7000);
 
+                // Toast (если доступен) — компактный, без фона и кнопки
+                if (window.showToast) {
+                    window.showToast({
+                        message: (data && data.message) ? data.message : 'Товар добавлен в корзину',
+                        variant: 'bare',
+                        duration: 2000
+                    });
+                }
+
                 // Увеличиваем количество товаров в корзине (отрисовка в шаблоне)
                 cartCount++;
                 goodsInCartCount.text(cartCount);
@@ -68,6 +170,9 @@ $(document).ready(function () {
                 if ($tmItems.length && typeof data.cart_items_html !== 'undefined') {
                     $tmItems.html(data.cart_items_html);
                 }
+
+                // Анимация корзины
+                triggerCartAnim();
 
                 // Сообщаем новому компоненту о том, что корзина обновилась
                 document.dispatchEvent(new Event('cart:updated'));
@@ -108,6 +213,15 @@ $(document).ready(function () {
                 successMessage.fadeIn(400);
                 setTimeout(function () { successMessage.fadeOut(400); }, 7000);
 
+                // Toast (если доступен) — компактный, без фона и кнопки
+                if (window.showToast) {
+                    window.showToast({
+                        message: (data && data.message) ? data.message : 'Товар добавлен в корзину',
+                        variant: 'bare',
+                        duration: 2000
+                    });
+                }
+
                 // Увеличиваем количество товаров в корзине (legacy виджет)
                 cartCount++;
                 goodsInCartCount.text(cartCount);
@@ -125,6 +239,9 @@ $(document).ready(function () {
                 if ($tmItems.length && typeof data.cart_items_html !== 'undefined') {
                     $tmItems.html(data.cart_items_html);
                 }
+
+                // Анимация корзины
+                triggerCartAnim();
 
                 // Уведомим новый компонент
                 document.dispatchEvent(new Event('cart:updated'));
