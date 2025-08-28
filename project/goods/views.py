@@ -44,6 +44,11 @@ class CatalogView(ListView):
         context["slug_url"] = self.kwargs.get(self.slug_url_kwarg)
         context["categories"] = Categories.objects.order_by('sort_order', 'name')
         context['current_category'] = self.kwargs.get(self.slug_url_kwarg, 'all')
+        # Provide selected category object (for image + description presentation)
+        current_slug = context['current_category']
+        context['current_category_obj'] = None
+        if current_slug:
+            context['current_category_obj'] = Categories.objects.filter(slug=current_slug).first()
         return context
 
 

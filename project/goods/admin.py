@@ -8,11 +8,12 @@ class CategoriesAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     list_display = ["name", "sort_order"]
     list_editable = ["sort_order"]
-    search_fields = ["name", "short_description"]
+    search_fields = ["name", "short_description", "description"]
     fields = [
         "name",
         "slug",
         "short_description",
+        "description",
         "image",
         "sort_order",
     ]

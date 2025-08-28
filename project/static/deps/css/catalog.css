@@ -60,6 +60,85 @@
   transition: transform 300ms ease;
 }
 
+/* ===== Category presentation (selected category) ===== */
+.category-presentation {
+  background: rgba(2, 4,13, 0.78); /* dark translucent backdrop */
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border: 2px solid #4f463e;     /* match other blocks */
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  padding: 16px 18px;
+  margin: 12px 0; /* match home spacing */
+}
+.category-presentation-inner {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+  align-items: center; /* center image relative to text height */
+}
+@media (max-width: 768px) {
+  .category-presentation-inner {
+    grid-template-columns: 1fr;
+  }
+}
+.category-presentation-media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center; /* ensure vertical centering inside grid row */
+}
+.category-presentation-image {
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+  /* golden frame */
+  box-shadow: 0 0 0 3px #E6BF5A; /* ring */
+}
+.category-presentation-image.placeholder {
+  background: repeating-linear-gradient(45deg, #2a2516, #2a2516 10px, #211b0f 10px, #211b0f 20px);
+}
+#category-presentation .category-presentation-title {
+  margin: 0 0 8px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff1cc; /* cream heading on dark bg */
+  text-shadow: 0 1px 0 rgba(0,0,0,0.18);
+  text-align: center;
+}
+.category-presentation-content {
+  align-self: center;
+  text-align: left; /* center text horizontally */
+}
+#category-presentation .category-presentation-description {
+  color: #f4e7c6 !important; /* ensure wins over global body text */
+  line-height: 1.6;
+}
+#category-presentation .category-presentation-description p,
+#category-presentation .category-presentation-description li,
+#category-presentation .category-presentation-description span,
+#category-presentation .category-presentation-description div,
+#category-presentation .category-presentation-description strong,
+#category-presentation .category-presentation-description em,
+#category-presentation .category-presentation-description h1,
+#category-presentation .category-presentation-description h2,
+#category-presentation .category-presentation-description h3,
+#category-presentation .category-presentation-description h4,
+#category-presentation .category-presentation-description h5,
+#category-presentation .category-presentation-description h6 {
+  color: inherit !important; /* inherit cream color even if globals style them */
+}
+#category-presentation .category-presentation-description a {
+  color: #e6bf5a !important; /* keep links gold over inherited cream */
+  text-decoration-color: rgba(230,191,90,0.55);
+}
+#category-presentation .category-presentation-description a:hover {
+  filter: brightness(1.08) saturate(1.03);
+}
+
 /* Toast notifications */
 .tm-toast-stack {
   position: fixed;
@@ -228,7 +307,10 @@
 .pagination { text-align: center; }
 .catalog-categories {
   /* parchment-like backdrop like home categories area */
-  background: url('/static/deps/images/categories-bg.jpg') center center / cover no-repeat;
+  /* add warm semi-transparent overlay to tint the image */
+  background:
+    linear-gradient(0deg, rgba(22,23,44,0.19), rgba(3,15,28,0.43)),
+    url('/static/deps/images/categories-bg.jpg') center center / cover no-repeat;
   overflow: visible;
   padding: 0 26px;
   padding-top: 2rem;
@@ -236,8 +318,8 @@
   border: 2px solid #4f463e;
   border-radius: 10px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  margin-bottom: 18px;
   box-sizing: border-box;
+  margin: 12px 0; /* match home spacing */
 
   /* local palette (mirrors home) */
   --card-bg: rgba(39,18,60,0.12);
@@ -256,7 +338,7 @@
   border-radius: 10px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   padding: 16px 18px;
-  margin-top: 12px;
+  margin: 12px 0; /* match home spacing */
 }
 
 @media (min-width: 768px) {

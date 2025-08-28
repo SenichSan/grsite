@@ -88,3 +88,26 @@
   </ul>
 </nav>
 {% endif %}
+
+{# Category presentation: placed at bottom to appear under products #}
+{% if current_category_obj %}
+<section id="category-presentation" class="category-presentation">
+    <div class="category-presentation-inner">
+        <div class="category-presentation-media">
+            {% if current_category_obj.image %}
+                <img src="{{ current_category_obj.image.url }}" alt="{{ current_category_obj.name }}" class="category-presentation-image"/>
+            {% else %}
+                <div class="category-presentation-image placeholder" aria-hidden="true"></div>
+            {% endif %}
+        </div>
+        <div class="category-presentation-content">
+            <h2 class="category-presentation-title">{{ current_category_obj.name }}</h2>
+            {% if current_category_obj.description %}
+                <div class="category-presentation-description">{{ current_category_obj.description|safe }}</div>
+            {% elif current_category_obj.short_description %}
+                <p class="category-presentation-description">{{ current_category_obj.short_description }}</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endif %}

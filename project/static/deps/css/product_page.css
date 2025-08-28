@@ -1,3 +1,38 @@
+body {
+  zoom: 0.9;
+}
+
+
+.product-page .product-detail .product-detail-header .previous-page .icon {
+  display: inline-block;
+  transform: scale(1.2);
+  transform-origin: center;
+}
+
+/* Breadcrumb: category and current product name */
+.product-page .product-detail .product-detail-header .breadcrumb {
+  font-size: 120%;
+}
+
+/* Main product title above the image/content */
+.product-page .product-detail .product-content-title {
+  font-size: 120%;
+}
+
+/* Image navigation arrows inside the product image area */
+.product-page .product-image-order-previous .icon,
+.product-page .product-image-order-next .icon {
+  transform: scale(1.2);
+  transform-origin: center;
+}
+
+/* Related products carousel arrows */
+.product-page .tm-featured-wrapper .swiper-button-prev .icon,
+.product-page .tm-featured-wrapper .swiper-button-next .icon {
+  transform: scale(1.2);
+  transform-origin: center;
+}
+
 :root {
 	--color-primary: #3AA39F;
 	--color-light-grey: #9C9EA8;
@@ -55,15 +90,61 @@ body {
 
 /* (revert) удалён локальный масштаб контейнера, используется глобальный */
 
-/* Белый фон для блока деталей товара */
+/* Фон и рамка как у блока bestsellers (home) */
 .product-page .product-detail {
-  background-color: #ffffff;
-  /* внутренние отступы для воздуха вокруг текста */
-  padding: 16px 18px;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  overflow: hidden; /* чтобы медиа внутри не выпирали за скругления */
+  position: relative;
+  padding: 16px 18px;                 /* воздух внутри */
+  border: 2px solid #4f463e;          /* та же рамка */
+  border-radius: 10px;                 /* тот же радиус */
+  overflow: hidden;                    /* чтобы скругления были «чистыми» */
+  background: url('/static/deps/images/product-page-bg.jpg') center/cover no-repeat;
+  background-position: center;         /* при необходимости: center top / 50% 20% */
+  background-size: cover;              /* исключаем сжатие/растягивание */
+  color: #dcc49a;                      /* слегка золотистый текст */
 }
+
+/* Полупрозрачная кремовая вуаль над фоном (как на home) */
+.product-page .product-detail::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(28, 18, 3, 0.19);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Модификаторы интенсивности (по желанию) */
+.product-page .product-detail.overlay-weak::before { background-color: rgba(28, 18, 3, 0.22); }
+.product-page .product-detail.overlay-strong::before { background-color: rgba(28, 18, 3, 0.6); }
+
+/* Контент поверх оверлея */
+.product-page .product-detail > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Наследуем оттенок для типографики и ссылок внутри блока */
+.product-page .product-detail h1,
+.product-page .product-detail h2,
+.product-page .product-detail h3,
+.product-page .product-detail h4,
+.product-page .product-detail h5,
+.product-page .product-detail h6,
+.product-page .product-detail p,
+.product-page .product-detail li,
+.product-page .product-detail span,
+.product-page .product-detail a,
+.product-page .product-detail .breadcrumb,
+.product-page .product-detail .product-content-explanation {
+  color: inherit !important;
+}
+
+/* Не перекрашиваем активные кнопки и интерактивные элементы */
+.product-page .product-detail .button,
+.product-page .product-detail button,
+.product-page .product-detail input,
+.product-page .product-detail select,
+.product-page .product-detail textarea { color: initial; }
 
 
 /* Второй блок (похожие товары): скругление, тень и отступы */
@@ -79,10 +160,7 @@ body {
 .product-page .tm-featured { margin: 0; } /* убираем внутренние внешние отступы, если были */
 
 @media (min-width: 768px) {
-  .product-page .product-detail {
-    padding: 24px 28px;
-    border-radius: 14px;
-  }
+  .product-page .product-detail { padding: 24px 28px; }
 
   .product-page .tm-featured-wrapper {
     padding: 24px 28px;
