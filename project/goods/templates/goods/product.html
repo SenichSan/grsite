@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="{% static 'deps/css/product_page.css' %}">
 
     <link rel="stylesheet" href="{% static 'deps/css/header-hero.css' %}">
+    <link rel="stylesheet" href="{% static 'deps/css/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'deps/css/cart-component.css' %}">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
@@ -182,31 +184,10 @@
                                 Додати в кошик
                             </button>
                         </div>
-
-
-                        <div class="product-content-bottom-wrapper">
-                            <button type="button"
-                                    class="button product-content-favorite-button product-content-bottom-item"
-                                    aria-label="Add to Wishlist">
-                                <svg class="icon icon-heart">
-                                    <use xlink:href="#icon-heart"></use>
-                                </svg>
-                                Додати в улюблене
-                            </button>
-                        </div>
                     </form>
 
                     <!-- Блок мульти-изображений -->
                     <div class="product-image">
-                        <div class="product-image-number">
-                            <span class="product-image-number-bold">01</span>
-                            <span class="product-image-number-light">
-                                /
-                                {% with total=1|add:product.images.count %}
-                                    {{ total|stringformat:"02d" }}
-                                {% endwith %}
-                            </span>
-                        </div>
                         <div class="product-image-order">
                             <div class="product-image-order-previous">
                                 <svg class="icon icon-arrow-left">
@@ -271,44 +252,64 @@
         </section>
     </main>
 
-
-    <div class="tm-featured-wrapper">
-        <div class="tm-featured">
-            <h2>Схожі товари</h2>
-
-            <div class="swiper-container tm-featured-carousel">
+    <!-- Related products (new) -->
+    {% if related_products %}
+    <section class="rp-wrapper">
+        <div class="rp-inner">
+            <h2 class="rp-title">Схожі товари</h2>
+            <div class="rp-nav" aria-hidden="false">
+                <button class="rp-nav-btn rp-prev" type="button" aria-label="Назад">
+                    <svg viewBox="0 0 32 32" class="rp-nav-ic" aria-hidden="true">
+                        <path d="M20 28 L8 16 L20 4" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <button class="rp-nav-btn rp-next" type="button" aria-label="Вперед">
+                    <svg viewBox="0 0 32 32" class="rp-nav-ic" aria-hidden="true">
+                        <path d="M12 4 L24 16 L12 28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="swiper rp-swiper">
                 <div class="swiper-wrapper">
                     {% for rp in related_products %}
-                    <div class="swiper-slide tm-carousel-item">
-                        <a href="{{ rp.get_absolute_url }}" class="tm-product-link">
-                            <div class="tm-product-card">
-                                <img src="{{ rp.image.url }}" class="tm-card-img" alt="{{ rp.name }}">
-                                <h5 class="tm-card-title">{{ rp.name }}</h5>
-                                <p class="tm-card-price">{{ rp.price }}₴</p>
-                                <button class="add-to-cart-btn" data-product-id="{{ rp.id }}">В корзину</button>
+                    <article class="swiper-slide rp-card">
+                        <a href="{{ rp.get_absolute_url }}" class="rp-link">
+                            <div class="rp-card-image">
+                                {% if rp.image %}
+                                <img src="{{ rp.image.url }}" alt="{{ rp.name }}"/>
+                                {% endif %}
+                            </div>
+                            <div class="rp-card-body">
+                                <h5 class="rp-card-title">{{ rp.name }}</h5>
+                                {% if rp.short_description %}
+                                <p class="rp-card-subtitle">{{ rp.short_description }}</p>
+                                {% endif %}
+                                <p class="rp-card-price">{{ rp.price }}₴</p>
                             </div>
                         </a>
-                    </div>
+                        <div class="rp-card-actions">
+                            <button class="rp-add-to-cart" data-product-id="{{ rp.id }}">В корзину</button>
+                        </div>
+                    </article>
                     {% endfor %}
                 </div>
-
-                <!-- Встраиваем SVG внутрь кнопок -->
-                <button class="swiper-button-prev">
-                    <svg class="icon icon-arrow-left" width="24" height="24" viewBox="0 0 32 32">
-                        <use xlink:href="#icon-arrow-left"></use>
-                    </svg>
-                </button>
-                <button class="swiper-button-next">
-                    <svg class="icon icon-arrow-right" width="24" height="24" viewBox="0 0 32 32">
-                        <use xlink:href="#icon-arrow-right"></use>
-                    </svg>
-                </button>
-
             </div>
         </div>
-    </div>
+    </section>
+    {% endif %}
+    <!-- /Related products (new) -->
+    
+    <section class="footer-section">
+        {% include 'components/footer.html' %}
+    </section>
+    
 </div>
 
+<!-- Cart Button -->
+{% include 'components/cart_button.html' %}
+
+<!-- Cart Modal -->
+{% include 'components/cart_modal.html' %}
 
 <!-- Lightbox-модалка -->
 <div id="image-modal" class="image-modal" style="display:none;">
@@ -319,7 +320,10 @@
 
 <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
 <script src="{% static 'deps/js/product_page.js' %}"></script>
+<script src="{% static 'deps/js/product_related.js' %}"></script>
 <script src="{% static 'deps/js/cart.js' %}"></script>
+<script src="{% static 'deps/js/cart-component.js' %}"></script>
+<script src="{% static 'deps/js/jquery-ajax.js' %}"></script>
 
 </body>
 </html>

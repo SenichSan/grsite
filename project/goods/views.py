@@ -72,13 +72,12 @@ class ProductView(DetailView):
         context = super().get_context_data(**kwargs)
         product = self.object
 
-        # Подбираем похожие товары из той же категории, исключая текущий
+        # Похожие товары: из той же категории, исключая текущий товар
         related_products = (
             Products.objects
-                    .filter(category=product.category)
-                    .exclude(pk=product.pk)
-                    .order_by('?')
-                    [:10]
+            .filter(category=product.category)
+            .exclude(pk=product.pk)
+            .order_by('?')[:10]
         )
 
         context.update({

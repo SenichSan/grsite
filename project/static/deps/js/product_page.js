@@ -75,23 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Счётчик слайдов
-        const currentEl = document.querySelector('.product-image-number-bold');
-        const totalEl   = document.querySelector('.product-image-number-light');
-
-        if (currentEl && totalEl) {
-            // общее число слайдов
-            const totalSlides = productSwiper.slides.length;
-            totalEl.textContent = `/ ${ totalSlides < 10 ? '0' + totalSlides : totalSlides }`;
-
-            const updateCounter = () => {
-                const idx = productSwiper.realIndex + 1;
-                currentEl.textContent = idx < 10 ? '0' + idx : idx;
-            };
-
-            updateCounter();
-            productSwiper.on('slideChange', updateCounter);
-}
+        // Счётчик слайдов на главном слайдере был удалён
 
         // Кнопки «Вперёд/Назад»
         const nextBtn = document.querySelector('.product-image-order-next');
