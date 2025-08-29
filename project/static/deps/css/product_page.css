@@ -1632,8 +1632,13 @@ body {
 }
 
 .product-image-order {
-	display: flex;
-	margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 76px;
+    margin: 10px auto 15px;
+    width: 100%;
+    align-self: center;
 }
 
 @media (min-width:1200px) {
@@ -1643,8 +1648,8 @@ body {
 }
 
 .product-image-order-previous {
-	cursor: pointer;
-	margin-right: 76px;
+    cursor: pointer;
+    margin-right: 0;
 }
 
 .product-image-order-next {
