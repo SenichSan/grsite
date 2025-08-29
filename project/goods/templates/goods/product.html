@@ -11,10 +11,12 @@
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css">
 
     <link rel="stylesheet" href="{% static 'deps/css/product_page.css' %}">
+    <link rel="stylesheet" href="{% static 'deps/css/discount_badge.css' %}">
 
     <link rel="stylesheet" href="{% static 'deps/css/header-hero.css' %}">
     <link rel="stylesheet" href="{% static 'deps/css/footer.css' %}">
@@ -90,7 +92,7 @@
         </symbol>
         <symbol id="icon-heart" viewBox="0 0 32 32">
             <path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="2.6667"
-                  d="M27.787 6.147c-0.681-0.681-1.49-1.222-2.379-1.591s-1.844-0.559-2.807-0.559-1.917 0.19-2.807 0.559c-0.89 0.369-1.698 0.909-2.379 1.591l-1.413 1.413-1.413-1.413c-1.376-1.376-3.241-2.148-5.187-2.148s-3.811 0.773-5.187 2.148c-1.376 1.376-2.148 3.241-2.148 5.187s0.773 3.811 2.148 5.187l11.787 11.787 11.787-11.787c0.681-0.681 1.222-1.49 1.591-2.38s0.559-1.844 0.559-2.807-0.19-1.917-0.559-2.807c-0.369-0.89-0.909-1.699-1.591-2.38v0z"></path>
+                  d="M27.787 6.147c-0.681-0.681-1.49-1.222-2.379-1.591s-1.844-0.559-2.807-0.559-1.917 0.19-2.807 0.559c-0.89 0.369-1.698 0.909-2.379 1.591l-1.413 1.413-1.413-1.413c-1.376-1.376-3.241-2.148-5.187-2.148s-3.811 0.773-5.187 2.148c-1.376 1.376-2.148 3.241-2.148 5.187s0.773 3.811 2.148 5.187l11.787 11.787 11.787-11.787c0.681-0.681 1.222-1.49 1.591-2.38s0.559-1.844 0.559-2.807-0.19-1.917-0.559-2.807c-0.369-0.89-0.909-1.698-1.591-2.38v0z"></path>
         </symbol>
         <symbol id="icon-facebook" viewBox="0 0 32 32">
             <path d="M32 16c0-8.8-7.2-16-16-16s-16 7.2-16 16c0 8 5.8 14.6 13.4 15.8v-11.2h-4v-4.6h4v-3.6c0-4 2.4-6.2 6-6.2 1.8 0 3.6 0.4 3.6 0.4v4h-2c-2 0-2.6 1.2-2.6 2.4v3h4.4l-0.8 4.6h-3.8v11.4c8-1.2 13.8-8 13.8-16z"></path>
@@ -135,7 +137,7 @@
 <div class="container product-page page-wrapper">
     {% include 'components/header-hero.html' %}
     <main class="main">
-        <section class="product-detail">
+        <section class="product-detail black-plate--medium">
                 <div class="product-detail-wrapper">
 
                     <!-- product-detail-header -->
@@ -157,11 +159,37 @@
                         {% csrf_token %}
                         <h1 class="product-content-title">{{ product.name }}</h1>
 
-                        <div class="product-content-numbers">
-                            <div class="product-content-numbers-price">{{ product.price }} ₴</div>
+                        <div class="product-badges badge-row">
+                            {% if product.discount and product.discount|floatformat:2 != '0.00' %}
+                            <div class="badge-discount badge-discount--sm" aria-label="Скидка: {{ product.discount_price|floatformat:0 }}₴">
+                                Скидка: <span class="bd-amt">{{ product.discount_price|floatformat:0 }}₴</span>
+                            </div>
+                            {% endif %}
+                            {% if product.quantity <= 15 and product.quantity > 10 %}
+                            <div class="badge-stock is-low" aria-label="Залишилось: {{ product.quantity }}">
+                                залишилось: <span class="st-amt">{{ product.quantity }}</span>
+                            </div>
+                            {% elif product.quantity <= 10 and product.quantity > 0 %}
+                            <div class="badge-stock is-critical" aria-label="Залишилось: {{ product.quantity }}">
+                                залишилось: <span class="st-amt">{{ product.quantity }}</span>
+                            </div>
+                            {% endif %}
                         </div>
 
-                        <p class="product-content-explanation">{{ product.description|safe }}</p>
+                        <div class="product-content-numbers">
+                            {% if product.discount and product.discount|floatformat:2 != '0.00' %}
+                            <div class="tm-card-price">
+                                <span class="price-old">{{ product.price }}₴</span>
+                                <span class="price-new">{{ product.sell_price }}₴</span>
+                            </div>
+                            {% else %}
+                            <div class="tm-card-price">
+                                <span class="price">{{ product.price }}₴</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="product-content-explanation">{{ product.description|safe }}</div>
 
                         <div class="product-content-quantity-selector">
                             <label class="product-quantity-input">
@@ -210,19 +238,18 @@
                                     {% endfor %}
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Кнопки навигации под изображением -->
-                        <div class="product-image-order">
-                            <div class="product-image-order-previous">
-                                <svg class="icon icon-arrow-left">
-                                    <use xlink:href="#icon-arrow-left"></use>
-                                </svg>
-                            </div>
-                            <div class="product-image-order-next">
-                                <svg class="icon icon-arrow-right">
-                                    <use xlink:href="#icon-arrow-right"></use>
-                                </svg>
+                            <!-- Кнопки навигации внутри затемнённого блока под изображением -->
+                            <div class="product-image-order">
+                                <div class="product-image-order-previous">
+                                    <svg class="icon icon-arrow-left">
+                                        <use xlink:href="#icon-arrow-left"></use>
+                                    </svg>
+                                </div>
+                                <div class="product-image-order-next">
+                                    <svg class="icon icon-arrow-right">
+                                        <use xlink:href="#icon-arrow-right"></use>
+                                    </svg>
+                                </div>
                             </div>
                         </div>
 
@@ -277,6 +304,11 @@
                     <article class="swiper-slide rp-card">
                         <a href="{{ rp.get_absolute_url }}" class="rp-link">
                             <div class="rp-card-image">
+                                {% if rp.discount and rp.discount|floatformat:2 != '0.00' %}
+                                <div class="badge-discount badge-discount--sm" aria-label="Скидка: {{ rp.discount_price|floatformat:0 }}₴">
+                                    Скидка: <span class="bd-amt">{{ rp.discount_price|floatformat:0 }}₴</span>
+                                </div>
+                                {% endif %}
                                 {% if rp.image %}
                                 <img src="{{ rp.image.url }}" alt="{{ rp.name }}"/>
                                 {% endif %}

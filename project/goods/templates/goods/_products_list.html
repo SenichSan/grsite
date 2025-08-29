@@ -18,6 +18,22 @@
     <article class="tm-product-card" role="listitem" aria-labelledby="prod-title-{{ product.id }}">
         <a href="{% url 'goods:product' product.slug %}" class="tm-product-link" aria-label="{{ product.name }}">
             <div class="tm-card-image-wrap">
+                <div class="badge-stack">
+                    {% if product.discount and product.discount|floatformat:2 != '0.00' %}
+                    <div class="badge-discount badge-discount--sm" aria-label="Скидка: {{ product.discount_price|floatformat:0 }}₴">
+                        Скидка: <span class="bd-amt">{{ product.discount_price|floatformat:0 }}₴</span>
+                    </div>
+                    {% endif %}
+                    {% if product.quantity <= 15 and product.quantity > 10 %}
+                    <div class="badge-stock is-low" aria-label="Залишилось: {{ product.quantity }}">
+                        залишилось: <span class="st-amt">{{ product.quantity }}</span>
+                    </div>
+                    {% elif product.quantity <= 10 and product.quantity > 0 %}
+                    <div class="badge-stock is-critical" aria-label="Залишилось: {{ product.quantity }}">
+                        залишилось: <span class="st-amt">{{ product.quantity }}</span>
+                    </div>
+                    {% endif %}
+                </div>
                 {% if product.image %}
                 <img src="{{ product.image.url }}" alt="{{ product.name }}" class="tm-card-img" loading="lazy" width="400" height="300"/>
                 {% elif product.images.all|length > 0 %}
@@ -32,13 +48,16 @@
                 {% if product.short_description %}
                 <p class="tm-card-subtitle">{{ product.short_description }}</p>
                 {% endif %}
-                <p class="tm-card-price">
-                    {% if product.discount %}
-                        {{ product.sell_price }}₴
-                    {% else %}
-                        {{ product.price }}₴
-                    {% endif %}
-                </p>
+                {% if product.discount %}
+                <div class="tm-card-price">
+                    <span class="price-old">{{ product.price }}₴</span>
+                    <span class="price-new">{{ product.sell_price }}₴</span>
+                </div>
+                {% else %}
+                <div class="tm-card-price">
+                    <span class="price">{{ product.price }}₴</span>
+                </div>
+                {% endif %}
             </div>
         </a>
 

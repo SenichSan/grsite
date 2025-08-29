@@ -67,8 +67,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Основной слайдер
+        // Основной слайдер (бесконечная прокрутка)
         const productSwiper = new Swiper('.product-swiper', {
+            loop: true,
             spaceBetween: 10,
             thumbs: {
                 swiper: productThumbs

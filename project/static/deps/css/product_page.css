@@ -1,21 +1,97 @@
+/* Load TagesschriftCyrillic font for product page */
+@font-face {
+  font-family: 'TagesschriftCyrillic';
+  src: url('/static/deps/webfonts/TagesschriftCyrillic-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* page-level zoom (requested) */
 body { zoom: 0.9; }
 
 
 .product-page .product-detail .product-detail-header .previous-page .icon {
   display: inline-block;
-  transform: scale(1.2);
+  transform: none; /* keep original size; no redesign */
   transform-origin: center;
+}
+
+/* Header row: previous arrow + breadcrumb on the same line */
+.product-page .product-detail .product-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* ensure content stays on the left */
+  gap: 2rem; /* spacing between arrow and breadcrumb */
+  margin: 0 0 8px 0;
+}
+.product-page .product-detail .product-detail-header .previous-page {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 17%);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: inherit;
+  text-decoration: none;
+  flex: 0 0 auto;
+}
+.product-page .product-detail .product-detail-header .breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.1;
+  margin: 0; /* reset any default margins */
+  flex: 0 1 auto; /* don't push to the right */
+}
+.product-page .product-detail .product-detail-header .breadcrumb { margin-left: 0 !important; }
+.product-page .product-detail .product-detail-header .breadcrumb .breadcrumb-item-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.product-page .product-detail .product-detail-header .breadcrumb .breadcrumb-item-link:hover {
+  text-decoration: underline;
+}
+.product-page .product-detail .product-detail-header .breadcrumb .breadcrumb-item-current {
+  opacity: 0.9;
 }
 
 /* Breadcrumb: category and current product name */
 .product-page .product-detail .product-detail-header .breadcrumb {
   font-size: 120%;
+  font-family: 'TagesschriftCyrillic', cursive, var(--font-family, 'Montserrat', sans-serif);
 }
 
 /* Main product title above the image/content */
 .product-page .product-detail .product-content-title {
   font-size: 150%;
+  /* Unify with site style: TagesschriftCyrillic */
+  font-family: 'TagesschriftCyrillic', cursive, var(--font-family, 'Montserrat', sans-serif);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.2px;
+}
+
+/* Product description: readable, with Cyrillic support */
+.product-page .product-detail .product-content-explanation {
+  font-family: 'PT Serif', serif;
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+/* Ensure nested elements inside description also use the same font */
+.product-page .product-detail .product-content-explanation * {
+  font-family: 'PT Serif', serif;
+}
+
+/* --- Typography override (placed later, higher specificity; no !important) --- */
+.container.product-page.page-wrapper .product-detail .product-content .product-content-explanation,
+.container.product-page.page-wrapper .product-detail .product-content .product-content-explanation * {
+  font-family: 'PT Serif', serif;
 }
 
 /* Image navigation arrows inside the product image area */
@@ -105,6 +181,7 @@ body {
   background-position: center;         /* при необходимости: center top / 50% 20% */
   background-size: cover;              /* исключаем сжатие/растягивание */
   color: #dcc49a;                      /* слегка золотистый текст */
+  /* No base font override here; keep inheritance */
 }
 /* Outer spacing managed by adjacent section rule */
 .product-page .product-detail { margin: 0; }
@@ -124,6 +201,17 @@ body {
 /* Модификаторы интенсивности (по желанию) */
 .product-page .product-detail.overlay-weak::before { background-color: rgba(28, 18, 3, 0.22); }
 .product-page .product-detail.overlay-strong::before { background-color: rgba(28, 18, 3, 0.6); }
+
+/* Black plate variants (apply to whole block) */
+.product-page .product-detail.black-plate--soft::before {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+.product-page .product-detail.black-plate--medium::before {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.product-page .product-detail.black-plate--strong::before {
+  background-color: rgba(0, 0, 0, 0.6);
+}
 
 /* Контент поверх оверлея */
 .product-page .product-detail > * {
@@ -177,7 +265,7 @@ body {
 .rp-title {
   color: #dcc49a;
   /* Decorative headline font with sensible fallbacks */
-  font-family: 'Ruslan Display', 'Marck Script', 'MedievalSharp', cursive, var(--font-family, 'Montserrat', sans-serif);
+  font-family: 'TagesschriftCyrillic', cursive, var(--font-family, 'Montserrat', sans-serif);
   font-weight: 700;
   font-size: 1.6rem;
   margin: 0 0 12px; /* tightened to avoid large perceived gap */
@@ -235,8 +323,130 @@ body {
   box-shadow: 0 10px 24px rgba(0,0,0,0.35);
 }
 .rp-link { display:block; text-decoration:none; color: inherit; }
-.rp-card-image { width: 100%; aspect-ratio: 4/3; background: rgba(0,0,0,0.15); display:flex; align-items:center; justify-content:center; }
+.rp-card-image { position: relative; width: 100%; aspect-ratio: 4/3; background: rgba(0,0,0,0.15); display:flex; align-items:center; justify-content:center; }
 .rp-card-image img { width: 100%; height: 100%; object-fit: cover; display:block; }
+
+/* Discount badge */
+.badge-discount {
+  position: absolute;
+  z-index: 3;
+  top: 10px;
+  left: 10px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 0.98rem;
+  line-height: 1;
+  white-space: nowrap;
+  color: #ffffff; /* strong contrast */
+  background: rgba(46, 125, 50, 0.88); /* flat green, slightly transparent */
+  border: 1px solid rgba(15, 60, 20, 0.7);
+  box-shadow: 0 2px 6px rgba(0,0,0,.25);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.25);
+}
+
+/* Smaller badge for related product cards */
+.badge-discount--sm {
+  top: 8px;
+  left: 8px;
+  padding: 4px 8px;
+  font-size: 0.88rem;
+  border-width: 1px;
+  border-radius: 8px;
+}
+
+/* Emphasize numeric amount */
+.badge-discount .bd-amt { font-size: 1.1em; font-weight: 900; letter-spacing: 0.15px; }
+.badge-discount--sm .bd-amt { font-size: 1.0em; }
+
+/* Ensure main image wrapper can host absolute badge (already relative) */
+.product-image-photo {
+  position: relative;
+  background: rgba(0,0,0,0.28); /* slight darkening */
+  border: 2px solid #4f463e;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+/* Square stage for the main gallery */
+/* Ensure positioning context for absolute arrows */
+.product-image-photo { position: relative; }
+.product-image-photo .swiper-container {
+  width: 100%;
+  aspect-ratio: 1 / 1;           /* square */
+  box-sizing: border-box;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.12);  /* subtle inner plate */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Reserve space for nav buttons so images don't sit underneath */
+  padding: 0 56px; /* 44px button + ~6px gap on each side */
+}
+.product-image-photo .swiper-wrapper,
+.product-image-photo .swiper-slide { height: 100%; }
+.product-image-photo .swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0; /* prevent default figure margins affecting layout */
+  padding: 0; /* spacing now handled by container padding */
+  box-sizing: border-box;
+}
+.product-image-photo figure,
+.product-image-nav figure { margin: 0; }
+.product-image-photo .swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* fill square, crop overflow for uniform size */
+}
+/* Nav arrows left/right inside the square */
+.product-image-photo .product-image-order-previous,
+.product-image-photo .product-image-order-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: saturate(150%) blur(1px);
+  border: 1px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+  z-index: 2;
+}
+.product-image-photo .product-image-order-previous { left: 10px; }
+.product-image-photo .product-image-order-next { right: 10px; }
+.product-image-photo .product-image-order-previous .icon,
+.product-image-photo .product-image-order-next .icon { transform: scale(1.05); }
+/* Product image thumbnails navigation */
+.product-image-nav { margin-top: 10px; }
+.product-image-nav .product-thumb-swiper { width: 100%; overflow: hidden; padding: 6px 0; }
+/* use Swiper's own layout; spacing controlled by spaceBetween in JS */
+.product-image-nav-item.swiper-slide {
+  flex: 0 0 auto;
+  width: 76px !important; height: 76px !important; /* override global .swiper-slide width:100% */
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 8px;
+  background: rgba(0,0,0,0.18);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.product-image-nav-item picture, .product-image-nav-item img { display:block; width:100%; height:100%; }
+.product-image-nav-item img { object-fit: cover; border-radius: 8px; }
+@media (min-width: 768px) {
+  .product-image-nav-item.swiper-slide { width: 88px !important; height: 88px !important; }
+}
+@media (min-width: 1200px) {
+  .product-image-nav-item.swiper-slide { width: 96px !important; height: 96px !important; }
+}
+
 .rp-card-body {
   padding: 12px;
   color: #f1e7cf;
@@ -259,8 +469,8 @@ body {
 }
 .rp-add-to-cart {
   appearance: none; border: none; cursor: pointer;
-  background: linear-gradient(180deg, #3AA39F 0%, #2d7f7b 100%);
-  color: #fff; font-weight: 600; border-radius: 8px; padding: 8px 12px;
+  background: linear-gradient(180deg, #477f25 0%, #477f25 100%);
+  color: #000000; font-weight: 600; border-radius: 8px; padding: 8px 12px;
   transition: filter .15s ease, transform .15s ease;
 }
 .rp-add-to-cart:hover { filter: brightness(1.05); transform: translateY(-1px); }
@@ -1660,7 +1870,6 @@ body {
 	position: relative;
 	margin-bottom: 45px;
 	width: 100%;
-	display: flex;
 	justify-content: center;
 }
 
@@ -1679,7 +1888,7 @@ body {
 	z-index: -1;
 	right: calc(var(--container-gutter) * -1);
 	top: 15%;
-	background: linear-gradient(270.26deg,#4b8785 54.22%,rgba(75,135,133,0) 99.85%);
+	background: linear-gradient(270.26deg,#764b87 54.22%,rgba(75,135,133,0) 99.85%);
 	opacity: .1;
 }
 
@@ -2188,7 +2397,7 @@ body {
 
 @media (min-width:1200px) {
 	.product-detail-header {
-		margin-bottom: 70px;
+		margin-bottom: -2px;
 		display: block;
 	}
 }
@@ -2199,7 +2408,7 @@ body {
 
 @media (min-width:1200px) {
 	.product-detail-header .previous-page {
-		margin-bottom: 40px;
+		margin-bottom: -2px;
 	}
 }
 
@@ -2778,20 +2987,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
-
-@font-face {
-  font-family: 'TagesschriftCyrillic';
-  src: url("/static/deps/webfonts/TagesschriftCyrillic-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap; /* позволяет показывать fallback, пока шрифт грузится */
-}
-
-
-
-
-
-
 
 
 
