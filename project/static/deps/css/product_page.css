@@ -81,6 +81,10 @@ body { zoom: 0.9; }
   font-family: 'PT Serif', serif;
   font-size: 1.02rem;
   line-height: 1.6;
+  /* Subtle readability boost over image/texture backgrounds */
+  text-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.28);
 }
 
 /* Ensure nested elements inside description also use the same font */
@@ -88,10 +92,47 @@ body { zoom: 0.9; }
   font-family: 'PT Serif', serif;
 }
 
+/* Ensure headings and list items inside explanation get the same readability aid */
+.product-page .product-detail .product-content-explanation h1,
+.product-page .product-detail .product-content-explanation h2,
+.product-page .product-detail .product-content-explanation h3,
+.product-page .product-detail .product-content-explanation h4,
+.product-page .product-detail .product-content-explanation h5,
+.product-page .product-detail .product-content-explanation h6,
+.product-page .product-detail .product-content-explanation p,
+.product-page .product-detail .product-content-explanation li,
+.product-page .product-detail .product-content-explanation a,
+.product-page .product-detail .product-content-explanation span {
+  text-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.80),
+    0 2px 6px rgba(0, 0, 0, 0.80);
+}
+
 /* --- Typography override (placed later, higher specificity; no !important) --- */
 .container.product-page.page-wrapper .product-detail .product-content .product-content-explanation,
 .container.product-page.page-wrapper .product-detail .product-content .product-content-explanation * {
   font-family: 'PT Serif', serif;
+}
+
+/* Ensure text-shadow persists even if later styles reset it */
+.container.product-page.page-wrapper .product-detail .product-content .product-content-explanation {
+  text-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.28);
+}
+.container.product-page.page-wrapper .product-detail .product-content .product-content-explanation h1,
+.container.product-page.page-wrapper .product-detail .product-content .product-content-explanation h2,
+.container.product-page.page-wrapper .product-detail .product-content .product-content-explanation h3,
+.container.product-page.page-wrapper .product-detail .product-content .product-content-explanation h4,
+.container.product-page.page-wrapper .product-detail .product-content .product-content-explanation h5,
+.container.product-page.page-wrapper .product-detail .product-content .product-content-explanation h6,
+.container.product-page.page-wrapper .product-detail .product-content .product-content-explanation p,
+.container.product-page.page-wrapper .product-detail .product-content .product-content-explanation li,
+.container.product-page.page-wrapper .product-detail .product-content .product-content-explanation a,
+.container.product-page.page-wrapper .product-detail .product-content .product-content-explanation span {
+  text-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.28);
 }
 
 /* Image navigation arrows inside the product image area */
@@ -382,47 +423,74 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Reserve space for nav buttons so images don't sit underneath */
-  padding: 0 56px; /* 44px button + ~6px gap on each side */
+  /* Uniform stage size */
+  max-width: 560px;
+  margin: 0 auto;
 }
+.product-image-photo .product-swiper { overflow: hidden; }
+.product-image-photo .product-swiper .swiper-wrapper { display: flex; }
+.product-image-photo .product-swiper .swiper-slide { flex: 0 0 100%; }
 .product-image-photo .swiper-wrapper,
 .product-image-photo .swiper-slide { height: 100%; }
 .product-image-photo .swiper-slide {
-  display: flex;
   align-items: center;
   justify-content: center;
   margin: 0; /* prevent default figure margins affecting layout */
   padding: 0; /* spacing now handled by container padding */
   box-sizing: border-box;
 }
-.product-image-photo figure,
-.product-image-nav figure { margin: 0; }
+.product-image-photo .swiper-slide picture,
 .product-image-photo .swiper-slide img {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* fill square, crop overflow for uniform size */
+  object-fit: contain; /* fit like screenshot: no crop, show full image */
+  /* Create side gutters without affecting Swiper measurements */
+  padding: 0 28px; /* tighter gutters; still clear of 32px arrows */
+  box-sizing: border-box;
 }
+
+/* Responsive adjustments for uniform stage and gutters */
+@media (max-width: 992px) {
+  .product-image-photo .swiper-container { max-width: 480px; }
+  .product-image-photo .swiper-slide picture,
+  .product-image-photo .swiper-slide img { padding: 0 22px; }
+}
+@media (max-width: 768px) {
+  .product-image-photo .swiper-container { max-width: 420px; }
+  .product-image-photo .swiper-slide picture,
+  .product-image-photo .swiper-slide img { padding: 0 16px; }
+}
+@media (max-width: 576px) {
+  .product-image-photo .swiper-container { max-width: 100%; }
+  .product-image-photo .swiper-slide picture,
+  .product-image-photo .swiper-slide img { padding: 0 12px; }
+}
+.product-image-photo figure,
+.product-image-nav figure { margin: 0; }
+/* image fit rules are defined above with object-fit: contain */
 /* Nav arrows left/right inside the square */
 .product-image-photo .product-image-order-previous,
 .product-image-photo .product-image-order-next {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
+  width: 32px;  /* slimmer arrows */
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.35);
-  backdrop-filter: saturate(150%) blur(1px);
-  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  background: rgba(0,0,0,0.28);
+  transition: background .2s ease, transform .2s ease;
   cursor: pointer;
   z-index: 2;
 }
-.product-image-photo .product-image-order-previous { left: 10px; }
-.product-image-photo .product-image-order-next { right: 10px; }
+.product-image-photo .product-image-order-previous { left: 4px; }
+.product-image-photo .product-image-order-next { right: 4px; }
+.product-image-photo .product-image-order { pointer-events: none; }
+.product-image-photo .product-image-order > div { pointer-events: auto; }
 .product-image-photo .product-image-order-previous .icon,
 .product-image-photo .product-image-order-next .icon { transform: scale(1.05); }
 /* Product image thumbnails navigation */
@@ -480,6 +548,11 @@ body {
   display: flex; overflow-x: auto; overflow-y: hidden; gap: 16px; -webkit-overflow-scrolling: touch;
 }
 .rp-swiper:not(.swiper-initialized) .swiper-slide { flex: 0 0 auto; margin-right: 16px; }
+
+/* Fallback for product gallery if Swiper doesn't init: show only first image */
+.product-swiper:not(.swiper-initialized) .swiper-wrapper { display: block; }
+.product-swiper:not(.swiper-initialized) .swiper-slide { display: none; }
+.product-swiper:not(.swiper-initialized) .swiper-slide:first-child { display: block; }
 
 .swiper-container {
 	margin-left: auto;

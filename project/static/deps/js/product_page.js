@@ -67,13 +67,15 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Основной слайдер (бесконечная прокрутка)
+        // Основной слайдер
         const productSwiper = new Swiper('.product-swiper', {
-            loop: true,
-            spaceBetween: 10,
-            thumbs: {
-                swiper: productThumbs
-            }
+            loop: false,
+            rewind: true,
+            slidesPerView: 1,
+            spaceBetween: 0,
+            centeredSlides: false,
+            watchOverflow: true,
+            thumbs: { swiper: productThumbs },
         });
 
         // Счётчик слайдов на главном слайдере был удалён
