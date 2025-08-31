@@ -257,6 +257,24 @@ body.checkout-page a.continue-shopping-link:hover { color: #f4e6c2; text-decorat
   font-weight: 400;
 }
 
+/* (Removed) checkout-only header/container width overrides to keep parity with home header */
+
+/* Checkout-only: neutralize Bootstrap padding on the main container to match home (which doesn't load Bootstrap) */
+body.checkout-page .container.home-framed {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Checkout-only: make main content match header inner width */
+.checkout-inner {
+  box-sizing: border-box;
+  max-width: 1200px;   /* same as .container-inner.header-hero-content in header-hero.css */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;  /* standard gutters like header */
+  padding-right: 15px;
+}
+
 /* Required star color */
 .req-star { color: #dc3545 !important; margin-left: 2px; }
 
