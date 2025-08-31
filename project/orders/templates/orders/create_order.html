@@ -12,16 +12,18 @@
     <!-- Project global styles (optional) -->
     <link rel="stylesheet" href="{% static 'deps/css/header-hero.css' %}">
     <link rel="stylesheet" href="{% static 'deps/css/discount_badge.css' %}">
+    <link rel="stylesheet" href="{% static 'deps/css/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'deps/css/templatemo-style.css' %}">
 
     <style>
         body {
-            background-color: #ffffff !important;
-            color: #212529 !important;
+            background-color: #ffffff;
+            color: #212529;
         }
         
         .card, .form-control, .checkout-order-summary {
-            background-color: #ffffff !important;
-            color: #212529 !important;
+            background-color: #ffffff;
+            color: #212529;
             box-shadow: 0 2px 3px #e4e8f0;
             border-radius: 1rem;
         }
@@ -51,18 +53,125 @@
         }
 
         .table-responsive {
-            overflow-x: visible !important;
+            overflow-x: visible;
         }
+
+        /* Match product page related products parchment background */
+        .checkout-order-summary {
+            position: relative;
+            border: 2px solid #4f463e;           /* same frame */
+            border-radius: 10px;                  /* consistent radius */
+            background: url('/static/deps/images/bestsellers-carousel-bg.jpg') center/contain no-repeat;
+            background-size: 100% 100%;
+            box-shadow: none;                     /* cleaner fantasy look */
+            overflow: hidden;                     /* clip overlay to radius */
+        }
+        /* Nix generic .card white background for this card */
+        .card.checkout-order-summary { background-color: transparent !important; }
+        .checkout-order-summary .card-body { background: transparent !important; }
+        .checkout-order-summary::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: rgba(28, 18, 3, 0.33); /* creamy veil */
+            pointer-events: none;
+            z-index: 0;
+        }
+        .checkout-order-summary > .card-body { position: relative; z-index: 1; }
+        .checkout-order-summary h5 { color: #dcc49a; text-align: center; margin: 0; }
+        /* Golden typography inside the summary */
+        .checkout-order-summary,
+        .checkout-order-summary .table,
+        .checkout-order-summary .table th,
+        .checkout-order-summary .table td,
+        .checkout-order-summary .table thead th,
+        .checkout-order-summary strong { color: #dcc49a !important; }
+        .checkout-order-summary a { color: #dcc49a; text-decoration-color: rgba(220,196,154,0.7); }
+        .checkout-order-summary .summary-title { background: transparent !important; }
+
+        /* Make table backgrounds transparent so parchment shows through */
+        .checkout-order-summary .table,
+        .checkout-order-summary .table thead,
+        .checkout-order-summary .table tbody,
+        .checkout-order-summary .table tr,
+        .checkout-order-summary .table th,
+        .checkout-order-summary .table td {
+            background-color: transparent !important;
+        }
+        /* Override Bootstrap cell background chain */
+        .checkout-order-summary .table > :not(caption) > * { background-color: transparent !important; }
+        .checkout-order-summary .table > :not(caption) > * > * { background-color: transparent !important; }
+        .checkout-order-summary .table-striped > tbody > tr:nth-of-type(odd) > * { background-color: transparent !important; }
+        .checkout-order-summary .table-hover > tbody > tr:hover > * { background-color: transparent !important; }
+        /* Also reset default Bootstrap table vars in this scope */
+        .checkout-order-summary .table { --bs-table-bg: transparent; --bs-table-striped-bg: transparent; --bs-table-hover-bg: transparent; }
+        /* Subtle borders to fit the fantasy theme */
+        .checkout-order-summary .table,
+        .checkout-order-summary .table th,
+        .checkout-order-summary .table td {
+            border-color: rgba(79, 70, 62, 0.35);
+        }
+        /* Neutralize any Bootstrap light backgrounds */
+        .checkout-order-summary .bg-light,
+        .checkout-order-summary .table .bg-light {
+            background-color: transparent !important;
+        }
+
+        /* Thumbnail frames */
+        .checkout-order-summary td img {
+            display: block;
+            width: 65px; /* keep compact */
+            height: auto;
+            padding: 2px; /* inner padding for frame effect */
+            border: 2px solid #ad9550; /* soft gold frame */
+            border-radius: 10px; /* rounded corners like rp cards */
+            background: rgba(232, 216, 184, 0.30); /* parchment tint under image */
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(58,47,31,0.10);
+        }
+
+        /* Match same fantasy panel style for the left form card */
+        .checkout-form-card {
+            position: relative;
+            border: 2px solid #4f463e;
+            border-radius: 10px;
+            background: url('/static/deps/images/bestsellers-carousel-bg.jpg') center/contain no-repeat;
+            background-size: 100% 100%;
+            box-shadow: none;
+            overflow: hidden;
+        }
+        .checkout-form-card::before {
+            content: "";
+            position: absolute; inset: 0;
+            background-color: rgba(28, 18, 3, 0.33);
+            pointer-events: none; z-index: 0;
+        }
+        .checkout-form-card > .card-body { position: relative; z-index: 1; background: transparent !important; }
+        /* Golden typography inside the form card */
+        .checkout-form-card,
+        .checkout-form-card h5,
+        .checkout-form-card label,
+        .checkout-form-card .form-label,
+        .checkout-form-card .form-check-label,
+        .checkout-form-card .list-unstyled,
+        .checkout-form-card .activity-checkout,
+        .checkout-form-card .activity-checkout * { color: #dcc49a !important; }
+        /* Keep inputs readable (do not force golden on inputs text) */
+        .checkout-form-card input,
+        .checkout-form-card select,
+        .checkout-form-card textarea { color: #212529 !important; background: rgba(255,255,255,0.9); }
+        .checkout-form-card .form-control,
+        .checkout-form-card .form-select { border-color: rgba(79,70,62,0.35); }
     </style>
 </head>
 <body>
-  {% include 'includes/navbar.html' %}
+  <div class="container home-framed">
+    {% include 'components/header-hero.html' %}
 
-  <main>
-    <div class="container mt-4">
+    <main>
+    <div class="mt-4">
         <div class="row">
             <div class="col-xl-7">
-                <div class="card mb-4">
+                <div class="card checkout-form-card mb-4">
                     <div class="card-body">
                         <ol class="activity-checkout list-unstyled mb-0 px-4 mt-3">
                             <li class="checkout-item">
@@ -182,7 +291,7 @@
             <div class="col-xl-5">
                 <div class="card checkout-order-summary">
                     <div class="card-body">
-                        <div class="p-3 bg-light mb-3">
+                        <div class="p-3 summary-title mb-3">
                             <h5>Итог заказа</h5>
                         </div>
                         <div class="table-responsive">
@@ -202,11 +311,11 @@
                                     <td><img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
                                              class="rounded" style="max-width: 65px; height: auto;"></td>
                                     <td>{{ item.product.name }}</td>
-                                    <td class="text-center" style="color: black !important;">{{ item.quantity }}</td>
+                                    <td class="text-center">{{ item.quantity }}</td>
                                     <td>{{ item.products_price }}&nbsp;₴</td>
                                 </tr>
                                 {% endfor %}
-                                <tr class="bg-light">
+                                <tr>
                                     <td colspan="2"><strong>Итого:</strong></td>
                                     <td><strong>{{ carts.total_price }}&nbsp;₴</strong></td>
                                 </tr>
@@ -218,9 +327,10 @@
             </div>
         </div>
     </div>
-  </main>
+    </main>
 
-  {% include 'components/footer.html' %}
+    {% include 'components/footer.html' %}
+  </div>
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
