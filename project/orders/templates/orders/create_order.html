@@ -14,156 +14,10 @@
     <link rel="stylesheet" href="{% static 'deps/css/discount_badge.css' %}">
     <link rel="stylesheet" href="{% static 'deps/css/footer.css' %}">
     <link rel="stylesheet" href="{% static 'deps/css/templatemo-style.css' %}">
-
-    <style>
-        body {
-            background-color: #ffffff;
-            color: #212529;
-        }
-        
-        .card, .form-control, .checkout-order-summary {
-            background-color: #ffffff;
-            color: #212529;
-            box-shadow: 0 2px 3px #e4e8f0;
-            border-radius: 1rem;
-        }
-
-        .form-control {
-            border-radius: .75rem;
-        }
-
-        .activity-checkout .checkout-item {
-            padding-left: 35px;
-            border-left: 2px solid #f5f6f8;
-            position: relative;
-        }
-
-        .activity-checkout .checkout-item:first-child {
-            border-color: #3b76e1;
-        }
-
-        .activity-checkout .checkout-item .checkout-icon {
-            position: absolute;
-            top: -4px;
-            left: -24px;
-        }
-
-        .checkout-order-summary {
-            min-width: 450px;
-        }
-
-        .table-responsive {
-            overflow-x: visible;
-        }
-
-        /* Match product page related products parchment background */
-        .checkout-order-summary {
-            position: relative;
-            border: 2px solid #4f463e;           /* same frame */
-            border-radius: 10px;                  /* consistent radius */
-            background: url('/static/deps/images/bestsellers-carousel-bg.jpg') center/contain no-repeat;
-            background-size: 100% 100%;
-            box-shadow: none;                     /* cleaner fantasy look */
-            overflow: hidden;                     /* clip overlay to radius */
-        }
-        /* Nix generic .card white background for this card */
-        .card.checkout-order-summary { background-color: transparent !important; }
-        .checkout-order-summary .card-body { background: transparent !important; }
-        .checkout-order-summary::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-color: rgba(28, 18, 3, 0.33); /* creamy veil */
-            pointer-events: none;
-            z-index: 0;
-        }
-        .checkout-order-summary > .card-body { position: relative; z-index: 1; }
-        .checkout-order-summary h5 { color: #dcc49a; text-align: center; margin: 0; }
-        /* Golden typography inside the summary */
-        .checkout-order-summary,
-        .checkout-order-summary .table,
-        .checkout-order-summary .table th,
-        .checkout-order-summary .table td,
-        .checkout-order-summary .table thead th,
-        .checkout-order-summary strong { color: #dcc49a !important; }
-        .checkout-order-summary a { color: #dcc49a; text-decoration-color: rgba(220,196,154,0.7); }
-        .checkout-order-summary .summary-title { background: transparent !important; }
-
-        /* Make table backgrounds transparent so parchment shows through */
-        .checkout-order-summary .table,
-        .checkout-order-summary .table thead,
-        .checkout-order-summary .table tbody,
-        .checkout-order-summary .table tr,
-        .checkout-order-summary .table th,
-        .checkout-order-summary .table td {
-            background-color: transparent !important;
-        }
-        /* Override Bootstrap cell background chain */
-        .checkout-order-summary .table > :not(caption) > * { background-color: transparent !important; }
-        .checkout-order-summary .table > :not(caption) > * > * { background-color: transparent !important; }
-        .checkout-order-summary .table-striped > tbody > tr:nth-of-type(odd) > * { background-color: transparent !important; }
-        .checkout-order-summary .table-hover > tbody > tr:hover > * { background-color: transparent !important; }
-        /* Also reset default Bootstrap table vars in this scope */
-        .checkout-order-summary .table { --bs-table-bg: transparent; --bs-table-striped-bg: transparent; --bs-table-hover-bg: transparent; }
-        /* Subtle borders to fit the fantasy theme */
-        .checkout-order-summary .table,
-        .checkout-order-summary .table th,
-        .checkout-order-summary .table td {
-            border-color: rgba(79, 70, 62, 0.35);
-        }
-        /* Neutralize any Bootstrap light backgrounds */
-        .checkout-order-summary .bg-light,
-        .checkout-order-summary .table .bg-light {
-            background-color: transparent !important;
-        }
-
-        /* Thumbnail frames */
-        .checkout-order-summary td img {
-            display: block;
-            width: 65px; /* keep compact */
-            height: auto;
-            padding: 2px; /* inner padding for frame effect */
-            border: 2px solid #ad9550; /* soft gold frame */
-            border-radius: 10px; /* rounded corners like rp cards */
-            background: rgba(232, 216, 184, 0.30); /* parchment tint under image */
-            box-shadow: 0 2px 6px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(58,47,31,0.10);
-        }
-
-        /* Match same fantasy panel style for the left form card */
-        .checkout-form-card {
-            position: relative;
-            border: 2px solid #4f463e;
-            border-radius: 10px;
-            background: url('/static/deps/images/bestsellers-carousel-bg.jpg') center/contain no-repeat;
-            background-size: 100% 100%;
-            box-shadow: none;
-            overflow: hidden;
-        }
-        .checkout-form-card::before {
-            content: "";
-            position: absolute; inset: 0;
-            background-color: rgba(28, 18, 3, 0.33);
-            pointer-events: none; z-index: 0;
-        }
-        .checkout-form-card > .card-body { position: relative; z-index: 1; background: transparent !important; }
-        /* Golden typography inside the form card */
-        .checkout-form-card,
-        .checkout-form-card h5,
-        .checkout-form-card label,
-        .checkout-form-card .form-label,
-        .checkout-form-card .form-check-label,
-        .checkout-form-card .list-unstyled,
-        .checkout-form-card .activity-checkout,
-        .checkout-form-card .activity-checkout * { color: #dcc49a !important; }
-        /* Keep inputs readable (do not force golden on inputs text) */
-        .checkout-form-card input,
-        .checkout-form-card select,
-        .checkout-form-card textarea { color: #212529 !important; background: rgba(255,255,255,0.9); }
-        .checkout-form-card .form-control,
-        .checkout-form-card .form-select { border-color: rgba(79,70,62,0.35); }
-    </style>
+    <link rel="stylesheet" href="{% static 'deps/css/create_order.css' %}">
+    
 </head>
-<body>
+<body class="checkout-page">
   <div class="container home-framed">
     {% include 'components/header-hero.html' %}
 
@@ -198,46 +52,55 @@
                                 <form action="{% url 'orders:create_order' %}" method="post" id="create_order_form">
                                     {% csrf_token %}
 
-                                    <div class="mb-3">
-                                        <label class="form-label" for="id_first_name">Имя*</label>
-                                        <input type="text" name="first_name" id="id_first_name"
-                                               value="{{ form.first_name.value|default_if_none:'' }}" class="form-control"
-                                               required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label" for="id_last_name">Фамилия*</label>
-                                        <input type="text" name="last_name" id="id_last_name"
-                                               value="{{ form.last_name.value|default_if_none:'' }}" class="form-control"
-                                               required>
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
-                                        <label for="id_phone_number" class="form-label">Номер телефона*:</label>
-                                        <input type="text" class="form-control" id="id_phone_number" name="phone_number"
-                                               value="{% if form.phone_number.value %}{{ form.phone_number.value }}{% endif %}"
-                                               placeholder="(380) 000-0000"
-                                               required>
-                                        {% if form.phone_number.errors %}
-                                        <div class="alert alert-danger alert-dismissible fade show">
-                                            {{form.phone_number.errors}}
+                                    <!-- Имя и Фамилия в одной строке -->
+                                    <div class="row g-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label" for="id_first_name">Имя<span class="req-star">*</span></label>
+                                            <input type="text" name="first_name" id="id_first_name"
+                                                   value="{{ form.first_name.value|default_if_none:'' }}" class="form-control"
+                                                   autocomplete="given-name" inputmode="text"
+                                                   required>
                                         </div>
-                                        {% endif %}
-                                        <div class="alert alert-danger alert-dismissible fade show" style="display: none"
-                                             id="phone_number_error">Неверный формат номера
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label" for="id_last_name">Фамилия<span class="req-star">*</span></label>
+                                            <input type="text" name="last_name" id="id_last_name"
+                                                   value="{{ form.last_name.value|default_if_none:'' }}" class="form-control"
+                                                   autocomplete="family-name" inputmode="text"
+                                                   required>
                                         </div>
                                     </div>
 
+                                    <!-- Телефон и Email в одной строке -->
+                                    <div class="row g-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="id_phone_number" class="form-label">Номер телефона<span class="req-star">*</span>:</label>
+                                            <input type="tel" class="form-control" id="id_phone_number" name="phone_number"
+                                                   value="{% if form.phone_number.value %}{{ form.phone_number.value }}{% endif %}"
+                                                   placeholder="+380 XX XXX XX XX" inputmode="tel"
+                                                   pattern="^\+?380\s?\d{2}\s?\d{3}\s?\d{2}\s?\d{2}$"
+                                                   title="Формат: +380 XX XXX XX XX"
+                                                   autocomplete="tel" required>
+                                            {% if form.phone_number.errors %}
+                                            <div class="alert alert-danger alert-dismissible fade show">
+                                                {{form.phone_number.errors}}
+                                            </div>
+                                            {% endif %}
+                                            <div class="alert alert-danger alert-dismissible fade show" style="display: none"
+                                                 id="phone_number_error" aria-live="polite">Неверный формат номера
+                                            </div>
+                                        </div>
 
-                                    <div class="mb-3">
-                                        <label class="form-label" for="id_email">Email*</label>
-                                        <input type="text" name="email" id="id_email"
-                                               value="{{ form.email.value|default_if_none:'' }}" class="form-control"
-                                               required>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label" for="id_email">Email<span class="req-star">*</span></label>
+                                            <input type="email" name="email" id="id_email"
+                                                   value="{{ form.email.value|default_if_none:'' }}" class="form-control"
+                                                   autocomplete="email" inputmode="email"
+                                                   required>
+                                        </div>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label d-block">Способ доставки*</label>
+                                        <label class="form-label d-block">Способ доставки<span class="req-star">*</span></label>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="delivery_method"
                                                    id="delivery_courier" value="courier" required checked>
@@ -245,18 +108,20 @@
                                         </div>
                                     </div>
 
-                                    <div class="mb-3">
-                                        <label for="nova_city" class="form-label">Населений пункт*</label>
-                                        <input type="text" class="form-control" id="nova_city"
-                                               placeholder="Начните вводить..." autocomplete="off" required>
-                                        <input type="hidden" name="city_ref" id="nova_city_ref">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="warehouse_display" class="form-label">Відділення або поштомат*</label>
-                                        <select class="form-select" id="warehouse_display" name="warehouse_ref" required>
-                                            <option value="">Сначала выберите город</option>
-                                        </select>
+                                    <!-- Населений пункт и Відділення/поштомат в одной строке -->
+                                    <div class="row g-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="nova_city" class="form-label">Населений пункт<span class="req-star">*</span></label>
+                                            <input type="text" class="form-control" id="nova_city"
+                                                   placeholder="Начните вводить..." autocomplete="address-level2" required>
+                                            <input type="hidden" name="city_ref" id="nova_city_ref">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="warehouse_display" class="form-label">Відділення або поштомат<span class="req-star">*</span></label>
+                                            <select class="form-select" id="warehouse_display" name="warehouse_ref" required>
+                                                <option value="">Сначала выберите город</option>
+                                            </select>
+                                        </div>
                                     </div>
 
                                     <!-- Восстановленные поля -->
@@ -271,8 +136,15 @@
                                         </div>
                                     </div>
 
+                                    <div class="mb-3">
+                                        <label for="order_comment" class="form-label">Комментарий к товару</label>
+                                        <textarea class="form-control" id="order_comment" name="comment" rows="3"
+                                                  placeholder="Если у вас есть вопросы, пожелания, предложения — можете вписать это сюда. Каждый комментарий будет учтён и прочитан."></textarea>
+                                    </div>
+
                                     <div class="text-center mt-4">
                                         <button type="submit" class="btn btn-success btn-lg">Оформить заказ</button>
+                                        <p class="form-text text-muted mt-2">Ваши контактные данные не будут сохранены в нашей базе данных</p>
                                     </div>
                                 </form>
                             </li>
@@ -289,7 +161,7 @@
             </div>
 
             <div class="col-xl-5">
-                <div class="card checkout-order-summary">
+                <div class="card checkout-order-summary" data-cart-change-url="{% url 'carts:cart_change' %}">
                     <div class="card-body">
                         <div class="p-3 summary-title mb-3">
                             <h5>Итог заказа</h5>
@@ -298,26 +170,59 @@
                             <table class="table table-centered mb-0">
                                 <thead>
                                 <tr>
-                                    <th scope="col">Товар</th>
-                                    <th scope="col">Описание</th>
-                                    <th scope="col">Кол-во</th>
-                                    <th scope="col">Сумма</th>
+                                    <th scope="col" class="col-product">Товар</th>
+                                    <th scope="col" class="col-qty text-center">Кол-во</th>
+                                    <th scope="col" class="col-sum text-end">Сумма</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {% user_carts request as carts %}
                                 {% for item in carts %}
-                                <tr>
-                                    <td><img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
-                                             class="rounded" style="max-width: 65px; height: auto;"></td>
-                                    <td>{{ item.product.name }}</td>
-                                    <td class="text-center">{{ item.quantity }}</td>
-                                    <td>{{ item.products_price }}&nbsp;₴</td>
+                                <tr class="order-item-row"
+                                    data-cart-id="{{ item.id }}"
+                                    data-unit-price="{{ item.product.price|floatformat:'2' }}"
+                                    data-sell-price="{{ item.product.sell_price|floatformat:'2' }}"
+                                    data-discount="{{ item.product.discount|floatformat:'2' }}"
+                                    data-quantity="{{ item.quantity }}">
+                                    <td>
+                                        <div class="product-cell d-flex align-items-start">
+                                            <a href="{% url 'goods:product' product_slug=item.product.slug %}" class="rp-link me-3">
+                                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="rounded product-thumb">
+                                            </a>
+                                            <div class="product-info">
+                                                <a href="{% url 'goods:product' product_slug=item.product.slug %}" class="rp-link d-block">{{ item.product.name }}</a>
+                                                <div class="unit-price mt-1">
+                                                    {% if item.product.discount %}
+                                                        <span class="old-price text-decoration-line-through me-2">{{ item.product.price|floatformat:'0' }} ₴</span>
+                                                        <span class="new-price text-success fw-semibold">{{ item.product.sell_price|floatformat:'0' }} ₴</span>
+                                                    {% else %}
+                                                        <span class="current-price fw-semibold">{{ item.product.sell_price|floatformat:'0' }} ₴</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <div class="qty-controls" role="group" aria-label="Количество">
+                                            <button class="btn btn-sm qty-btn order-qty-dec" type="button" aria-label="Уменьшить">−</button>
+                                            <span class="qty-value mx-2">{{ item.quantity }}</span>
+                                            <button class="btn btn-sm qty-btn order-qty-inc" type="button" aria-label="Увеличить">+</button>
+                                        </div>
+                                    </td>
+                                    <td class="line-sum text-end align-middle">{{ item.products_price|floatformat:'0' }}&nbsp;₴</td>
                                 </tr>
                                 {% endfor %}
-                                <tr>
-                                    <td colspan="2"><strong>Итого:</strong></td>
-                                    <td><strong>{{ carts.total_price }}&nbsp;₴</strong></td>
+                                <tr class="table-total-discount">
+                                    <td colspan="2" class="text-end"><strong>Общая скидка:</strong></td>
+                                    <td class="text-end"><strong id="order-total-discount" class="text-success">0 ₴</strong></td>
+                                </tr>
+                                <tr class="table-shipping-info">
+                                    <td colspan="2" class="text-end"><strong>Доставка:</strong></td>
+                                    <td class="text-end"><span class="text-muted">за тарифами перевозчика</span></td>
+                                </tr>
+                                <tr class="table-total">
+                                    <td colspan="2" class="text-end"><strong>Итого:</strong></td>
+                                    <td class="text-end"><strong>{{ carts.total_price|floatformat:'0' }}&nbsp;₴</strong></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -346,62 +251,7 @@
 <!-- Select2 for better dropdowns -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<script>
-    $(function() {
-      const apiKey = "65ef3beeda1b3897b0e3e4d66b759a93";
-      let selectedCity = "";
-
-      $("#nova_city").autocomplete({
-        minLength: 2,
-        source(request, response) {
-          $.post("https://api.novaposhta.ua/v2.0/json/", JSON.stringify({
-            apiKey,
-            modelName: "AddressGeneral",
-            calledMethod: "searchSettlements",
-            methodProperties: { CityName: request.term, Limit: "10", Page: "1" }
-          }), function(res) {
-            const add = res.data[0]?.Addresses || [];
-            response(add.map(c => ({ label: c.Present, value: c.Present, ref: c.DeliveryCity })));
-          }, 'json');
-        },
-        select(event, ui) {
-          $('#nova_city_ref').val(ui.item.ref);
-          selectedCity = ui.item.label;
-          $('#nova_city').val(selectedCity);
-
-          $.post("https://api.novaposhta.ua/v2.0/json/", JSON.stringify({
-            apiKey,
-            modelName: "Address",
-            calledMethod: "getWarehouses",
-            methodProperties: { CityRef: ui.item.ref }
-          }), function(res) {
-            const $w = $('#warehouse_display').empty();
-            (res.data || []).forEach(w => {
-              $w.append(new Option(w.Description, w.Ref));
-            });
-            $w.select2({ placeholder: 'Выберите отделение', width: '100%' });
-
-            $w.on('change', function () {
-              const warehouseText = $(this).find('option:selected').text();
-              $('#id_delivery_address').val(`${selectedCity}, ${warehouseText}`);
-            });
-          }, 'json');
-        }
-      });
-
-
-      // Delivery address handling
-      $('#create_order_form').on('submit', function() {
-        const city = $('#nova_city').val();
-        const wh = $('#warehouse_display option:selected').text();
-
-        if (city && wh) {
-          $('#id_delivery_address').val(`${city}, ${wh}`);
-        }
-      });
-    });
-</script>
+<script src="{% static 'deps/js/create_order.js' %}"></script>
 
 </body>
 </html>
