@@ -1,11 +1,11 @@
 {% load static carts_tags %}
 
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Grownica — Оформление заказа</title>
+    <title>Grownica — Оформлення замовлення</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -25,7 +25,7 @@
     <div class="mt-4">
         <div class="row">
             <div class="col-xl-7">
-                <div class="card checkout-form-card mb-4">
+                <div class="card checkout-form-card mb-4 form-tint">
                     <div class="card-body">
                         <ol class="activity-checkout list-unstyled mb-0 px-4 mt-3">
                             <li class="checkout-item">
@@ -34,7 +34,7 @@
                                         <i class="bx bxs-receipt text-white"></i>
                                     </div>
                                 </div>
-                                <h5 class="fw-bold">Детали заказа</h5>
+                                <h5 class="fw-bold">Деталі замовлення</h5>
                                 {% if form.errors %}
                                 <div class="alert alert-danger">
                                     <ul>
@@ -52,17 +52,17 @@
                                 <form action="{% url 'orders:create_order' %}" method="post" id="create_order_form">
                                     {% csrf_token %}
 
-                                    <!-- Имя и Фамилия в одной строке -->
+                                    <!-- Ім'я та Прізвище в одному рядку -->
                                     <div class="row g-3">
                                         <div class="col-md-6 mb-3">
-                                            <label class="form-label" for="id_first_name">Имя<span class="req-star">*</span></label>
+                                            <label class="form-label" for="id_first_name">Ім'я<span class="req-star">*</span></label>
                                             <input type="text" name="first_name" id="id_first_name"
                                                    value="{{ form.first_name.value|default_if_none:'' }}" class="form-control"
                                                    autocomplete="given-name" inputmode="text"
                                                    required>
                                         </div>
                                         <div class="col-md-6 mb-3">
-                                            <label class="form-label" for="id_last_name">Фамилия<span class="req-star">*</span></label>
+                                            <label class="form-label" for="id_last_name">Прізвище<span class="req-star">*</span></label>
                                             <input type="text" name="last_name" id="id_last_name"
                                                    value="{{ form.last_name.value|default_if_none:'' }}" class="form-control"
                                                    autocomplete="family-name" inputmode="text"
@@ -70,10 +70,10 @@
                                         </div>
                                     </div>
 
-                                    <!-- Телефон и Email в одной строке -->
+                                    <!-- Телефон і Email в одному рядку -->
                                     <div class="row g-3">
                                         <div class="col-md-6 mb-3">
-                                            <label for="id_phone_number" class="form-label">Номер телефона<span class="req-star">*</span>:</label>
+                                            <label for="id_phone_number" class="form-label">Номер телефону<span class="req-star">*</span>:</label>
                                             <input type="tel" class="form-control" id="id_phone_number" name="phone_number"
                                                    value="{% if form.phone_number.value %}{{ form.phone_number.value }}{% endif %}"
                                                    placeholder="+380 XX XXX XX XX" inputmode="tel"
@@ -86,7 +86,7 @@
                                             </div>
                                             {% endif %}
                                             <div class="alert alert-danger alert-dismissible fade show" style="display: none"
-                                                 id="phone_number_error" aria-live="polite">Неверный формат номера
+                                                 id="phone_number_error" aria-live="polite">Невірний формат номера
                                             </div>
                                         </div>
 
@@ -100,7 +100,7 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label d-block">Способ доставки<span class="req-star">*</span></label>
+                                        <label class="form-label d-block">Спосіб доставки<span class="req-star">*</span></label>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="delivery_method"
                                                    id="delivery_courier" value="courier" required checked>
@@ -108,43 +108,43 @@
                                         </div>
                                     </div>
 
-                                    <!-- Населений пункт и Відділення/поштомат в одной строке -->
+                                    <!-- Населений пункт і Відділення/поштомат в одному рядку -->
                                     <div class="row g-3">
                                         <div class="col-md-6 mb-3">
                                             <label for="nova_city" class="form-label">Населений пункт<span class="req-star">*</span></label>
                                             <input type="text" class="form-control" id="nova_city"
-                                                   placeholder="Начните вводить..." autocomplete="address-level2" required>
+                                                   placeholder="Почніть вводити..." autocomplete="address-level2" required>
                                             <input type="hidden" name="city_ref" id="nova_city_ref">
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label for="warehouse_display" class="form-label">Відділення або поштомат<span class="req-star">*</span></label>
                                             <select class="form-select" id="warehouse_display" name="warehouse_ref" required>
-                                                <option value="">Сначала выберите город</option>
+                                                <option value="">Спочатку оберіть місто</option>
                                             </select>
                                         </div>
                                     </div>
 
-                                    <!-- Восстановленные поля -->
+                                    <!-- Відновлені поля -->
                                     <input type="hidden" name="delivery_address" id="id_delivery_address">
 
                                     <div class="mb-3">
-                                        <label class="form-label d-block">Способ оплаты:</label>
+                                        <label class="form-label d-block">Спосіб оплати:</label>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="payment_on_get"
                                                    id="payment_cash" value="1" checked>
-                                            <label class="form-check-label" for="payment_cash">Наложенный платёж</label>
+                                            <label class="form-check-label" for="payment_cash">Післяплата</label>
                                         </div>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="order_comment" class="form-label">Комментарий к товару</label>
+                                        <label for="order_comment" class="form-label">Коментар до товару</label>
                                         <textarea class="form-control" id="order_comment" name="comment" rows="3"
-                                                  placeholder="Если у вас есть вопросы, пожелания, предложения — можете вписать это сюда. Каждый комментарий будет учтён и прочитан."></textarea>
+                                                  placeholder="Якщо у вас є запитання, побажання, пропозиції — можете вписати це тут. Кожен коментар буде врахований і прочитаний."></textarea>
                                     </div>
 
                                     <div class="text-center mt-4">
-                                        <button type="submit" class="btn btn-success btn-lg">Оформить заказ</button>
-                                        <p class="form-text text-muted mt-2">Ваши контактные данные не будут сохранены в нашей базе данных</p>
+                                        <button type="submit" class="btn btn-success btn-lg">Оформити замовлення</button>
+                                        <p class="form-text text-muted mt-2">Ваші контактні дані не будуть збережені в нашій базі даних</p>
                                     </div>
                                 </form>
                             </li>
@@ -153,8 +153,8 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <a href="{% url 'main:home' %}" class="btn btn-link text-muted">
-                            <i class="mdi mdi-arrow-left me-1"></i> Продолжить покупки
+                        <a href="{% url 'main:home' %}" class="btn btn-link continue-shopping-link">
+                            <i class="mdi mdi-arrow-left me-1"></i> Продовжити покупки
                         </a>
                     </div>
                 </div>
@@ -164,15 +164,15 @@
                 <div class="card checkout-order-summary" data-cart-change-url="{% url 'carts:cart_change' %}">
                     <div class="card-body">
                         <div class="p-3 summary-title mb-3">
-                            <h5>Итог заказа</h5>
+                            <h5>Підсумок замовлення</h5>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-centered mb-0">
                                 <thead>
                                 <tr>
                                     <th scope="col" class="col-product">Товар</th>
-                                    <th scope="col" class="col-qty text-center">Кол-во</th>
-                                    <th scope="col" class="col-sum text-end">Сумма</th>
+                                    <th scope="col" class="col-qty text-center">Кількість</th>
+                                    <th scope="col" class="col-sum text-end">Сума</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -203,25 +203,25 @@
                                         </div>
                                     </td>
                                     <td class="text-center align-middle">
-                                        <div class="qty-controls" role="group" aria-label="Количество">
-                                            <button class="btn btn-sm qty-btn order-qty-dec" type="button" aria-label="Уменьшить">−</button>
+                                        <div class="qty-controls" role="group" aria-label="Кількість">
+                                            <button class="btn btn-sm qty-btn order-qty-dec" type="button" aria-label="Зменшити">−</button>
                                             <span class="qty-value mx-2">{{ item.quantity }}</span>
-                                            <button class="btn btn-sm qty-btn order-qty-inc" type="button" aria-label="Увеличить">+</button>
+                                            <button class="btn btn-sm qty-btn order-qty-inc" type="button" aria-label="Збільшити">+</button>
                                         </div>
                                     </td>
                                     <td class="line-sum text-end align-middle">{{ item.products_price|floatformat:'0' }}&nbsp;₴</td>
                                 </tr>
                                 {% endfor %}
                                 <tr class="table-total-discount">
-                                    <td colspan="2" class="text-end"><strong>Общая скидка:</strong></td>
+                                    <td colspan="2" class="text-end"><strong>Загальна знижка:</strong></td>
                                     <td class="text-end"><strong id="order-total-discount" class="text-success">0 ₴</strong></td>
                                 </tr>
                                 <tr class="table-shipping-info">
                                     <td colspan="2" class="text-end"><strong>Доставка:</strong></td>
-                                    <td class="text-end"><span class="text-muted">за тарифами перевозчика</span></td>
+                                    <td class="text-end"><span class="shipping-note">за тарифами перевізника</span></td>
                                 </tr>
                                 <tr class="table-total">
-                                    <td colspan="2" class="text-end"><strong>Итого:</strong></td>
+                                    <td colspan="2" class="text-end"><strong>Разом:</strong></td>
                                     <td class="text-end"><strong>{{ carts.total_price|floatformat:'0' }}&nbsp;₴</strong></td>
                                 </tr>
                                 </tbody>

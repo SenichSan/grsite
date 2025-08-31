@@ -124,11 +124,12 @@ body.checkout-page::before {
 
 /* Discount presentation */
 .checkout-order-summary .unit-price .old-price { opacity: 0.85; }
-.checkout-order-summary .table-total-discount td:last-child strong { color: #29a36a !important; }
+.checkout-order-summary tr.table-total-discount td:last-child > strong { color: #29a36a; }
 /* Right-align key summary rows */
+/* Summary rows should be left-aligned (override template classes) */
 .checkout-order-summary tr.table-total-discount td,
 .checkout-order-summary tr.table-shipping-info td,
-.checkout-order-summary tr.table-total td { text-align: left !important; }
+.checkout-order-summary tr.table-total td { text-align: left; }
 /* Normalize vertical alignment, padding and typography so rows align evenly */
 .checkout-order-summary tr.table-total-discount td,
 .checkout-order-summary tr.table-shipping-info td,
@@ -156,7 +157,7 @@ body.checkout-page::before {
 /* Увеличить размер суммы в правой колонке для ключевых строк */
 .checkout-order-summary tr.table-total-discount td:last-child strong,
 .checkout-order-summary tr.table-total td:last-child strong {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
 }
 
 /* Remove internal margins that could shift baselines */
@@ -178,18 +179,42 @@ body.checkout-page::before {
 
 /* === Order summary table column alignment === */
 .checkout-order-summary table.table { table-layout: fixed; width: 100%; }
-.checkout-order-summary th.col-product { width: 60%; }
+.checkout-order-summary th.col-product { width: 52%; }
 .checkout-order-summary th.col-qty { width: 20%; text-align: center; }
-.checkout-order-summary th.col-sum { width: 20%; text-align: right; }
+.checkout-order-summary th.col-sum { width: 28%; text-align: right; }
 
 /* Match body cells to header widths */
-.checkout-order-summary tbody tr > td:nth-child(1) { width: 60%; white-space: normal; }
+.checkout-order-summary tbody tr > td:nth-child(1) { width: 52%; white-space: normal; }
 .checkout-order-summary tbody tr > td:nth-child(2) { width: 20%; white-space: nowrap; }
-.checkout-order-summary tbody tr > td:nth-child(3) { width: 20%; white-space: nowrap; }
+.checkout-order-summary tbody tr > td:nth-child(3) { width: 28%; white-space: nowrap; }
+
+/* Allow wrapping in shipping value cell to prevent overflow */
+.checkout-order-summary tr.table-shipping-info td:last-child {
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Clamp shipping helper to max 2 lines */
+.checkout-order-summary tr.table-shipping-info td:last-child span {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Ensure muted helper text uses same color as rest in summary */
+/* Shipping helper text should be cream-colored like other text */
+.checkout-order-summary tr.table-shipping-info td .text-muted {
+  color: #dcc49a;
+  opacity: 1;
+}
 
 /* Product cell visuals */
 .checkout-order-summary .product-thumb { width: 56px; height: 56px; object-fit: cover; }
-.checkout-order-summary .product-info .unit-price { font-size: .95rem; }
+.checkout-order-summary .product-info .unit-price { font-size: 1.05rem; }
+
+/* Slightly larger per-line sum for better readability */
+.checkout-order-summary td.line-sum { font-size: 1.05rem; font-weight: 600; }
 
 /* Remove underline from product titles inside summary */
 .checkout-order-summary .rp-link { text-decoration: none; color: inherit; }
@@ -199,6 +224,21 @@ body.checkout-page::before {
 .checkout-order-summary .qty-controls { display: inline-flex; align-items: center; justify-content: center; }
 .checkout-order-summary .qty-controls .qty-btn { min-width: 28px; height: 28px; line-height: 1; padding: 0; }
 .checkout-order-summary .qty-controls .qty-value { min-width: 24px; text-align: center; display: inline-block; }
+
+/* Continue shopping link styling (link is outside .activity-checkout, so scope to body.checkout-page) */
+body.checkout-page a.continue-shopping-link {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-size: 1.35rem; /* bigger */
+  font-weight: 700; /* bold for emphasis */
+  color: #dcc49a; /* cream, like other text */
+  text-decoration-color: rgba(220,196,154,0.7);
+}
+body.checkout-page a.continue-shopping-link.text-muted { color: #dcc49a; }
+body.checkout-page a.continue-shopping-link .mdi { color: inherit; font-size: 1.5rem; line-height: 1; }
+body.checkout-page a.continue-shopping-link:hover { color: #f4e6c2; text-decoration: underline; }
+
+/* Shipping note color ("за тарифами перевізника") */
+.checkout-order-summary .shipping-note { color: #dcc49a; }
 
 /* Compact spacing and alignment for 'Итог заказа' title */
 .checkout-order-summary .summary-title {
@@ -234,6 +274,9 @@ body.checkout-page::before {
 /* Select2 displayed text */
 .checkout-page .select2-container .select2-selection__rendered { color: #000 !important; }
 .checkout-page .select2-container .select2-selection--single .select2-selection__placeholder { color: #6c757d !important; }
+
+/* Single simple tint class for LEFT block (edit only the alpha to adjust intensity) */
+
 
 /* Responsiveness */
 @media (max-width: 576px) {

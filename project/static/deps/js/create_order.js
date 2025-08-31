@@ -256,7 +256,7 @@
           }), function(res) {
             const $w = $('#warehouse_display').empty();
             (res.data || []).forEach(w => { $w.append(new Option(w.Description, w.Ref)); });
-            $w.select2({ placeholder: 'Выберите отделение', width: '100%' });
+            $w.select2({ placeholder: 'Оберіть відділення', width: '100%' });
 
             $w.on('change', function () {
               const warehouseText = $(this).find('option:selected').text();
