@@ -257,8 +257,6 @@ body.checkout-page a.continue-shopping-link:hover { color: #f4e6c2; text-decorat
   font-weight: 400;
 }
 
-/* (Removed) checkout-only header/container width overrides to keep parity with home header */
-
 /* Checkout-only: neutralize Bootstrap padding on the main container to match home (which doesn't load Bootstrap) */
 body.checkout-page .container.home-framed {
   padding-left: 0;
@@ -275,9 +273,31 @@ body.checkout-page .container.home-framed {
   padding-right: 15px;
 }
 
+/* Checkout-only: align MAIN content to header inner width without affecting the header block */
+body.checkout-page main .container {
+  box-sizing: border-box;
+  max-width: 1200px;   /* match header inner width */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;  /* same gutters as header */
+  padding-right: 15px;
+}
+
+/* Normalize gutters so the two columns meet header edges cleanly */
+body.checkout-page main .row { --bs-gutter-x: 30px; }
+
+/* Ensure both cards occupy full column width within MAIN */
+body.checkout-page main .checkout-form-card,
+body.checkout-page main .checkout-order-summary {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+
+
 /* Required star color */
 .req-star { color: #dc3545 !important; margin-left: 2px; }
-
 
 
 /* Ensure form input text is black on checkout page */
@@ -308,3 +328,7 @@ body.checkout-page .container.home-framed {
   .checkout-order-summary .table { font-size: 0.9rem; }
   .checkout-order-summary td img { width: 48px; }
 }
+
+
+body.checkout-page h1.tm-site-title { line-height: 1.4; }
+body.checkout-page h6.tm-site-description { line-height: 1.4; font-weight: 400; }
