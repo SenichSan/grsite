@@ -514,14 +514,34 @@
   text-align: center;
 }
 
-/* current/active */
+/* current/active — prominent purple canvas */
+.catalog-category-card.is-active,
 .catalog-category-card[aria-current="true"] {
-  outline: 3px solid rgba(var(--accent-rgba),0.12);
-  /* keep accent glow and add creamy halo */
+  /* subtle purple accent */
+  border-color: rgba(var(--accent-rgba), 0.45);
+  /* very light purple wash */
+  background-color: rgba(60, 30, 95, 0.15);
+  /* soft, restrained glow */
   box-shadow:
-    0 30px 70px var(--shadow-dark),
-    0 0 28px rgba(var(--accent-rgba),0.16),
-    0 0 20px rgba(255, 233, 176, 0.28);
+    0 10px 24px rgba(0,0,0,0.18),
+    0 0 10px rgba(var(--accent-rgba), 0.14),
+    /* subtle outer halo */
+    0 0 14px 3px rgba(var(--accent-rgba), 0.12);
+}
+
+/* Keep purple accent on hover/focus when active */
+.catalog-category-card.is-active:hover,
+.catalog-category-card.is-active:focus,
+.catalog-category-card[aria-current="true"]:hover,
+.catalog-category-card[aria-current="true"]:focus {
+  transform: translateY(-1px);
+  border-color: rgba(var(--accent-rgba), 0.55);
+  background-color: rgba(65, 34, 105, 0.20);
+  box-shadow:
+    0 14px 28px rgba(0,0,0,0.22),
+    0 0 14px rgba(var(--accent-rgba), 0.18),
+    /* slightly stronger halo on hover */
+    0 0 16px 4px rgba(var(--accent-rgba), 0.16);
 }
 
 /* responsive */
