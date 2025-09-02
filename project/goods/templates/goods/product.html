@@ -142,7 +142,9 @@
 
                     <!-- product-detail-header -->
                     <div class="product-detail-header">
-                        <a title="Previous Page" class="previous-page" href="#">
+                        <a title="Previous Page" class="previous-page"
+                           href="{% url 'goods:index' product.category.slug %}"
+                           onclick="if(document.referrer && (function(){try{return new URL(document.referrer).origin===location.origin}catch(e){return false}})()){event.preventDefault();history.back();}">
                             <svg class="icon icon-arrow-previous">
                                 <use xlink:href="#icon-arrow-previous"></use>
                             </svg>

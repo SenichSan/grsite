@@ -1,5 +1,13 @@
 /* ---------- header-hero.css (рефакторинг) ---------- */
 
+@font-face {
+  font-family: 'TagesschriftCyrillic';
+  src: url('/static/deps/webfonts/TagesschriftCyrillic-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 .header-hero {
   position: relative;
   overflow: hidden;
@@ -8,6 +16,19 @@
   background-color: #07070a;
   color: #fff;
   z-index: 5000;
+  /* Принудительно задаем гарнитуру для хедера, независимо от внешних стилей */
+  font-family: 'TagesschriftCyrillic', cursive;
+}
+
+/* Усиливаем применение шрифта на ключевых элементах хедера,
+   если внешние стили используют более специфичные селекторы */
+.header-hero .tm-header,
+.header-hero .tm-site-title,
+.header-hero .tm-site-description,
+.header-hero .tm-nav-buttons .tm-nav-link,
+.header-hero .tm-header-social,
+.header-hero .tm-header-left {
+  font-family: 'TagesschriftCyrillic', cursive;
 }
 
 
@@ -53,10 +74,9 @@
 /* контейнер содержимого */
 .container-inner.header-hero-content { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
 
-/* основной header — relative, чтобы позиционировать внутренние абсолютные блоки */
 .tm-header {
   position: relative;
-  height: 95px;             /* reduced by 25px; nav/social/logo remain vertically centered */
+  height: 95px;
   display: block;
 }
 

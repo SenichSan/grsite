@@ -32,11 +32,19 @@ body { zoom: 0.9; }
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgb(255 255 255 / 17%);
+  background: transparent; /* default: fully transparent */
   border: 1px solid rgba(255,255,255,0.2);
   color: inherit;
   text-decoration: none;
   flex: 0 0 auto;
+  transition: background-color .2s ease, border-color .2s ease, transform .12s ease;
+}
+
+.product-page .product-detail .product-detail-header .previous-page:hover,
+.product-page .product-detail .product-detail-header .previous-page:focus {
+  background: rgba(128,128,128,0.35); /* hover: gray */
+  border-color: rgba(255,255,255,0.45);
+  transform: translateY(-1px);
 }
 .product-page .product-detail .product-detail-header .breadcrumb {
   display: flex;
@@ -201,6 +209,41 @@ body {
 
 /* Product page: uniform small gap after header */
 .product-page .main { padding-top: 0.3rem; }
+
+/* Scoped header adjustments: apply only on product page */
+.container.product-page.page-wrapper .header-hero .tm-header {
+  position: relative;
+  height: 95px;
+  display: block;
+  bottom: -50px; /* offset only here */
+}
+
+/* Product page only: widen spacing between header nav buttons */
+.container.product-page.page-wrapper .header-hero .tm-nav-buttons {
+  gap: 50px; /* widened to match reference screenshot */
+}
+.container.product-page.page-wrapper .header-hero .tm-nav-buttons .tm-nav-link {
+  padding-left: 23px; /* extra width per item to reach target total */
+  padding-right: 23px;
+}
+
+/* Product page only: social block position and extra bottom padding */
+.container.product-page.page-wrapper .header-hero .tm-header-social {
+  position: absolute;
+  top: 50%;
+  right: -3rem;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  z-index: 4;
+  padding-bottom: 3.95rem;
+}
+
+@media (max-width: 599px) {
+  /* keep tighter on very small screens */
+  .container.product-page.page-wrapper .header-hero .tm-nav-buttons { gap: 16px; }
+}
 
 /* Consistent spacing between blocks on product page */
 .product-page .main > section + section { margin-top: 0.3rem; }
@@ -1122,7 +1165,7 @@ button.swiper-pagination-bullet {
 }
 
 html {
-	line-height: 1.15;
+	line-height: 1.4;
 	-webkit-text-size-adjust: 100%;
 }
 
@@ -1344,7 +1387,7 @@ html {
 
 body {
 	font-family: var(--font-family);
-	font-size: 16px;
+	font-size: 1.2rem;
 	color: var(--color-dark);
 	background-color: #515e30;
 }
