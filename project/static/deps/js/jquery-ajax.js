@@ -199,11 +199,20 @@ $(document).ready(function () {
             return;
         }
 
+        // Пытаемся взять количество из ближайшей формы на странице товара
+        var $form = $(this).closest('form');
+        var qtyVal = 1;
+        if ($form.length) {
+            var v = parseInt($form.find('.product-quantity-input-number').val(), 10);
+            if (!isNaN(v) && v > 0) qtyVal = v;
+        }
+
         $.ajax({
             type: "POST",
             url: add_to_cart_url,
             data: {
                 product_id: product_id,
+                quantity: qtyVal,
                 csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
             },
             headers: { 'X-CSRFToken': getCookie('csrftoken') },

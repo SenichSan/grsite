@@ -210,7 +210,11 @@
                                     </svg>
                                 </button>
                             </label>
-                            <button type="submit" class="button button-primary" aria-label="add to cart">
+                            <button type="button"
+                                    class="button button-primary add-to-cart-btn"
+                                    data-product-id="{{ product.id }}"
+                                    data-cart-add-url="{% url 'carts:cart_add' %}"
+                                    aria-label="add to cart">
                                 Додати в кошик
                             </button>
                         </div>
@@ -338,7 +342,9 @@
                             </div>
                         </a>
                         <div class="rp-card-actions">
-                            <button class="rp-add-to-cart" data-product-id="{{ rp.id }}">В корзину</button>
+                            <button class="rp-add-to-cart add-to-cart-btn"
+                                    data-product-id="{{ rp.id }}"
+                                    data-cart-add-url="{% url 'carts:cart_add' %}">В корзину</button>
                         </div>
                     </article>
                     {% endfor %}
@@ -369,6 +375,8 @@
 </div>
 
 <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+<!-- jQuery must be loaded before jquery-ajax.js -->
+<script src="{% static 'deps/js/jquery.min.js' %}"></script>
 <script src="{% static 'deps/js/product_page.js' %}"></script>
 <script src="{% static 'deps/js/product_related.js' %}"></script>
 <script src="{% static 'deps/js/cart.js' %}"></script>
