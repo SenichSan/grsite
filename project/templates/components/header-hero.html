@@ -52,8 +52,8 @@
             <!-- 3) BOTTOM-RIGHT: навигация (кнопки) -->
             <nav class="tm-header-nav" aria-label="Главная навигация">
                 <ul class="tm-nav-buttons">
-                    <li class="tm-nav-li"><a href="#" class="tm-nav-link active">Головна</a></li>
-                    <li class="tm-nav-li"><a href="#" class="tm-nav-link">Про нас</a></li>
+                    <li class="tm-nav-li"><a href="{% url 'main:home' %}" class="tm-nav-link active">Головна</a></li>
+                    <li class="tm-nav-li"><a href="{% url 'catalog:catalog_all' %}" class="tm-nav-link">Каталог</a></li>
                     <li class="tm-nav-li"><a href="#" class="tm-nav-link">Контакти</a></li>
                 </ul>
             </nav>

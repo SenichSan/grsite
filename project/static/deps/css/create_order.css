@@ -264,14 +264,7 @@ body.checkout-page .container.home-framed {
 }
 
 /* Checkout-only: make main content match header inner width */
-.checkout-inner {
-  box-sizing: border-box;
-  max-width: 1200px;   /* same as .container-inner.header-hero-content in header-hero.css */
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 15px;  /* standard gutters like header */
-  padding-right: 15px;
-}
+
 
 /* Checkout-only: align MAIN content to header inner width without affecting the header block */
 body.checkout-page main .container {

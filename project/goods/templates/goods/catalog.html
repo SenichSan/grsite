@@ -41,7 +41,7 @@
             <ul class="catalog-categories-list">
                 {% for category in categories %}
                 <li class="catalog-category-item">
-                    <a href="{% url 'goods:catalog_by_category' category.slug %}"
+                    <a href="{% url 'catalog:index' category.slug %}"
                        class="catalog-category-card"
                        data-category="{{ category.slug }}"
                        aria-current="{% if category.slug == current_category %}true{% endif %}">
