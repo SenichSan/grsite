@@ -5,6 +5,32 @@
   --bg-soft: #f8f9fa;
   --accent: #111827;
 }
+/* Sticky footer setup: full-height and flex container like home */
+html, body { height: 100%; }
+body.order-success-page {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+/* Mobile-safe viewport height to truly reach the bottom */
+@supports (height: 100dvh) {
+  body.order-success-page > .container.home-framed { min-height: 100dvh; }
+}
+@supports (-webkit-touch-callout: none) {
+  /* Safari/iOS quirks */
+  body.order-success-page > .container.home-framed { min-height: -webkit-fill-available; }
+}
+body.order-success-page > .container.home-framed {
+  flex: 1 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+/* Main content grows, footer pushed to bottom */
+.container.home-framed > .success-hero { flex: 1 0 auto; }
+.container.home-framed > footer,
+.container.home-framed > .site-footer { margin-top: auto; }
+
 .page-wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
 .success-hero { text-align: center; padding: 40px 8px; }
 .success-hero .emoji { font-size: 56px; line-height: 1; }
@@ -17,3 +43,26 @@
 .actions .btn-link { display: inline-block; background: var(--accent); color: #fff; text-decoration: none; padding: 10px 16px; border-radius: 10px; font-weight: 600; }
 .actions .btn-link:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
 .note { text-align: center; color: var(--fg-muted); margin-top: 16px; }
+
+/* Match home/catalog zoom so visual width matches other pages */
+body.order-success-page { zoom: 0.9; }
+/* Remove the small inter-section margin before footer on this page */
+.order-success-page .container.home-framed > .success-hero + .site-footer,
+.order-success-page .container.home-framed > .success-hero + footer { margin-top: 0; }
+/* Optionally trim footer inner spacing a bit on this page */
+.order-success-page .site-footer--parchment { padding-bottom: 1.25rem; margin-bottom: 0; }
+.order-success-page .site-footer--parchment::after { margin-top: 0.5rem; }
+
+/* Make central block occupy more height and center content */
+.container.home-framed > .success-hero {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* Ensure it takes meaningful height even on tall screens */
+  min-height: clamp(360px, 60vh, 840px);
+}
+
+/* Keep header/footer inner content constrained similarly to home */
+.site-footer .footer-inner { max-width: 1100px; margin: 0 auto; }
+.site-header .header-inner { max-width: 1100px; margin: 0 auto; }

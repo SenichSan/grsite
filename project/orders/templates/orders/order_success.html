@@ -7,18 +7,25 @@
   <title>Замовлення оформлено — Grownica</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Match Home fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'deps/css/templatemo-style.css' %}">
-  <link rel="stylesheet" href="{% static 'deps/css/header-hero.css' %}">
-  <link rel="stylesheet" href="{% static 'deps/css/footer.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Marck+Script&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Ruslan+Display&display=swap" rel="stylesheet">
+
+  <!-- Match Home CSS order -->
+  <link href="{% static 'deps/css/templatemo-style.css' %}" rel="stylesheet"/>
   <link rel="stylesheet" href="{% static 'deps/css/discount_badge.css' %}">
+  <link href="{% static 'deps/css/header-hero.css' %}" rel="stylesheet">
+  <link href="{% static 'deps/css/footer.css' %}" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'deps/css/order_success.css' %}">
   <meta name="robots" content="noindex">
   <meta name="format-detection" content="telephone=no">
   <meta name="theme-color" content="#111827">
 </head>
-<body>
-  <div class="page-wrap home-framed">
+<body class="order-success-page">
+  <div class="container home-framed">
     {% include 'components/header-hero.html' %}
 
     <section class="success-hero">
