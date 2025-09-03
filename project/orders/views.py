@@ -11,7 +11,7 @@ from carts.models import Cart
 from orders.forms import CreateOrderForm
 from orders.models import Order, OrderItem
 import requests
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.views.decorators.http import require_GET
 
 from orders.utils import send_order_email_to_seller, send_order_email_to_customer
@@ -70,12 +70,17 @@ class CreateOrderView(FormView):
                         return redirect('orders:create_order')
 
                     # Создаем заказ
+                    # Нормализуем способ доставки для сохранения читаемой метки
+                    raw_delivery = self.request.POST.get('delivery_method', '') or ''
+                    delivery_label = 'Нова Пошта' if raw_delivery in ('courier', 'nova', 'nova_poshta') else (raw_delivery or 'Нова Пошта')
+
                     order = Order.objects.create(
                         user=self.request.user if self.request.user.is_authenticated else None,
                         first_name=form_data['first_name'],
                         last_name=form_data['last_name'],
                         phone_number=form_data['phone_number'],
                         email=form_data['email'],
+                        requires_delivery=delivery_label,
                         delivery_address=delivery_address,
                         payment_on_get=form_data.get('payment_on_get', False),
                     )
@@ -103,6 +108,13 @@ class CreateOrderView(FormView):
                     if order.email:
                         send_order_email_to_customer(order)
 
+                    # Разрешаем просмотр страницы успеха для этого заказа (гостям и на случай разлогина)
+                    allowed = self.request.session.get('allowed_orders') or []
+                    if order.id not in allowed:
+                        allowed.append(order.id)
+                        self.request.session['allowed_orders'] = allowed
+                        self.request.session.modified = True
+
                     messages.success(self.request, 'Заказ успешно оформлен!')
                     return redirect('orders:order_success', order_id=order.id)
                 else:
@@ -126,7 +138,43 @@ class OrderSuccessView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         order_id = self.kwargs.get('order_id')
-        context['order'] = get_object_or_404(Order, id=order_id)
+        order = get_object_or_404(Order, id=order_id)
+
+        # Контроль доступа
+        user = self.request.user
+        if user.is_authenticated:
+            # Разрешаем только владельцу заказа; если заказ гостевой (user=None) — проверяем по сессии
+            if order.user_id:
+                if order.user_id != user.id:
+                    raise Http404()
+            else:
+                allowed = self.request.session.get('allowed_orders', [])
+                if order.id not in allowed:
+                    raise Http404()
+        else:
+            # Гость: только если заказ разрешен для текущей сессии
+            allowed = self.request.session.get('allowed_orders', [])
+            if order.id not in allowed:
+                raise Http404()
+        items = OrderItem.objects.filter(order=order).select_related('product')
+        items_data = [
+            {
+                'obj': it,
+                'name': it.name,
+                'price': it.price,
+                'quantity': it.quantity,
+                'subtotal': it.price * it.quantity,
+            }
+            for it in items
+        ]
+        total_qty = sum(d['quantity'] for d in items_data)
+        total_sum = sum(d['subtotal'] for d in items_data)
+
+        context['order'] = order
+        context['items'] = items
+        context['items_data'] = items_data
+        context['total_qty'] = total_qty
+        context['total_sum'] = total_sum
         return context
 
 
