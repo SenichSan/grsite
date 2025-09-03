@@ -116,7 +116,7 @@ class CreateOrderView(FormView):
                         self.request.session.modified = True
 
                     messages.success(self.request, 'Заказ успешно оформлен!')
-                    return redirect('orders:order_success', order_id=order.id)
+                    return redirect('orders:order_success', order_uuid=order.uuid)
                 else:
                     messages.error(self.request, 'Ваша корзина пуста')
                     return redirect('orders:create_order')
@@ -137,8 +137,8 @@ class OrderSuccessView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        order_id = self.kwargs.get('order_id')
-        order = get_object_or_404(Order, id=order_id)
+        order_uuid = self.kwargs.get('order_uuid')
+        order = get_object_or_404(Order, uuid=order_uuid)
 
         # Контроль доступа
         user = self.request.user

@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.db import models
 from goods.models import Products
 
@@ -26,6 +28,7 @@ class Order(models.Model):
     payment_on_get = models.BooleanField(default=False, verbose_name="Оплата при получении")
     is_paid = models.BooleanField(default=False, verbose_name="Оплачено")
     status = models.CharField(max_length=50, default='В обработке', verbose_name="Статус заказа")
+    uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
 
     class Meta:
         db_table = "order"
