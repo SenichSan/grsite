@@ -167,7 +167,9 @@
                                 Скидка: <span class="bd-amt">{{ product.discount_price|floatformat:0 }}₴</span>
                             </div>
                             {% endif %}
-                            {% if product.quantity <= 15 and product.quantity > 10 %}
+                            {% if product.quantity <= 0 %}
+                            <div class="badge-stock is-out" aria-label="Немає в наявності">немає в наявності</div>
+                            {% elif product.quantity <= 15 and product.quantity > 10 %}
                             <div class="badge-stock is-low" aria-label="Залишилось: {{ product.quantity }}">
                                 залишилось: <span class="st-amt">{{ product.quantity }}</span>
                             </div>
@@ -202,7 +204,7 @@
                                     </svg>
                                 </button>
                                 <input type="number" name="quantity" min="1" value="1"
-                                       class="input product-quantity-input-number" required>
+                                       class="input product-quantity-input-number" required {% if product.quantity <= 0 %}disabled aria-disabled="true"{% endif %}>
                                 <button type="button" class="button product-quantity-input-increase"
                                         aria-label="increase quantity">
                                     <svg class="icon icon-plus">
@@ -210,13 +212,19 @@
                                     </svg>
                                 </button>
                             </label>
-                            <button type="button"
-                                    class="button button-primary add-to-cart-btn"
-                                    data-product-id="{{ product.id }}"
-                                    data-cart-add-url="{% url 'carts:cart_add' %}"
-                                    aria-label="add to cart">
-                                Додати в кошик
-                            </button>
+                            {% if product.quantity > 0 %}
+                                <button type="button"
+                                        class="button button-primary add-to-cart-btn"
+                                        data-product-id="{{ product.id }}"
+                                        data-cart-add-url="{% url 'carts:cart_add' %}"
+                                        aria-label="add to cart">
+                                    Додати в кошик
+                                </button>
+                            {% else %}
+                                <button type="button" class="button" disabled aria-disabled="true" title="Немає в наявності">
+                                    Немає в наявності
+                                </button>
+                            {% endif %}
                         </div>
                     </form>
 

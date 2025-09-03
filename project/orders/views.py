@@ -52,7 +52,22 @@ class CreateOrderView(FormView):
                 if cart_items.exists():
                     form_data = form.cleaned_data
                     delivery_address = self.request.POST.get('delivery_address', '').strip()
+                    comment = self.request.POST.get('comment', '').strip()
 
+                    # Предварительная проверка наличия товаров на складе
+                    insufficient = []
+                    for cart_item in cart_items:
+                        product = cart_item.product
+                        if cart_item.quantity > product.quantity:
+                            insufficient.append(
+                                f"{product.name}: доступно {product.quantity}, в корзине {cart_item.quantity}"
+                            )
+                    if insufficient:
+                        messages.error(
+                            self.request,
+                            "Недостаточно товара на складе:\n" + "\n".join(insufficient)
+                        )
+                        return redirect('orders:create_order')
 
                     # Создаем заказ
                     order = Order.objects.create(
@@ -76,15 +91,15 @@ class CreateOrderView(FormView):
                             quantity=cart_item.quantity,
                         )
                         
-                        # Обновляем количество товара на складе
-                        product.quantity -= cart_item.quantity
-                        product.save()
+                        # Обновляем количество товара на складе (после предварительной проверки)
+                        product.quantity = product.quantity - cart_item.quantity
+                        product.save(update_fields=["quantity"])
 
                     # Очищаем корзину
                     cart_items.delete()
 
                     # Отправляем уведомления
-                    send_order_email_to_seller(order)
+                    send_order_email_to_seller(order, comment)
                     if order.email:
                         send_order_email_to_customer(order)
 
@@ -125,22 +140,30 @@ def search_city(request):
         return JsonResponse([], safe=False)
     payload = {
         "apiKey": API_KEY,
-        "modelName": "Address",
+        "modelName": "AddressGeneral",
         "calledMethod": "searchSettlements",
         "methodProperties": {
             "CityName": q,
-            "Limit": 10
+            "Limit": 10,
+            "Page": 1
         }
     }
-    resp = requests.post("https://api.novaposhta.ua/v2.0/json/", json=payload, timeout=5).json()
-    addresses = resp.get('data', [])
-    if addresses and addresses[0].get('Addresses'):
-        cities = addresses[0]['Addresses']
-        return JsonResponse(
-            [{"label": c["Present"], "ref": c["Ref"]} for c in cities],
-            safe=False
-        )
-    return JsonResponse([], safe=False)
+    try:
+        resp = requests.post("https://api.novaposhta.ua/v2.0/json/", json=payload, timeout=7)
+        resp.raise_for_status()
+        data = resp.json()
+        block = (data.get('data') or [])
+        addresses = block[0].get('Addresses') if block and isinstance(block[0], dict) else []
+        items = []
+        for c in addresses or []:
+            label = c.get("Present") or ""
+            ref = c.get("Ref") or c.get("DeliveryCity") or ""
+            if label and ref:
+                items.append({"label": label, "ref": ref})
+        return JsonResponse(items, safe=False)
+    except Exception:
+        # Fail gracefully to avoid 500 on UI
+        return JsonResponse([], safe=False)
 
 
 @require_GET

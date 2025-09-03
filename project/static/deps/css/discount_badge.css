@@ -89,6 +89,12 @@
   border-color: rgba(120, 0, 0, 0.45);
 }
 
+/* Gray for out of stock (<=0) */
+.badge-stock.is-out {
+  background: rgba(97, 97, 97, 0.92); /* dark gray */
+  border-color: rgba(40, 40, 40, 0.5);
+}
+
 /* Stack badges vertically at top-left */
 .badge-stack {
   position: absolute;

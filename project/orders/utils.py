@@ -6,7 +6,7 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 
 
 # Отправляет письмо продавцу о новом заказе
-def send_order_email_to_seller(order):
+def send_order_email_to_seller(order, comment=None):
     items = order.orderitem_set.all()
 
     if not items.exists():
@@ -17,6 +17,9 @@ def send_order_email_to_seller(order):
         for item in items
     ])
     order_price = sum(item.price * item.quantity for item in items)
+    # Предпочитаем email, указанный при оформлении заказа; если пуст — берём из профиля пользователя (если есть)
+    seller_contact_email = order.email or (order.user.email if getattr(order, 'user', None) else '')
+
     message = (
         f"Новый заказ №{order.id}\n\n"
         f"Товары:\n{item_lines}\n\n"
@@ -25,8 +28,11 @@ def send_order_email_to_seller(order):
         f"Имя клиента: {order.first_name.upper()}\n"
         f"Фамилия клиента: {order.last_name.upper()}\n"
         f"Телефон: {order.phone_number}\n"
-        f"Email: {order.user.email if order.user else order.email}"
+        f"Email: {seller_contact_email}"
     )
+
+    if comment:
+        message += f"\n\nКомментарий к заказу:\n{comment}"
 
     send_mail(
         subject=f"Новый заказ №{order.id}",
@@ -48,6 +54,16 @@ def send_order_email_to_customer(order):
     ])
     order_price = sum(item.price * item.quantity for item in items)
 
+    # Подготовим список для HTML-шаблона с суммой по строке
+    email_items = [
+        {
+            'name': item.name,
+            'quantity': item.quantity,
+            'line_total': item.price * item.quantity,
+        }
+        for item in items
+    ]
+
     message = (
         f"Новый заказ №{order.id}\n\n"
         f"Товары:\n{item_lines}\n\n"
@@ -61,7 +77,8 @@ def send_order_email_to_customer(order):
 
     html_message = render_to_string('order_confirmation_email.html', {
         'order': order,
-        'items': items,
+        'items': items,            # оставим для совместимости, если где-то используется
+        'email_items': email_items, # используем в шаблоне
         'total_price': order_price,
     })
 

@@ -28,13 +28,24 @@
       </tr>
     </thead>
     <tbody>
-      {% for item in items %}
-      <tr>
-        <td>{{ item.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.price }}</td>
-      </tr>
-      {% endfor %}
+      {% if email_items %}
+        {% for it in email_items %}
+        <tr>
+          <td>{{ it.name }}</td>
+          <td>{{ it.quantity }}</td>
+          <td>{{ it.line_total }}</td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        {# Fallback if email_items не передан: вычислим сумму на лету #}
+        {% for item in items %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.price|floatformat:'2'|add:"0"|floatformat:'2' }} * {{ item.quantity }} = {{ item.price|floatformat:'2'|add:"0"|floatformat:'2' }}</td>
+        </tr>
+        {% endfor %}
+      {% endif %}
     </tbody>
   </table>
 

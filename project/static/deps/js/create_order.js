@@ -225,44 +225,48 @@
   function initNovaPoshta() {
     const $ = window.jQuery;
     if (!$) return;
-
-    const apiKey = "65ef3beeda1b3897b0e3e4d66b759a93";
+    // Use backend proxy endpoints to avoid CORS and keep API key server-side
+    const ENDPOINT_SEARCH_CITY = "/orders/ajax/search-city/";
+    const ENDPOINT_GET_WAREHOUSES = "/orders/ajax/get-warehouses/";
     let selectedCity = "";
 
     $(function() {
       $("#nova_city").autocomplete({
         minLength: 2,
         source(request, response) {
-          $.post("https://api.novaposhta.ua/v2.0/json/", JSON.stringify({
-            apiKey,
-            modelName: "AddressGeneral",
-            calledMethod: "searchSettlements",
-            methodProperties: { CityName: request.term, Limit: "10", Page: "1" }
-          }), function(res) {
-            const add = res.data?.[0]?.Addresses || [];
-            response(add.map(c => ({ label: c.Present, value: c.Present, ref: c.DeliveryCity })));
-          }, 'json');
+          $.ajax({
+            url: ENDPOINT_SEARCH_CITY,
+            method: "GET",
+            dataType: "json",
+            data: { q: request.term }
+          }).done(function(res){
+            const items = Array.isArray(res) ? res : [];
+            response(items.map(function(c){ return { label: c.label, value: c.label, ref: c.ref }; }));
+          }).fail(function(){ response([]); });
         },
         select(event, ui) {
           $('#nova_city_ref').val(ui.item.ref);
           selectedCity = ui.item.label;
           $('#nova_city').val(selectedCity);
 
-          $.post("https://api.novaposhta.ua/v2.0/json/", JSON.stringify({
-            apiKey,
-            modelName: "Address",
-            calledMethod: "getWarehouses",
-            methodProperties: { CityRef: ui.item.ref }
-          }), function(res) {
+          $.ajax({
+            url: ENDPOINT_GET_WAREHOUSES,
+            method: "GET",
+            dataType: "json",
+            data: { settlement_ref: ui.item.ref }
+          }).done(function(res){
             const $w = $('#warehouse_display').empty();
-            (res.data || []).forEach(w => { $w.append(new Option(w.Description, w.Ref)); });
+            const list = (res && res.success && Array.isArray(res.warehouses)) ? res.warehouses : [];
+            list.forEach(function(desc){ $w.append(new Option(desc, desc)); });
             $w.select2({ placeholder: 'Оберіть відділення', width: '100%' });
 
             $w.on('change', function () {
               const warehouseText = $(this).find('option:selected').text();
               $('#id_delivery_address').val(`${selectedCity}, ${warehouseText}`);
             });
-          }, 'json');
+          }).fail(function(){
+            $('#warehouse_display').empty();
+          });
         }
       });
 
