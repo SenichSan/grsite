@@ -575,8 +575,58 @@ body {
   /* Sit slightly above the bottom with consistent spacing */
   padding: 10px 12px 14px;
   display:flex;
+  gap: 10px;
   justify-content: center;
   margin-top: auto;
+}
+/* Match Home Bestsellers button style for related products */
+.rp-wrapper .rp-card-actions .add-to-cart-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1;
+  text-decoration: none;
+  color: #2f2414;
+  background: #E8D8B8;
+  border: 2px solid #ad9550;
+  box-shadow: 0 0 0 1px rgba(173,149,80,0.30), inset 0 0 0 1px rgba(58,47,31,0.10);
+  transition: transform .15s ease, background-color .15s ease, color .15s ease, border-color .15s ease;
+  pointer-events: auto;
+}
+
+.rp-wrapper .rp-card-actions .add-to-cart-btn:not([disabled]):not([aria-disabled="true"]):hover {
+  transform: none;
+  background-color: #238B5C;
+  color: #ffffff;
+}
+
+.rp-wrapper .rp-card-actions .add-to-cart-btn:not([disabled]):not([aria-disabled="true"]):active {
+  transform: translateY(0);
+  background-color: #DEC895;
+  border-color: #8c6f2c !important;
+}
+
+.rp-wrapper .rp-card-actions .add-to-cart-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(210,184,121,0.35);
+}
+
+/* Disabled/out of stock: red hover */
+.rp-wrapper .rp-card-actions .add-to-cart-btn[disabled],
+.rp-wrapper .rp-card-actions .add-to-cart-btn[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+.rp-wrapper .rp-card-actions .add-to-cart-btn[disabled]:hover,
+.rp-wrapper .rp-card-actions .add-to-cart-btn[aria-disabled="true"]:hover {
+  background-color: #B73A3A;
+  border-color: #8A2424;
+  color: #ffffff;
 }
 .rp-add-to-cart {
   appearance: none; border: none; cursor: pointer;
@@ -3063,47 +3113,3 @@ body {
   opacity: 1;
   text-shadow: 0 0 5px rgba(0,0,0,0.2);
 }
-
-
-
-
-document.addEventListener('DOMContentLoaded', function () {
-  // Инициализация основного слайдера для деталей товара
-  const productSwiperEl = document.querySelector('.product-swiper');
-  if (productSwiperEl) {
-    new Swiper(productSwiperEl, {
-      // Пример базовой настройки — замените по необходимости
-      loop: true,
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-    });
-  }
-
-  // Инициализация карусели «Схожі товари»
-  const featuredSwiperEl = document.querySelector('.tm-featured-carousel');
-  if (featuredSwiperEl) {
-    new Swiper(featuredSwiperEl, {
-      slidesPerView: 4,
-      spaceBetween: 20,
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      breakpoints: {
-        320: { slidesPerView: 1 },
-        640: { slidesPerView: 2 },
-        1024: { slidesPerView: 4 },
-      },
-    });
-  }
-});
-
-
-
-

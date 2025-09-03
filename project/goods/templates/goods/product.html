@@ -334,6 +334,10 @@
                                     <div class="badge-stock is-critical" aria-label="Залишилось: {{ rp.quantity }}">
                                         Залишилось: <span class="st-amt">{{ rp.quantity }}</span>
                                     </div>
+                                    {% elif rp.quantity <= 0 %}
+                                    <div class="badge-stock is-out" aria-label="Немає в наявності">
+                                        Немає в наявності
+                                    </div>
                                     {% endif %}
                                 </div>
 
@@ -350,9 +354,17 @@
                             </div>
                         </a>
                         <div class="rp-card-actions">
-                            <button class="rp-add-to-cart add-to-cart-btn"
-                                    data-product-id="{{ rp.id }}"
-                                    data-cart-add-url="{% url 'carts:cart_add' %}">В корзину</button>
+                            {% if rp.quantity > 0 %}
+                                <button class="rp-add-to-cart add-to-cart-btn"
+                                        data-product-id="{{ rp.id }}"
+                                        data-cart-add-url="{% url 'carts:cart_add' %}">В корзину</button>
+                            {% else %}
+                                <button class="rp-add-to-cart add-to-cart-btn"
+                                        disabled aria-disabled="true"
+                                        title="Немає в наявності">
+                                    Немає в наявності
+                                </button>
+                            {% endif %}
                         </div>
                     </article>
                     {% endfor %}

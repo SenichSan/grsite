@@ -266,6 +266,20 @@ body {
   box-shadow: none;
 }
 
+/* Out-of-stock (disabled) button: red hover instead of green — home page only */
+.container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart-btn[disabled],
+.container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart-btn[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+.container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart-btn[disabled]:hover,
+.container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart-btn[aria-disabled="true"]:hover {
+  background-color: #B73A3A; /* red */
+  border-color: #8A2424;
+  color: #ffffff;
+  box-shadow: none;
+}
+
 .container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart:active,
 .container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart-btn:active {
   border-color: #8c6f2c !important;
