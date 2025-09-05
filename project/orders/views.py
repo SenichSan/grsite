@@ -1,28 +1,20 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.db import transaction
-from django.forms import ValidationError
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET
 from django.views.generic import FormView, TemplateView
+from django.conf import settings
+from django.http import JsonResponse, Http404
+from django.core.cache import cache
+
+import requests
+
 from carts.models import Cart
 from orders.forms import CreateOrderForm
 from orders.models import Order, OrderItem
-import requests
-from django.http import JsonResponse, Http404
-from django.views.decorators.http import require_GET
-
 from orders.utils import send_order_email_to_seller, send_order_email_to_customer
-
-# для nova poshta api
-import requests
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 
 def get_user_carts(request):
     if request.user.is_authenticated:
@@ -34,7 +26,7 @@ def get_user_carts(request):
 class CreateOrderView(FormView):
     template_name = 'orders/create_order.html'
     form_class = CreateOrderForm
-    success_url = reverse_lazy('main:index')
+    success_url = reverse_lazy('main:home')
 
     def get_initial(self):
         initial = super().get_initial()
@@ -179,15 +171,17 @@ class OrderSuccessView(TemplateView):
 
 
 # nova poshta поиск отделений
-API_KEY = '65ef3beeda1b3897b0e3e4d66b759a93'
-
-
 def search_city(request):
     q = request.GET.get('q', '')[:100]
     if len(q) < 2:
         return JsonResponse([], safe=False)
+    key = settings.NOVA_POSHTA_API_KEY or ''
+    cache_key = f"np:city:{q.lower()}"
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return JsonResponse(cached, safe=False)
     payload = {
-        "apiKey": API_KEY,
+        "apiKey": key,
         "modelName": "AddressGeneral",
         "calledMethod": "searchSettlements",
         "methodProperties": {
@@ -197,18 +191,21 @@ def search_city(request):
         }
     }
     try:
-        resp = requests.post("https://api.novaposhta.ua/v2.0/json/", json=payload, timeout=7)
-        resp.raise_for_status()
-        data = resp.json()
-        block = (data.get('data') or [])
-        addresses = block[0].get('Addresses') if block and isinstance(block[0], dict) else []
-        items = []
-        for c in addresses or []:
-            label = c.get("Present") or ""
-            ref = c.get("Ref") or c.get("DeliveryCity") or ""
-            if label and ref:
-                items.append({"label": label, "ref": ref})
-        return JsonResponse(items, safe=False)
+        resp = requests.post("https://api.novaposhta.ua/v2.0/json/", json=payload, timeout=7).json()
+        if resp.get('success'):
+            data = resp.get('data', [])
+            results = [
+                {
+                    "label": f"{item.get('Present', '')}",
+                    "ref": item.get('Ref', '')
+                }
+                for x in data
+                for item in x.get('Addresses', [])
+            ]
+            cache.set(cache_key, results, 300)
+            return JsonResponse(results, safe=False)
+        else:
+            return JsonResponse([], safe=False)
     except Exception:
         # Fail gracefully to avoid 500 on UI
         return JsonResponse([], safe=False)
@@ -219,9 +216,14 @@ def get_warehouses(request):
     settlement_ref = request.GET.get("settlement_ref")
     if not settlement_ref:
         return JsonResponse({"success": False, "warehouses": []})
+    key = settings.NOVA_POSHTA_API_KEY or ''
+    cache_key = f"np:wh:{settlement_ref}"
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return JsonResponse(cached)
 
     payload = {
-        "apiKey": API_KEY,
+        "apiKey": key,
         "modelName": "Address",
         "calledMethod": "getWarehouses",
         "methodProperties": {
@@ -230,13 +232,19 @@ def get_warehouses(request):
     }
     resp = requests.post("https://api.novaposhta.ua/v2.0/json/", json=payload, timeout=5).json()
     if resp.get("success"):
-        whs = [w["Description"] for w in resp["data"]]
-        return JsonResponse({"success": True, "warehouses": whs})
+        warehouses = [
+            w.get("Description", "")
+            for w in resp.get("data", [])
+        ]
+        result = {"success": True, "warehouses": warehouses}
+        cache.set(cache_key, result, 300)
+        return JsonResponse(result)
     return JsonResponse({"success": False, "warehouses": []})
 
 def get_warehouse_description(ref):
+    key = settings.NOVA_POSHTA_API_KEY or ''
     payload = {
-        "apiKey": API_KEY,
+        "apiKey": key,
         "modelName": "Address",
         "calledMethod": "getWarehouses",
         "methodProperties": {

@@ -10,23 +10,42 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load .env file if present (simple loader, no external dependency)
+env_path = BASE_DIR / '.env'
+if env_path.exists():
+    try:
+        with env_path.open('r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                if '=' in line:
+                    key, value = line.split('=', 1)
+                    key = key.strip()
+                    value = value.strip().strip('"').strip("'")
+                    os.environ.setdefault(key, value)
+    except Exception:
+        # Fail silently; environment can still come from OS
+        pass
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ld)8k$gfoow^#9-6mm@palg6l9d)&l!5ng#m2@=msxhq353g#2'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-ld)8k$gfoow^#9-6mm@palg6l9d)&l!5ng#m2@=msxhq353g#2')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True').lower() in ('1', 'true', 'yes', 'on')
 
-ALLOWED_HOSTS = ['*']
+_hosts = os.environ.get('ALLOWED_HOSTS', '*')
+ALLOWED_HOSTS = [h.strip() for h in _hosts.split(',')] if _hosts else []
 
 
 # Application definition
@@ -40,8 +59,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
 
-    "debug_toolbar",
-
     'main',
     'goods',
     'users',
@@ -49,8 +66,10 @@ INSTALLED_APPS = [
     'orders.apps.OrdersConfig',
 
     'tinymce',
-
 ]
+
+if DEBUG:
+    INSTALLED_APPS.append('debug_toolbar')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -60,9 +79,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
+
+if DEBUG:
+    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 
 ROOT_URLCONF = 'app.urls'
 
@@ -91,14 +111,13 @@ WSGI_APPLICATION = 'app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'grdbhome',
-        'USER': 'home',
-        'PASSWORD': 'home',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.environ.get('DB_NAME', 'grdbhome'),
+        'USER': os.environ.get('DB_USER', 'home'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'home'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
-
 
 CACHES = {
     "default": {
@@ -142,21 +161,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
-    ]
+]
 
 MEDIA_URL = 'media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
-
 
 INTERNAL_IPS = [
     # ...
     "127.0.0.1",
     # ...
 ]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -166,13 +186,12 @@ LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'shroomer0ua@gmail.com'  # Замените на ваш Gmail-адрес
-EMAIL_HOST_PASSWORD = 'eofa witb svwe knyh'  # Пароль приложения или обычный пароль
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() in ('1', 'true', 'yes', 'on')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 
 TINYMCE_DEFAULT_CONFIG = {
     'cleanup_on_startup': True,
@@ -196,3 +215,6 @@ TINYMCE_DEFAULT_CONFIG = {
     },
     'forced_root_block': 'p',
 }
+
+# External services
+NOVA_POSHTA_API_KEY = os.environ.get('NOVA_POSHTA_API_KEY', '')
