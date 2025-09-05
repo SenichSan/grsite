@@ -167,6 +167,11 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
 
+# Optional: allow enabling hashed static files storage (cache-busting) via ENV on production
+_static_storage = os.environ.get('STATICFILES_STORAGE', '').strip()
+if _static_storage:
+    STATICFILES_STORAGE = _static_storage
+
 MEDIA_URL = 'media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
