@@ -16,6 +16,7 @@ from carts.models import Cart
 from orders.forms import CreateOrderForm
 from orders.models import Order, OrderItem
 from orders.utils import send_order_email_to_seller, send_order_email_to_customer
+from goods.models import Products
 
 logger = logging.getLogger(__name__)
 
@@ -49,14 +50,26 @@ class CreateOrderView(FormView):
                     delivery_address = self.request.POST.get('delivery_address', '').strip()
                     comment = self.request.POST.get('comment', '').strip()
 
-                    # Предварительная проверка наличия товаров на складе
+                    # Соберём запрошенные количества по товарам
+                    requested = {}
+                    for ci in cart_items:
+                        if ci.product_id:
+                            requested[ci.product_id] = requested.get(ci.product_id, 0) + ci.quantity
+
+                    # Заблокируем строки с товарами и перепроверим остатки под блокировкой
+                    product_ids = list(requested.keys())
+                    locked_products = list(
+                        Products.objects.select_for_update().filter(id__in=product_ids).only('id', 'name', 'quantity')
+                    )
+                    current_qty = {p.id: p.quantity for p in locked_products}
+                    names = {p.id: p.name for p in locked_products}
+
                     insufficient = []
-                    for cart_item in cart_items:
-                        product = cart_item.product
-                        if cart_item.quantity > product.quantity:
-                            insufficient.append(
-                                f"{product.name}: доступно {product.quantity}, в корзине {cart_item.quantity}"
-                            )
+                    for pid, need in requested.items():
+                        have = current_qty.get(pid, 0)
+                        if need > have:
+                            insufficient.append(f"{names.get(pid, 'Товар')}:\nдоступно {have}, в корзине {need}")
+
                     if insufficient:
                         messages.error(
                             self.request,
@@ -83,6 +96,8 @@ class CreateOrderView(FormView):
                     # Создаем позиции заказа
                     for cart_item in cart_items:
                         product = cart_item.product
+                        if not product:
+                            continue
                         OrderItem.objects.create(
                             order=order,
                             product=product,
@@ -90,10 +105,13 @@ class CreateOrderView(FormView):
                             price=product.sell_price(),
                             quantity=cart_item.quantity,
                         )
-                        
-                        # Обновляем количество товара на складе (после предварительной проверки)
-                        product.quantity = product.quantity - cart_item.quantity
-                        product.save(update_fields=["quantity"])
+
+                    # Списываем остатки под блокировкой
+                    for p in locked_products:
+                        need = requested.get(p.id, 0)
+                        if need:
+                            p.quantity = p.quantity - need
+                            p.save(update_fields=["quantity"]) 
 
                     # Очищаем корзину
                     cart_items.delete()

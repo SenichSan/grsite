@@ -248,3 +248,69 @@ X_FRAME_OPTIONS = os.environ.get('X_FRAME_OPTIONS', 'DENY')
 _csrf_trusted = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
 if _csrf_trusted:
     CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_trusted.split(',') if o.strip()]
+
+# ------------------------------------------------------------
+# Logging
+# ------------------------------------------------------------
+# Configure simple console logging by default.
+# Optionally enable rotating file logs in production via LOG_TO_FILE and LOG_FILE.
+
+LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO').upper()
+LOG_TO_FILE = os.environ.get('LOG_TO_FILE', 'False').lower() in ('1', 'true', 'yes', 'on')
+LOG_FILE = os.environ.get('LOG_FILE', str(BASE_DIR / 'logs' / 'app.log'))
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s %(levelname)s %(name)s [%(process)d] [%(thread)d] %(message)s'
+        },
+        'simple': {
+            'format': '%(asctime)s %(levelname)s %(name)s %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': LOG_LEVEL,
+            'formatter': 'simple',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': LOG_LEVEL,
+    },
+    'loggers': {
+        # Django request/response cycle warnings+ go to logs
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+        # App-specific logger example: orders
+        'orders': {
+            'handlers': ['console'],
+            'level': LOG_LEVEL,
+            'propagate': False,
+        },
+    },
+}
+
+if LOG_TO_FILE:
+    try:
+        os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
+    except Exception:
+        pass
+    LOGGING['handlers']['file'] = {
+        'class': 'logging.handlers.RotatingFileHandler',
+        'level': LOG_LEVEL,
+        'formatter': 'verbose',
+        'filename': LOG_FILE,
+        'maxBytes': 10 * 1024 * 1024,  # 10 MB
+        'backupCount': 5,
+        'encoding': 'utf-8',
+    }
+    LOGGING['root']['handlers'].append('file')
+    LOGGING['loggers']['django.request']['handlers'].append('file')
+    LOGGING['loggers']['orders']['handlers'].append('file')
