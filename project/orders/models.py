@@ -37,7 +37,18 @@ class Order(models.Model):
         ordering = ("id",)
 
     def __str__(self):
-        return f"Заказ № {self.pk} | Покупатель {self.user.first_name} {self.user.last_name}"
+        # Безопасное отображение покупателя, даже если user=None
+        buyer = ""
+        try:
+            if self.user_id and self.user:
+                buyer = (self.user.get_full_name() or self.user.username or "").strip()
+        except Exception:
+            buyer = ""
+        if not buyer:
+            buyer = f"{(self.first_name or '').strip()} {(self.last_name or '').strip()}".strip()
+        if not buyer:
+            buyer = (self.email or self.phone_number or "гость").strip()
+        return f"Заказ № {self.pk} | Покупатель {buyer}"
 
 
 class OrderItem(models.Model):

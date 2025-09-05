@@ -186,7 +186,7 @@ LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() in ('1', 'true', 'yes', 'on')
@@ -218,3 +218,33 @@ TINYMCE_DEFAULT_CONFIG = {
 
 # External services
 NOVA_POSHTA_API_KEY = os.environ.get('NOVA_POSHTA_API_KEY', '')
+
+# ------------------------------------------------------------
+# Security: production-ready flags (enable via environment)
+# ------------------------------------------------------------
+# Note: Keep secure defaults off for local dev; enable in production via .env
+
+def _env_bool(name: str, default: str = 'False') -> bool:
+    return os.environ.get(name, default).lower() in ('1', 'true', 'yes', 'on')
+
+# Cookies over HTTPS only
+CSRF_COOKIE_SECURE = _env_bool('CSRF_COOKIE_SECURE', 'False')
+SESSION_COOKIE_SECURE = _env_bool('SESSION_COOKIE_SECURE', 'False')
+
+# HSTS (only enable when site is fully HTTPS and correct)
+SECURE_HSTS_SECONDS = int(os.environ.get('SECURE_HSTS_SECONDS', '0'))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = _env_bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', 'False')
+SECURE_HSTS_PRELOAD = _env_bool('SECURE_HSTS_PRELOAD', 'False')
+
+# Force redirect HTTP->HTTPS (behind Nginx)
+SECURE_SSL_REDIRECT = _env_bool('SECURE_SSL_REDIRECT', 'False')
+
+# Other recommended headers
+SECURE_REFERRER_POLICY = os.environ.get('SECURE_REFERRER_POLICY', 'strict-origin-when-cross-origin')
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = os.environ.get('X_FRAME_OPTIONS', 'DENY')
+
+# CSRF trusted origins (comma-separated list like: https://example.com,https://www.example.com)
+_csrf_trusted = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+if _csrf_trusted:
+    CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_trusted.split(',') if o.strip()]

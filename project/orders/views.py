@@ -1,3 +1,4 @@
+import logging
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import transaction
@@ -15,6 +16,8 @@ from carts.models import Cart
 from orders.forms import CreateOrderForm
 from orders.models import Order, OrderItem
 from orders.utils import send_order_email_to_seller, send_order_email_to_customer
+
+logger = logging.getLogger(__name__)
 
 def get_user_carts(request):
     if request.user.is_authenticated:
@@ -95,10 +98,16 @@ class CreateOrderView(FormView):
                     # Очищаем корзину
                     cart_items.delete()
 
-                    # Отправляем уведомления
-                    send_order_email_to_seller(order, comment)
-                    if order.email:
-                        send_order_email_to_customer(order)
+                    # Отправляем уведомления (не ломаем оформление при сбое SMTP)
+                    try:
+                        send_order_email_to_seller(order, comment)
+                    except Exception:
+                        logger.exception("Failed to send order email to seller (order_id=%s)", order.id)
+                    try:
+                        if order.email:
+                            send_order_email_to_customer(order)
+                    except Exception:
+                        logger.exception("Failed to send order email to customer (order_id=%s)", order.id)
 
                     # Разрешаем просмотр страницы успеха для этого заказа (гостям и на случай разлогина)
                     allowed = self.request.session.get('allowed_orders') or []
