@@ -229,43 +229,62 @@
     const ENDPOINT_SEARCH_CITY = "/orders/ajax/search-city/";
     const ENDPOINT_GET_WAREHOUSES = "/orders/ajax/get-warehouses/";
     let selectedCity = "";
+    // Track in-flight XHR to cancel when a newer request starts
+    let inflightSearch = null;
+    let inflightWarehouses = null;
 
     $(function() {
       $("#nova_city").autocomplete({
         minLength: 2,
         source(request, response) {
-          $.ajax({
-            url: ENDPOINT_SEARCH_CITY,
-            method: "GET",
-            dataType: "json",
-            data: { q: request.term }
-          }).done(function(res){
-            const items = Array.isArray(res) ? res : [];
-            response(items.map(function(c){ return { label: c.label, value: c.label, ref: c.ref }; }));
-          }).fail(function(){ response([]); });
+          const term = String(request.term || '').trim();
+          if (term.length < 2) { response([]); return; }
+          requestCitiesDebounced(term, response);
         },
         select(event, ui) {
           $('#nova_city_ref').val(ui.item.ref);
           selectedCity = ui.item.label;
           $('#nova_city').val(selectedCity);
 
-          $.ajax({
+          // Prepare warehouses select
+          const $w = $('#warehouse_display');
+          // If Select2 already initialized, destroy to avoid duplicates
+          if ($w.hasClass('select2-hidden-accessible')) {
+            try { $w.select2('destroy'); } catch(e) {}
+          }
+          // Reset and show loading state
+          $w.empty().prop('disabled', true).append(new Option('Завантаження...', ''));
+
+          // Abort previous warehouses request if still running
+          if (inflightWarehouses && inflightWarehouses.readyState !== 4) {
+            try { inflightWarehouses.abort(); } catch(e) {}
+          }
+
+          inflightWarehouses = $.ajax({
             url: ENDPOINT_GET_WAREHOUSES,
             method: "GET",
             dataType: "json",
+            timeout: 10000,
             data: { settlement_ref: ui.item.ref }
           }).done(function(res){
-            const $w = $('#warehouse_display').empty();
             const list = (res && res.success && Array.isArray(res.warehouses)) ? res.warehouses : [];
-            list.forEach(function(desc){ $w.append(new Option(desc, desc)); });
-            $w.select2({ placeholder: 'Оберіть відділення', width: '100%' });
+            $w.empty();
+            if (list.length === 0) {
+              $w.append(new Option('Відділення не знайдені', ''));
+            } else {
+              list.forEach(function(desc){ $w.append(new Option(desc, desc)); });
+            }
+            $w.prop('disabled', false);
 
+            // Re-init Select2 and bind change handler once
+            $w.off('change');
+            $w.select2({ placeholder: 'Оберіть відділення', width: '100%' });
             $w.on('change', function () {
               const warehouseText = $(this).find('option:selected').text();
               $('#id_delivery_address').val(`${selectedCity}, ${warehouseText}`);
             });
           }).fail(function(){
-            $('#warehouse_display').empty();
+            $w.empty().prop('disabled', false).append(new Option('Помилка завантаження відділень', ''));
           });
         }
       });
