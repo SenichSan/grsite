@@ -218,6 +218,10 @@ body {
   bottom: -50px; /* offset only here */
 }
 
+/* Lower the header layer ONLY on product page, so image lightbox is above */
+.container.product-page.page-wrapper .header-hero { z-index: 200; }
+.container.product-page.page-wrapper .header-hero::after { z-index: 210; }
+
 /* Product page only: widen spacing between header nav buttons */
 .container.product-page.page-wrapper .header-hero .tm-nav-buttons {
   gap: 50px; /* widened to match reference screenshot */
