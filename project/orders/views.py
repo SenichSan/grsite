@@ -11,6 +11,8 @@ from django.http import JsonResponse, Http404
 from django.core.cache import cache
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from carts.models import Cart
 from orders.forms import CreateOrderForm
@@ -198,6 +200,21 @@ class OrderSuccessView(TemplateView):
 
 
 # nova poshta поиск отделений
+def _np_session():
+    """Requests session with retries for Nova Poshta API calls."""
+    s = requests.Session()
+    retries = Retry(
+        total=3,
+        backoff_factor=0.5,
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["POST"],
+        raise_on_status=False,
+    )
+    adapter = HTTPAdapter(max_retries=retries)
+    s.mount("https://", adapter)
+    s.mount("http://", adapter)
+    return s
+
 def search_city(request):
     q = request.GET.get('q', '')[:100]
     if len(q) < 2:
@@ -218,9 +235,13 @@ def search_city(request):
         }
     }
     try:
-        resp = requests.post("https://api.novaposhta.ua/v2.0/json/", json=payload, timeout=7).json()
-        if resp.get('success'):
-            data = resp.get('data', [])
+        session = _np_session()
+        resp = session.post(
+            "https://api.novaposhta.ua/v2.0/json/", json=payload, timeout=6
+        )
+        data_json = resp.json() if resp.ok else {}
+        if data_json.get('success'):
+            data = data_json.get('data', [])
             results = [
                 {
                     "label": f"{item.get('Present', '')}",
@@ -231,9 +252,9 @@ def search_city(request):
             ]
             cache.set(cache_key, results, 300)
             return JsonResponse(results, safe=False)
-        else:
-            return JsonResponse([], safe=False)
-    except Exception:
+        return JsonResponse([], safe=False)
+    except Exception as e:
+        logger.warning("NP search_city failed: %s", e)
         # Fail gracefully to avoid 500 on UI
         return JsonResponse([], safe=False)
 
@@ -257,15 +278,22 @@ def get_warehouses(request):
             "SettlementRef": settlement_ref
         }
     }
-    resp = requests.post("https://api.novaposhta.ua/v2.0/json/", json=payload, timeout=5).json()
-    if resp.get("success"):
-        warehouses = [
-            w.get("Description", "")
-            for w in resp.get("data", [])
-        ]
-        result = {"success": True, "warehouses": warehouses}
-        cache.set(cache_key, result, 300)
-        return JsonResponse(result)
+    try:
+        session = _np_session()
+        resp = session.post(
+            "https://api.novaposhta.ua/v2.0/json/", json=payload, timeout=12
+        )
+        data_json = resp.json() if resp.ok else {}
+        if data_json.get("success"):
+            warehouses = [
+                w.get("Description", "")
+                for w in data_json.get("data", [])
+            ]
+            result = {"success": True, "warehouses": warehouses}
+            cache.set(cache_key, result, 300)
+            return JsonResponse(result)
+    except Exception as e:
+        logger.warning("NP get_warehouses failed (ref=%s): %s", settlement_ref, e)
     return JsonResponse({"success": False, "warehouses": []})
 
 def get_warehouse_description(ref):
@@ -279,9 +307,13 @@ def get_warehouse_description(ref):
         }
     }
     try:
-        res = requests.post("https://api.novaposhta.ua/v2.0/json/", json=payload, timeout=5).json()
-        if res.get("success") and res["data"]:
-            return res["data"][0]["Description"]
-    except Exception:
-        pass
+        session = _np_session()
+        res_resp = session.post(
+            "https://api.novaposhta.ua/v2.0/json/", json=payload, timeout=12
+        )
+        res = res_resp.json() if res_resp.ok else {}
+        if res.get("success") and res.get("data"):
+            return res["data"][0].get("Description", ref)
+    except Exception as e:
+        logger.warning("NP get_warehouse_description failed (ref=%s): %s", ref, e)
     return ref  # fallback: просто вернуть ref, если что-то пошло не так

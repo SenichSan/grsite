@@ -1,0 +1,34 @@
+# /etc/nginx/sites-available/grownica
+# Replace example.com with your domain and adjust paths
+server {
+    listen 80;
+    server_name example.com www.example.com;
+
+    # Max upload size (adjust if you need bigger media uploads)
+    client_max_body_size 20M;
+
+    # Static files
+    location /static/ {
+        alias /srv/grownica/project/project/staticfiles/;
+        autoindex off;
+        expires 7d;
+        add_header Cache-Control "public, max-age=604800";
+    }
+
+    # Media files (user uploads)
+    location /media/ {
+        alias /srv/grownica/project/project/media/;
+        autoindex off;
+        expires 7d;
+        add_header Cache-Control "public, max-age=604800";
+    }
+
+    # Proxy to application server
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}

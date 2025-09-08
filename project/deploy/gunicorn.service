@@ -1,0 +1,24 @@
+# /etc/systemd/system/grownica.service
+# Adjust User/Group, WorkingDirectory, ExecStart paths as needed
+[Unit]
+Description=Grownica Django App (gunicorn)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=www-data
+WorkingDirectory=/srv/grownica/project
+Environment="PATH=/srv/grownica/venv/bin"
+Environment="DJANGO_SETTINGS_MODULE=app.settings"
+ExecStart=/srv/grownica/venv/bin/gunicorn app.wsgi:application \
+  --name grownica \
+  --workers 3 \
+  --bind 127.0.0.1:8000 \
+  --timeout 60 \
+  --log-level info
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
