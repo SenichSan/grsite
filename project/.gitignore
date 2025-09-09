@@ -12,3 +12,5 @@ cache/
 db.sqlite3
 media/
 .env
+
+/project/staticfiles/
