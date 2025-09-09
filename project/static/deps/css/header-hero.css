@@ -218,7 +218,14 @@
 /* На узких экранах: переводим все в поток (stack), чтобы ничего не перекрывалось */
 @media (max-width: 599px) {
   .container-inner.header-hero-content { padding: 0 12px; }
-  .tm-header { height: auto; padding: 12px 0 18px; }
+  /* Make header a vertical flex container to pin nav to bottom */
+  .tm-header {
+    height: auto;
+    padding: 12px 0 18px;
+    display: flex;
+    flex-direction: column;
+    min-height: 320px;
+  }
 
   /* делаем элементы нормальным документным потоком (не absolute) */
   .tm-header-left,
@@ -232,12 +239,15 @@
   }
 
   .tm-header-left { margin: 6px 0 4px; }
-  .tm-header-social { order: 1; margin-bottom: 8px; gap: 12px; }
+  /* Social block goes below titles; increase spacing slightly */
+  .tm-header-social { order: 1; margin: 10px 0 12px; gap: 12px; }
   .tm-header-left { order: 2; }
-  .tm-header-nav { order: 3; margin-top: 8px; }
+  /* Nav sits at the bottom of the header area */
+  .tm-header-nav { order: 3; margin-top: auto; }
 
   .tm-nav-buttons { gap: 10px; flex-wrap: wrap; justify-content: center; }
-  .tm-social-link { width: 32px; height: 32px; border-radius: 6px; }
+  /* Responsive social size using clamp: 44px..64px depending on width */
+  .tm-social-link { width: clamp(44px, 12vw, 64px); height: clamp(44px, 12vw, 64px); border-radius: 10px; }
   .tm-site-title {
     font-size: 1.25rem;
     text-align: center;
@@ -250,11 +260,17 @@
     left: 0;
     bottom: 0;
     font-size: 0.95rem;
+    margin-top: 4px;
+    margin-bottom: 4px;
   }
 
   /* Slightly reduce overall header footprint on very small screens */
   .header-hero { min-height: 260px; }
   .tm-nav-buttons { margin-bottom: 1rem; }
+  /* Evenly distribute three nav links across the width */
+  .tm-nav-buttons { width: 100%; justify-content: space-between; }
+  .tm-nav-buttons .tm-nav-link { flex: 1 1 0; text-align: center; }
+  .tm-nav-buttons .tm-nav-li { flex: 1 1 0; display: flex; justify-content: center; }
 }
 
 /* Extra tightening for small phones */
