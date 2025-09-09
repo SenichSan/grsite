@@ -240,6 +240,7 @@
     width: 100%;
   }
 
+
   .tm-header-left { margin: 6px 0 4px; }
   /* Center the title + subtitle block horizontally */
   .tm-header-left { justify-content: center; }
