@@ -41,7 +41,7 @@
   border-radius: 8px;
   pointer-events: none;
   box-shadow: 0 0 20px rgba(255, 199, 91, 0.4);
-  z-index: 1000; /* выше overlay и всего остального */
+  z-index: 10; /* ниже контента; соц-иконки и текст будут над рамкой */
 }
 
 /* фон и overlay — оставляем прежние слои (вставлены как были) */
@@ -216,17 +216,19 @@
 }
 
 /* На узких экранах: переводим все в поток (stack), чтобы ничего не перекрывалось */
-@media (max-width: 599px) {
+@media (max-width: 768px) {
   .container-inner.header-hero-content { padding: 0 12px; }
-  /* Make header a vertical flex container to pin nav to bottom */
+  /* Перекладываем на grid: верх/центр/низ */
   .tm-header {
     height: auto;
-    padding: 12px 0 18px;
-    display: flex;
-    flex-direction: column;
-    min-height: 320px;
-    /* account for iOS safe-area */
-    padding-bottom: calc(18px + env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    align-items: center;
+    justify-items: center;
+    row-gap: 8px;
+    padding: 10px 0 14px;
+    min-height: 380px;             /* запас по высоте, чтобы нижняя кнопка не резалась */
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
   }
 
   /* делаем элементы нормальным документным потоком (не absolute) */
@@ -235,8 +237,6 @@
   .tm-header-nav {
     position: static;
     transform: none;
-    display: flex;
-    justify-content: center;
     width: 100%;
   }
 
@@ -246,17 +246,16 @@
   .tm-header-left { justify-content: center; }
   .tm-site-text-box { display: flex; flex-direction: column; align-items: center; text-align: center; }
   /* Social block goes below titles; increase spacing slightly */
-  .tm-header-social { order: 1; margin: 10px 0 12px; gap: 12px; }
-  .tm-header-left { order: 2; }
-  /* Nav sits at the bottom of the header area */
-  .tm-header-nav { order: 3; margin-top: auto; }
+  .tm-header-social { grid-row: 1; display: flex; justify-content: center; margin: 6px 0 6px; gap: 10px; }
+  .tm-header-left   { grid-row: 2; display: flex; justify-content: center; }
+  .tm-header-nav    { grid-row: 3; display: flex; justify-content: center; padding-bottom: 4px; }
 
   .tm-nav-buttons { gap: 10px; flex-wrap: wrap; justify-content: center; }
   /* Responsive social size using clamp: 44px..64px depending on width */
-  .tm-social-link { width: clamp(44px, 12vw, 64px); height: clamp(44px, 12vw, 64px); border-radius: 10px; }
+  .tm-social-link { width: clamp(36px, 9vw, 52px); height: clamp(36px, 9vw, 52px); border-radius: 10px; }
   .tm-site-title {
     /* responsive title size */
-    font-size: clamp(3rem, 5.5vw, 3rem);
+    font-size: clamp(2rem, 6vw, 2.4rem);
     text-align: center;
     /* reset desktop offsets to avoid overflow on small screens */
     left: 0;
@@ -268,20 +267,20 @@
     left: 0;
     bottom: 0;
     /* responsive subtitle size */
-    font-size: clamp(0.95rem, 4vw, 1.1rem);
+    font-size: clamp(0.88rem, 3.2vw, 1rem);
     margin-top: 4px;
     margin-bottom: 4px;
     margin-left: 0;
     margin-right: 0;
   }
 
-  /* Slightly reduce overall header footprint on very small screens */
-  .header-hero { min-height: 260px; }
-  .tm-nav-buttons { margin-bottom: 1rem; }
+  /* Общий след: оставляем компактный футпринт, при этом приподнимаем кнопки */
+  .header-hero { min-height: 320px; }
+  .tm-nav-buttons { margin-bottom: 0.5rem; }
   /* Evenly distribute three nav links across the width */
-  .tm-nav-buttons { width: 100%; justify-content: space-between; }
-  .tm-nav-buttons .tm-nav-link { flex: 1 1 0; text-align: center; min-height: 44px; }
-  .tm-nav-buttons .tm-nav-li { flex: 1 1 0; display: flex; justify-content: center; }
+  .tm-nav-buttons { width: 100%; justify-content: space-between; column-gap: 8px; flex-wrap: wrap; }
+  .tm-nav-buttons .tm-nav-li { flex: 1 1 calc(33.333% - 8px); display: flex; justify-content: center; }
+  .tm-nav-buttons .tm-nav-link { flex: 0 1 auto; text-align: center; min-height: 42px; padding: 8px 10px; font-size: 1.05rem; }
 }
 
 /* Extra tightening for small phones */
@@ -310,3 +309,87 @@
 }
 
 
+
+/* ===== Mobile Hard Override (last wins) ===== */
+@media (max-width: 768px) {
+  /* Контейнер хедера — явная трёхрядная сетка */
+  .header-hero .tm-header {
+    position: static; /* позволяем абсолютному позиционированию соц.иконок от .header-hero */
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    align-items: center;
+    justify-items: center;
+    row-gap: 0;                         /* убрали межрядный зазор */
+    min-height: 340px; /* компактнее */
+    padding: 0 0 calc(10px + env(safe-area-inset-bottom)); /* убрали верхний внутренний отступ */
+  }
+
+  /* Верх: соц‑иконки с небольшим зазором */
+  /* Поднимаем соц‑иконки относительно всей шапки и выводим над рамкой (::after имеет z-index:1000) */
+  .header-hero .tm-header-social {
+    grid-row: 1;
+    position: absolute;
+    top: 26px; /* воздух сверху */
+    left: 50%;
+    transform: translateX(-50%); /* центрируем по горизонтали */
+    right: auto;
+    display: flex;
+    justify-content: center;
+    gap: 45px;
+    margin: 0;
+    padding: 0;
+    z-index: 20; /* контент над рамкой */
+  }
+  /* +10% к текущему размеру */
+  .header-hero .tm-social-link { width: clamp(42px, 12vw, 64px); height: clamp(42px, 12vw, 64px); }
+
+  /* Центр: заголовки строго по центру, без десктоп‑смещений */
+  .header-hero .tm-header-left { grid-row: 2; display: flex; justify-content: center; margin: 0; }
+  .header-hero .tm-site-title {
+    position: static;
+    left: 0;
+    bottom: 0;
+    margin: 0;
+    text-align: center;
+    /* увеличили заголовок на ~25–30% в мобильном режиме */
+    font-size: clamp(3.4rem, 7vw, 3rem);
+  }
+  .header-hero .tm-site-description {
+    position: static;
+    left: 0;
+    bottom: 0;
+    text-align: center;
+    font-size: clamp(1.2rem, 3.2vw, 1rem);
+    margin: 4px 0;
+  }
+
+  /* Слегка опускаем блок заголовка и подзаголовка, не влияя на поток (не выдавливаем навигацию) */
+  .header-hero .tm-site-text-box { transform: translateY(28px); }
+
+  /* Низ: навигация — всегда в один ряд (адаптивная ширина/кегль) */
+  .header-hero .tm-header-nav { grid-row: 3; display: flex; justify-content: center; margin-top: 6px; }
+  .header-hero .tm-nav-buttons {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: clamp(6px, 3vw, 12px);
+    row-gap: 0;
+    margin: 0 0 8px 0;
+    padding: 0 clamp(6px, 2.5vw, 10px);
+    list-style: none;
+  }
+  .header-hero .tm-nav-buttons .tm-nav-li { display: flex; justify-content: center; min-width: 0; }
+  .header-hero .tm-nav-buttons .tm-nav-link {
+    display: block;
+    width: 100%;
+    white-space: nowrap;               /* не переносим текст, лучше уменьшим кегль */
+    text-align: center;
+    min-height: clamp(40px, 6.5vw, 48px);
+    padding: clamp(6px, 2.2vw, 10px) clamp(8px, 3vw, 12px);
+    font-size: clamp(0.95rem, 3.2vw, 1.05rem);
+    border-radius: 6px;
+  }
+
+  /* Внешняя рамка: гарантируем запас по высоте */
+  .header-hero { min-height: 300px; }
+}

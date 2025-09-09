@@ -1,154 +1,137 @@
+{% extends 'base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html>
+{% block css %}
+  <!-- Home-only layout overrides: header flush to top, full-bleed blocks -->
+  <style>
+    /* Убираем верх/низ от main.container и делаем его full-bleed только на главной */
+    main.container.my-4 {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      /* боковые поля контейнера оставляем как в проекте */
+    }
 
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title>Grownica</title>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Marck+Script&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Ruslan+Display&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'deps/css/faq.css' %}">
+    /* Утилита: full-bleed только на мобильных — растянуть секцию на всю ширину вьюпорта */
+    @media (max-width: 576px) {
+      .full-bleed {
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
+      }
+    }
+  </style>
 
-    <link href="{% static 'deps/css/templatemo-style.css' %}" rel="stylesheet"/>
+  <!-- Шрифты, используемые на главной -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Marck+Script&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Ruslan+Display&display=swap" rel="stylesheet">
 
+  <!-- Глобальные/тематические стили, нужные именно на главной -->
+  <link href="{% static 'deps/css/templatemo-style.css' %}" rel="stylesheet"/>
+  <link rel="stylesheet" href="{% static 'deps/css/discount_badge.css' %}">
+  <link rel="stylesheet" href="{% static 'deps/css/seo-text.css' %}">
+  <link rel="stylesheet" href="{% static 'deps/css/news_slider.css' %}">
+  <link rel="stylesheet" href="{% static 'deps/css/categories-glass.css' %}">
+  <link rel="stylesheet" href="{% static 'deps/css/bestsellers-carousel.css' %}">
+  <link rel="stylesheet" href="{% static 'deps/css/header-hero.css' %}">
+  <link rel="stylesheet" href="{% static 'deps/css/footer.css' %}">
+  <link rel="stylesheet" href="{% static 'deps/css/cart-component.css' %}">
+  <link rel="stylesheet" href="{% static 'deps/css/faq.css' %}">
 
-    {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'deps/css/discount_badge.css' %}">
-    <link href="{% static 'deps/css/home_categories.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'deps/css/seo-text.css' %}">
-    <link rel="stylesheet" href="{% static 'deps/css/news_slider.css' %}">
-    <link rel="stylesheet" href="{% static 'deps/css/categories-glass.css' %}">
-    <link rel="stylesheet" href="{% static 'deps/css/bestsellers-carousel.css' %}">
-    <link rel="stylesheet" href="{% static 'deps/css/header-hero.css' %}">
-    <link rel="stylesheet" href="{% static 'deps/css/footer.css' %}">
-    <link rel="stylesheet" href="{% static 'deps/css/cart-component.css' %}">
-    {% endblock %}
-    
-    <!-- Favicon & app icons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'deps/favicon/apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'deps/favicon/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'deps/favicon/favicon-16x16.png' %}">
-    <link rel="shortcut icon" href="{% static 'deps/favicon/favicon.ico' %}">
-    <link rel="manifest" href="{% static 'deps/favicon/site.webmanifest' %}">
-    <meta name="theme-color" content="#ffffff">
+  <!-- Slick carousel CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+{% endblock %}
 
-
-
-</head>
-
-
-<body>
-
-<div class="container home-framed">
-
-    <!-- Top box -->
-    {% include 'components/header-hero.html' %}
-
-    <!-- Кнопки-переключатели категорий -->
-    <div class="tm-paging-links-wrap">
-        <nav class="tm-paging-links" aria-label="Категорії">
-            <h2 class="tm-section-title category-section-title">Оберіть бажану категорію</h2>
-            <ul class="tm-paging-list">
-                {% for category in categories %}
-                <li class="tm-paging-item">
-                    <a href="{% url 'catalog:index' category.slug %}"
-                       class="tm-paging-link category-card"
-                       aria-current="{% if category.slug == current_category %}true{% endif %}">
-                        <div class="category-icon-wrap">
-                            <img src="{% static 'deps/icons/'|add:category.slug|add:'.png' %}"
-                                 alt="" class="category-icon" aria-hidden="true"/>
-                        </div>
-                        <div class="category-label">{{ category.name }}</div>
-                        {% if category.short_description %}
-                        <div class="category-subtitle tm-card-subtitle">{{ category.short_description }}</div>
-                        {% endif %}
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
-        </nav>
+{% block content %}
+  <div class="container home-framed">
+    <div class="full-bleed">
+      {% include 'components/header-hero.html' %}
     </div>
 
+    <div class="tm-paging-links-wrap full-bleed">
+      <nav class="tm-paging-links" aria-label="Категорії">
+        <h2 class="tm-section-title category-section-title">Оберіть бажану категорію</h2>
+        <ul class="tm-paging-list">
+          {% for category in categories %}
+          <li class="tm-paging-item">
+            <a href="{% url 'catalog:index' category.slug %}"
+               class="tm-paging-link category-card"
+               aria-current="{% if category.slug == current_category %}true{% endif %}">
+              <div class="category-icon-wrap">
+                <img src="{% static 'deps/icons/'|add:category.slug|add:'.png' %}"
+                     alt="" class="category-icon" aria-hidden="true"/>
+              </div>
+              <div class="category-label">{{ category.name }}</div>
+              {% if category.short_description %}
+              <div class="category-subtitle tm-card-subtitle">{{ category.short_description }}</div>
+              {% endif %}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    </div>
 
-    {% include 'components/bestsellers-carousel.html' %}
+    <div class="full-bleed">
+      {% include 'components/bestsellers-carousel.html' %}
+    </div>
 
-    {% include "components/news_slider.html" with news_list=news_list %}
+    <div class="full-bleed">
+      {% include "components/news_slider.html" with news_list=news_list %}
+    </div>
 
+    <div class="full-bleed">
+      {% include "components/seo_text_section.html" %}
+    </div>
 
-    {% include "components/seo_text_section.html" %}
-
-
-    <section id="faq-section">
-        <div class="faq-container">
-            <div class="accordion">
-                {% include "components/faq.html" %}
-            </div>
+    <section id="faq-section" class="full-bleed">
+      <div class="faq-container">
+        <div class="accordion">
+          {% include "components/faq.html" %}
         </div>
+      </div>
     </section>
 
-
     {% include 'components/footer.html' %}
+  </div>
 
-</div>
+  {% include 'components/cart_button.html' %}
+  {% include 'components/cart_modal.html' %}
+{% endblock %}
 
-{% include 'components/cart_button.html' %}
-{% include 'components/cart_modal.html' %}
+{% block extra_js %}
+  <!-- Slick JS (после jQuery из base.html) -->
+  <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
+  <!-- Локальные скрипты главной -->
+  <script src="{% static 'deps/js/faq.js' %}"></script>
+  <script src="{% static 'deps/js/news_slider.js' %}"></script>
+  <script src="{% static 'deps/js/categories-glass.js' %}"></script>
+  <script src="{% static 'deps/js/bestsellers-tilt.js' %}"></script>
+  <script src="{% static 'deps/js/jquery-ajax.js' %}"></script>
+  <script src="{% static 'deps/js/bestsellers-carousel.js' %}"></script>
+  <script src="{% static 'deps/js/cart-component.js' %}"></script>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
-    <!-- Ensure cart modal styles load LAST to win cascade over global/theme libs -->
-    <link rel="stylesheet" href="{% static 'deps/css/cart-component.css' %}">
-
-<!-- jQuery core (needed for jquery-ajax.js handlers) -->
-<script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-
-<script src="{% static 'deps/js/faq.js' %}"></script>
-
-<script src="{% static 'deps/js/news_slider.js' %}"></script>
-
-<script src="{% static 'deps/js/categories-glass.js' %}"></script>
-<script src="{% static 'deps/js/bestsellers-tilt.js' %}"></script>
-
-<!-- Global AJAX handlers for cart actions (legacy + .add-to-cart-btn) -->
-<script src="{% static 'deps/js/jquery-ajax.js' %}"></script>
-
-<script src="{% static 'deps/js/bestsellers-carousel.js' %}"></script>
-
-
-<script src="{% static 'deps/js/cart-component.js' %}"></script>
-
-
-<script>
+  <script>
     $(function(){
       $('.tm-featured-carousel').slick({
-        infinite: true,           // бесконечный прокрут
+        infinite: true,
         slidesToShow: 5,
         slidesToScroll: 1,
         arrows: true,
         dots: false,
-
-        // автопрокрутка
         autoplay: true,
-        autoplaySpeed: 3000,      // время между перелистыванием (ms)
-        speed: 1000,              // анимация прокрутки (ms)
-        pauseOnHover: true,       // останавливается при наведении
+        autoplaySpeed: 3000,
+        speed: 1000,
+        pauseOnHover: true,
         pauseOnFocus: true,
-
-        // отступы и стрелки остаются как раньше
         centerPadding: '30px',
         appendArrows: $('.tm-featured-wrapper .container'),
         prevArrow: '<button type="button" class="slick-prev slick-arrow">‹</button>',
         nextArrow: '<button type="button" class="slick-next slick-arrow">›</button>',
-
         responsive: [
           { breakpoint: 1200, settings: { slidesToShow: 4 }},
           { breakpoint: 992,  settings: { slidesToShow: 3 }},
@@ -157,22 +140,18 @@
         ]
       });
     });
-</script>
+  </script>
 
-
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
+  <!-- Tawk.to -->
+  <script type="text/javascript">
     var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
     (function(){
-    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-    s1.async=true;
-    s1.src='https://embed.tawk.to/6896970ca4fc79192a7bea9e/1j263s266';
-    s1.charset='UTF-8';
-    s1.setAttribute('crossorigin','*');
-    s0.parentNode.insertBefore(s1,s0);
+      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+      s1.async=true;
+      s1.src='https://embed.tawk.to/6896970ca4fc79192a7bea9e/1j263s266';
+      s1.charset='UTF-8';
+      s1.setAttribute('crossorigin','*');
+      s0.parentNode.insertBefore(s1,s0);
     })();
-</script>
-<!--End of Tawk.to Script-->
-
-</body>
-</html>
+  </script>
+{% endblock %}

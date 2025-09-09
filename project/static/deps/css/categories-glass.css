@@ -160,7 +160,7 @@ position: relative;
 /* responsive */
 @media (max-width: 576px) {
   .tm-paging-links {
-    padding: 0 12px;
+    padding: 0; /* вместо 0 12px — full-bleed на мобильных */
   }
   .tm-paging-list {
     grid-template-columns: 1fr;

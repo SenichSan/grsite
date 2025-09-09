@@ -23,8 +23,18 @@ body {
   background:
   url('/static/deps/images/bestsellers-carousel-bg.jpg') center/contain no-repeat;
   background-size: 100% 100%;
-  perspective: 900px; /* strengthen 3D for direct children */
+  perspective: 900px; /* ensure 3D also applies at grid level */
   position: relative;          /* for overlay */
+}
+
+/* Мобильная адаптация: уменьшаем паддинги, чтобы не было горизонтальной прокрутки */
+@media (max-width: 576px) {
+  .container-bestsellers.basic-grid { padding: 14px; }
+}
+
+/* Крупные экраны: чуть меньше паддинги вместо zoom-эффекта */
+@media (min-width: 1200px) {
+  .container-bestsellers.basic-grid { padding: 40px; }
 }
 
 /* Semi-transparent creamy overlay like categories block */

@@ -7,8 +7,8 @@
   font-display: swap;
 }
 
-/* page-level zoom (requested) */
-body { zoom: 0.9; }
+/* убран page-level zoom: ломал адаптив и масштаб хедера */
+/* body { zoom: 0.9; } */
 
 
 .product-page .product-detail .product-detail-header .previous-page .icon {
@@ -210,43 +210,27 @@ body {
 /* Product page: uniform small gap after header */
 .product-page .main { padding-top: 0.3rem; }
 
-/* Scoped header adjustments: apply only on product page */
-.container.product-page.page-wrapper .header-hero .tm-header {
-  position: relative;
-  height: 95px;
-  display: block;
-  bottom: -50px; /* offset only here */
-}
+/* Убираем локальные переопределения хедера, чтобы использовать общий header-hero.css */
+/* .container.product-page.page-wrapper .header-hero .tm-header { ... } */
 
-/* Lower the header layer ONLY on product page, so image lightbox is above */
-.container.product-page.page-wrapper .header-hero { z-index: 200; }
-.container.product-page.page-wrapper .header-hero::after { z-index: 210; }
+/* Ранее повышенный z-index рамки перекрывал контент; возвращаем управление общему CSS */
+/* .container.product-page.page-wrapper .header-hero { z-index: 200; } */
+/* .container.product-page.page-wrapper .header-hero::after { z-index: 210; } */
 
-/* Product page only: widen spacing between header nav buttons */
-.container.product-page.page-wrapper .header-hero .tm-nav-buttons {
-  gap: 50px; /* widened to match reference screenshot */
-}
-.container.product-page.page-wrapper .header-hero .tm-nav-buttons .tm-nav-link {
-  padding-left: 23px; /* extra width per item to reach target total */
-  padding-right: 23px;
-}
+/* Не трогаем размеры/отступы нав-кнопок на уровне страницы — их ведёт header-hero.css */
+/* .container.product-page.page-wrapper .header-hero .tm-nav-buttons { ... } */
+/* .container.product-page.page-wrapper .header-hero .tm-nav-buttons .tm-nav-link { ... } */
 
-/* Product page only: social block position and extra bottom padding */
-.container.product-page.page-wrapper .header-hero .tm-header-social {
-  position: absolute;
-  top: 50%;
-  right: -3rem;
-  transform: translateY(-50%);
-  display: flex;
-  gap: 30px;
-  align-items: center;
-  z-index: 4;
-  padding-bottom: 3.95rem;
-}
+/* Соц-иконки управляются общим хедером; локальные переопределения удалены */
+/* .container.product-page.page-wrapper .header-hero .tm-header-social { ... } */
 
-@media (max-width: 599px) {
-  /* keep tighter on very small screens */
-  .container.product-page.page-wrapper .header-hero .tm-nav-buttons { gap: 16px; }
+/* Мобильные настройки — из общего header-hero.css */
+/* @media (max-width: 599px) { .container.product-page.page-wrapper .header-hero .tm-nav-buttons { gap: 16px; } } */
+
+/* Если нужна специфичная десктопная правка только для product_page, делаем её явно: */
+@media (min-width: 992px) {
+  /* пример (оставлено как заготовка, сейчас не применяем): */
+  /* .container.product-page.page-wrapper .header-hero .tm-nav-buttons { gap: 40px; } */
 }
 
 /* Consistent spacing between blocks on product page */

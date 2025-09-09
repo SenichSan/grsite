@@ -30,7 +30,7 @@
 }
 
 /* ====== Плавающая кнопка (согласованный стиль) ====== */
-#tm-cart-component { position: fixed; right: 34px; bottom: 92vh; z-index: 12000; }
+#tm-cart-component { position: fixed; right: 34px; bottom: 32px; z-index: 12000; }
 #tm-cart-component .tm-cart-button {
   width: 108px; height: 125px;
   display: inline-flex; align-items: center; justify-content: center;

@@ -171,7 +171,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(90deg, #e6bf5a, #e6bf5a););
+    background: linear-gradient(90deg, #e6bf5a, #e6bf5a);
     color: #000;
     font-weight: 700;
     box-shadow: 0 0 10px rgb(255 221 0 / 60%);
@@ -221,9 +221,14 @@
     .fantasy-news-slider { padding-bottom: 84px; }
 }
 
+/* Дополнительные корректировки отступов на мобильных, чтобы избежать переполнений */
+@media (max-width: 576px) {
+    .fantasy-news-slider-container { padding: 16px; }
+    .fantasy-news-slider { margin: 16px auto; }
+}
+
 .container-slider {
     background: radial-gradient(circle at 20% 50%, rgba(0,184,184,0.2), transparent 40%),
             radial-gradient(circle at 80% 50%, rgba(0,184,184,0.15), transparent 35%),
             #000;
 }
-
