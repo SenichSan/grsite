@@ -225,6 +225,8 @@
     display: flex;
     flex-direction: column;
     min-height: 320px;
+    /* account for iOS safe-area */
+    padding-bottom: calc(18px + env(safe-area-inset-bottom));
   }
 
   /* делаем элементы нормальным документным потоком (не absolute) */
@@ -249,7 +251,8 @@
   /* Responsive social size using clamp: 44px..64px depending on width */
   .tm-social-link { width: clamp(44px, 12vw, 64px); height: clamp(44px, 12vw, 64px); border-radius: 10px; }
   .tm-site-title {
-    font-size: 1.25rem;
+    /* responsive title size */
+    font-size: clamp(1.25rem, 5.5vw, 1.8rem);
     text-align: center;
     /* reset desktop offsets to avoid overflow on small screens */
     left: 0;
@@ -259,7 +262,8 @@
     text-align: center;
     left: 0;
     bottom: 0;
-    font-size: 0.95rem;
+    /* responsive subtitle size */
+    font-size: clamp(0.95rem, 4vw, 1.1rem);
     margin-top: 4px;
     margin-bottom: 4px;
   }
@@ -269,7 +273,7 @@
   .tm-nav-buttons { margin-bottom: 1rem; }
   /* Evenly distribute three nav links across the width */
   .tm-nav-buttons { width: 100%; justify-content: space-between; }
-  .tm-nav-buttons .tm-nav-link { flex: 1 1 0; text-align: center; }
+  .tm-nav-buttons .tm-nav-link { flex: 1 1 0; text-align: center; min-height: 44px; }
   .tm-nav-buttons .tm-nav-li { flex: 1 1 0; display: flex; justify-content: center; }
 }
 
