@@ -1,5 +1,7 @@
 /* create_order.js: behaviors for the checkout page */
 (function() {
+  // Lightweight logger (enable via window.__NP_DEBUG=true)
+  function npLog() { try { if (window.__NP_DEBUG) console.log.apply(console, arguments); } catch(_) {} }
   function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -225,40 +227,78 @@
   function initNovaPoshta() {
     const $ = window.jQuery;
     if (!$) return;
-    // Use backend proxy endpoints to avoid CORS and keep API key server-side
     const ENDPOINT_SEARCH_CITY = "/orders/ajax/search-city/";
     const ENDPOINT_GET_WAREHOUSES = "/orders/ajax/get-warehouses/";
     let selectedCity = "";
-    // Track in-flight XHR to cancel when a newer request starts
-    let inflightSearch = null;
+    let inflightSearch = null; // оставляем ссылку только для статуса логов
+    let lastQueryId = 0;       // идентификатор последнего запроса (anti-race)
     let inflightWarehouses = null;
 
+    function debounce(fn, wait) { let t=null; return function(){ const ctx=this,args=arguments; clearTimeout(t); t=setTimeout(function(){ fn.apply(ctx,args); }, wait); }; }
+
+    function requestCities(term, responseCb) {
+      const q = String(term || '').trim();
+      if (q.length < 2) { responseCb([]); return; }
+      const queryId = ++lastQueryId;
+      inflightSearch = $.ajax({
+        url: ENDPOINT_SEARCH_CITY,
+        method: "GET",
+        dataType: "json",
+        timeout: 12000,
+        cache: true,
+        data: { q }
+      }).done(function(res, textStatus, jqXHR){
+        npLog('[NP][DEV] city search ok:', q, 'status=', textStatus, 'id=', queryId);
+        if (queryId !== lastQueryId) { npLog('[NP][DEV] skip stale city result id=', queryId); return; }
+        let list = [];
+        // Формат A (backend DEV): простой массив объектов [{label, ref}] или строк
+        if (Array.isArray(res)) {
+          list = res.map(function(it){
+            if (typeof it === 'string') return { label: it, value: it, ref: '' };
+            const label = it.label || it.Present || it.name || '';
+            return { label, value: label, ref: it.ref || it.Ref || it.SettlementRef || '' };
+          });
+        }
+        // Формат B (альтернативный): { success: true, cities: [...] }
+        else if (res && res.success && Array.isArray(res.cities)) {
+          list = res.cities.map(function(it){
+            if (typeof it === 'string') return { label: it, value: it, ref: '' };
+            const label = it.label || it.Present || it.name || '';
+            return { label, value: label, ref: it.ref || it.Ref || it.SettlementRef || '' };
+          });
+        }
+        responseCb(list);
+      }).fail(function(jqXHR, textStatus, errorThrown){
+        // Если был abort браузером — это нормально при быстрым вводе; пропускаем
+        npLog('[NP][DEV] city search fail:', 'status=', textStatus, 'err=', errorThrown, 'id=', queryId);
+        if (queryId !== lastQueryId) { return; }
+        responseCb([]);
+      });
+    }
+    const fetchCitiesDebounced = debounce(requestCities, 250);
+    window.__NP_fetchCitiesDebounced = fetchCitiesDebounced; // for console tests
+
     $(function() {
+      npLog('[NP][DEV] init start');
       $("#nova_city").autocomplete({
         minLength: 2,
-        source(request, response) {
+        source: function(request, response) {
           const term = String(request.term || '').trim();
+          npLog('[NP][DEV] ac.source term=', term);
           if (term.length < 2) { response([]); return; }
-          requestCitiesDebounced(term, response);
+          fetchCitiesDebounced(term, response);
         },
-        select(event, ui) {
+        select: function(event, ui) {
+          npLog('[NP][DEV] ac.select item=', ui && ui.item);
           $('#nova_city_ref').val(ui.item.ref);
           selectedCity = ui.item.label;
           $('#nova_city').val(selectedCity);
 
-          // Prepare warehouses select
           const $w = $('#warehouse_display');
-          // If Select2 already initialized, destroy to avoid duplicates
-          if ($w.hasClass('select2-hidden-accessible')) {
-            try { $w.select2('destroy'); } catch(e) {}
-          }
-          // Reset and show loading state
+          if ($w.hasClass('select2-hidden-accessible')) { try { $w.select2('destroy'); } catch(_) {} }
           $w.empty().prop('disabled', true).append(new Option('Завантаження...', ''));
 
-          // Abort previous warehouses request if still running
-          if (inflightWarehouses && inflightWarehouses.readyState !== 4) {
-            try { inflightWarehouses.abort(); } catch(e) {}
-          }
+          if (inflightWarehouses && inflightWarehouses.readyState !== 4) { try { inflightWarehouses.abort(); } catch(_) {} }
 
           inflightWarehouses = $.ajax({
             url: ENDPOINT_GET_WAREHOUSES,
@@ -267,34 +307,31 @@
             timeout: 10000,
             data: { settlement_ref: ui.item.ref }
           }).done(function(res){
+            npLog('[NP][DEV] warehouses ok:', res);
             const list = (res && res.success && Array.isArray(res.warehouses)) ? res.warehouses : [];
             $w.empty();
-            if (list.length === 0) {
-              $w.append(new Option('Відділення не знайдені', ''));
-            } else {
-              list.forEach(function(desc){ $w.append(new Option(desc, desc)); });
-            }
+            if (list.length === 0) { $w.append(new Option('Відділення не знайдені', '')); }
+            else { list.forEach(function(desc){ $w.append(new Option(desc, desc)); }); }
             $w.prop('disabled', false);
 
-            // Re-init Select2 and bind change handler once
             $w.off('change');
             $w.select2({ placeholder: 'Оберіть відділення', width: '100%' });
             $w.on('change', function () {
               const warehouseText = $(this).find('option:selected').text();
               $('#id_delivery_address').val(`${selectedCity}, ${warehouseText}`);
             });
-          }).fail(function(){
+          }).fail(function(err){
+            npLog('[NP][DEV] warehouses fail:', err);
             $w.empty().prop('disabled', false).append(new Option('Помилка завантаження відділень', ''));
           });
         }
       });
+      npLog('[NP][DEV] autocomplete bound');
 
       $('#create_order_form').on('submit', function() {
         const city = $('#nova_city').val();
         const wh = $('#warehouse_display option:selected').text();
-        if (city && wh) {
-          $('#id_delivery_address').val(`${city}, ${wh}`);
-        }
+        if (city && wh) { $('#id_delivery_address').val(`${city}, ${wh}`); }
       });
     });
   }
