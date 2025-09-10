@@ -19,7 +19,9 @@ body {
 
 /* ---------- секция и заголовок ---------- */
 .container-bestsellers.basic-grid {
-  padding: 48px;
+  /* Синхронизируем с уменьшёнными отступами блока категорий */
+  padding: 0 26px;
+  padding-top: 1.2rem;
   background:
   url('/static/deps/images/bestsellers-carousel-bg.jpg') center/contain no-repeat;
   background-size: 100% 100%;
@@ -27,9 +29,12 @@ body {
   position: relative;          /* for overlay */
 }
 
-/* Мобильная адаптация: уменьшаем паддинги, чтобы не было горизонтальной прокрутки */
+/* Планшеты/мобилки: как в categories-glass.css */
+@media (max-width: 991px) {
+  .container-bestsellers.basic-grid { padding: 0 clamp(16px, 4vw, 24px); padding-top: 3rem; }
+}
 @media (max-width: 576px) {
-  .container-bestsellers.basic-grid { padding: 14px; }
+  .container-bestsellers.basic-grid { padding: 0 clamp(10px, 4vw, 16px); padding-top: 1.6rem; }
 }
 
 /* Крупные экраны: чуть меньше паддинги вместо zoom-эффекта */
@@ -56,10 +61,19 @@ body {
 .tm-section-title {
   position: relative;
   text-align: center;
-  margin: 0 0 3rem;
+  margin: 0 0 2.2rem;
+  padding-bottom: 14px; /* резерв под линию и дополнительный зазор до сетки */
   font-size: 1.8rem;
   font-weight: 700;
   color: #dcc49a;
+}
+
+/* Больше воздуха под заголовком на адаптивах — как у категорий */
+@media (max-width: 991px) {
+  .tm-section-title { margin: 0 0 1.8rem; }
+}
+@media (max-width: 576px) {
+  .tm-section-title { margin: 0 0 1rem; padding-bottom: 10px; }
 }
 
 .tm-section-title::after {
@@ -67,7 +81,7 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  margin-top: 3.8rem;
+  bottom: -8px; /* линия строго под заголовком, как в блоке категорий */
   height: 2px;
   background: linear-gradient(90deg, #2f2d28, #ab9964, #2f2d28);
 }
@@ -79,6 +93,7 @@ body {
   grid-template-columns: repeat(2, 1fr); /* fallback для мобильных */
   align-items: start;
   justify-items: center; /* центрируем карточку внутри ячейки */
+  margin-top: 8px;   /* небольшой зазор от подчеркивания заголовка */
   margin-bottom: 3.2rem;
   perspective: 900px; /* ensure 3D also applies at grid level */
 }
