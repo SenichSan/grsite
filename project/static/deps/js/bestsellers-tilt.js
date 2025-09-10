@@ -4,6 +4,18 @@
 
 (function(){
   document.addEventListener('DOMContentLoaded', function(){
+    // Disable tilt on touch/coarse pointers and small screens
+    try {
+      const isCoarse = window.matchMedia('(pointer: coarse)').matches;
+      const noHover = window.matchMedia('(hover: none)').matches;
+      const isSmall = window.matchMedia('(max-width: 768px)').matches;
+      if (isCoarse || noHover || isSmall) {
+        // Mark root for CSS if needed and skip binding
+        document.documentElement.classList.add('tilt-disabled');
+        return;
+      }
+    } catch(_) { /* no-op */ }
+
     const cards = document.querySelectorAll('.tm-featured-grid article.tm-product-card');
     if (!cards.length) return;
 
@@ -57,9 +69,7 @@
     cards.forEach(card => {
       card.addEventListener('mousemove', (e) => onMove(e, card));
       card.addEventListener('mouseleave', () => onLeave(card));
-      card.addEventListener('touchstart', (e) => onMove(e, card), {passive: true});
-      card.addEventListener('touchmove', (e) => onMove(e, card), {passive: true});
-      card.addEventListener('touchend', () => onLeave(card));
+      // Touch interactions are disabled on non-coarse devices by the early return above
     });
   });
 })();

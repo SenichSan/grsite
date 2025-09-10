@@ -154,6 +154,10 @@ body {
   text-align: center;
   padding: 10px 6px;
   color: #F3EFFF;
+  /* Позволяем контенту сжиматься внутри фиксированной высоты карточки */
+  flex: 1 1 auto;
+  min-height: 0;      /* критично: разрешает блоку сжиматься во флекс-контейнере */
+  overflow: hidden;   /* предотвращает вылезание внутренностей */
 }
 .container-bestsellers.basic-grid .tm-featured-grid .tm-card-title {
   margin: 0;
@@ -186,6 +190,7 @@ body {
   padding-top: 8px;
   position: relative;
   z-index: 3; /* выше, чем ссылка внутри карточки */
+  margin-top: auto; /* прижимаем блок действий к низу карточки */
 }
 
 /* Remove link underline and purple coloring inside product cards */
@@ -340,4 +345,56 @@ body {
 /* На всякий случай явно разрешаем события указателя на кнопке */
 .container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart-btn {
   pointer-events: auto;
+}
+
+/* Ограничение строк и перенос длинных слов для стабильной высоты */
+.container-bestsellers.basic-grid .tm-featured-grid .tm-card-title,
+.container-bestsellers.basic-grid .tm-featured-grid .tm-card-subtitle {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 576px) {
+  /* Управляемое сжатие текста на мобильных */
+  .container-bestsellers.basic-grid .tm-featured-grid .tm-card-title,
+  .container-bestsellers.basic-grid .tm-featured-grid .tm-card-subtitle {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .container-bestsellers.basic-grid .tm-featured-grid .tm-card-title {
+    -webkit-line-clamp: 2;
+    font-size: clamp(0.92rem, 3.6vw, 1.05rem);
+  }
+  .container-bestsellers.basic-grid .tm-featured-grid .tm-card-subtitle {
+    -webkit-line-clamp: 2;
+    font-size: clamp(0.82rem, 3.2vw, 0.95rem);
+  }
+  .container-bestsellers.basic-grid .tm-featured-grid .tm-card-price {
+    font-size: clamp(0.95rem, 3.2vw, 1rem);
+  }
+
+  /* Кнопка: убираем фикс. мин.ширину и делаем адаптивной по карточке */
+  .container-bestsellers.basic-grid .tm-featured-grid .add-to-cart,
+  .container-bestsellers.basic-grid .tm-featured-grid .add-to-cart-btn {
+    min-width: 0;                /* переопределяет min-width:120px */
+    width: 100%;                 /* на мобиле во всю ширину карточки */
+    max-width: 100%;
+    min-height: 44px;            /* тач-эргономика */
+    padding: clamp(8px, 2.8vw, 12px) clamp(12px, 3.5vw, 16px);
+    font-size: clamp(0.9rem, 3.2vw, 1rem);
+  }
+}
+
+/* Отключаем 3D-наклон/ховер-анимации на тач-устройствах и маленьких экранах */
+@media (hover: none), (pointer: coarse), (max-width: 768px) {
+  /* карточка: без наклона/масштаба при ховере */
+  .tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card,
+  .tm-featured-wrapper .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:hover {
+    transform: none !important;
+  }
+  /* изображение: без параллакса/масштаба при ховере */
+  .container-bestsellers.basic-grid .tm-featured-grid .tm-product-card .tm-card-img,
+  .container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:hover .tm-card-img {
+    transform: none !important;
+  }
 }
