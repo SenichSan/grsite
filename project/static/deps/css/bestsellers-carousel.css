@@ -1,4 +1,5 @@
 * { box-sizing: border-box; }
+
 html, body { height: 100%; margin: 0; padding: 0; }
 body {
   color: #F3EFFF;
@@ -35,6 +36,21 @@ body {
 }
 @media (max-width: 576px) {
   .container-bestsellers.basic-grid { padding: 0 clamp(10px, 4vw, 16px); padding-top: 1.6rem; }
+}
+
+/* ---------------- Mobile vertical background for many rows ---------------- */
+@media (max-width: 767.98px) {
+  /* Переносим фон на внешнюю обертку, чтобы он доходил до рамок и скруглений */
+  .tm-featured-wrapper {
+    background-image: url('/static/deps/images/bestsellers-carousel-bg-vertical.jpg');
+    background-position: top center;
+    background-size: 100% auto;   /* растягиваем по ширине */
+    background-repeat: repeat-y;  /* много рядов — фон тянется вниз */
+  }
+  /* Во внутреннем контейнере фон выключаем, оставляем только overlay (::before) */
+  .container-bestsellers.basic-grid {
+    background: none;
+  }
 }
 
 /* Крупные экраны: чуть меньше паддинги вместо zoom-эффекта */
@@ -300,6 +316,11 @@ body {
 .container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart-btn[disabled],
 .container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart-btn[aria-disabled="true"] {
   cursor: not-allowed;
+  /* Серый базовый вид для отключённой кнопки */
+  background-color: #9E9E9E;   /* neutral gray */
+  border-color: #6E6E6E;       /* darker gray border, override stronger rule */
+  color: #ffffff;              /* контрастный текст */
+  box-shadow: none;            /* без декоративных теней */
 }
 
 .container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart-btn[disabled]:hover,
@@ -312,13 +333,13 @@ body {
 
 .container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart:active,
 .container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions .add-to-cart-btn:active {
-  border-color: #8c6f2c !important;
+  border-color: #8c6f2c;
 }
 
 /* Ультра-специфичное правило именно для тега button, чтобы перебить любые сбросы */
 .container-bestsellers.basic-grid .tm-featured-grid .tm-card-actions button.add-to-cart-btn {
-  border: 2px solid #ad9550 !important;
-  outline: 1px solid rgba(173,149,80,0.35) !important;
+  border: 2px solid #ad9550;
+  outline: 1px solid rgba(173,149,80,0.35);
   outline-offset: 0;
   background-clip: padding-box;
 }
@@ -380,10 +401,18 @@ body {
     -webkit-line-clamp: 2;
     font-size: clamp(0.92rem, 3.6vw, 1.05rem);
   }
+  /* ВАЖНО: субтитр не режем на 2 строки — пусть занимает доступное место */
   .container-bestsellers.basic-grid .tm-featured-grid .tm-card-subtitle {
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: initial;   /* снимаем раннее обрезание */
+    display: block;                /* возвращаем блочный поток */
     font-size: clamp(0.82rem, 3.2vw, 0.95rem);
   }
+  /* Делаем секцию инфо флекс-колонкой, субтитр — растяжимый */
+  .container-bestsellers.basic-grid .tm-featured-grid .tm-card-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .container-bestsellers.basic-grid .tm-featured-grid .tm-card-subtitle { flex: 1 1 auto; }
   .container-bestsellers.basic-grid .tm-featured-grid .tm-card-price {
     font-size: clamp(0.95rem, 3.2vw, 1rem);
   }

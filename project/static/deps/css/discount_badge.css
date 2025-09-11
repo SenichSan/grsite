@@ -5,12 +5,15 @@
   z-index: 3;
   top: 10px;
   left: 10px;
-  padding: 6px 12px;
+  padding: clamp(4px, 1.2vw, 6px) clamp(8px, 2vw, 12px);
   border-radius: 10px;
   font-weight: 800;
-  font-size: 0.98rem;
-  line-height: 1;
+  font-size: clamp(0.74rem, 2.2vw, 0.98rem);
+  line-height: 1.05;
   white-space: nowrap;
+  max-width: calc(100% - 20px);
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: #ffffff; /* strong contrast */
   background: rgba(46, 125, 50, 0.88); /* flat green, slightly transparent */
   border: 1px solid rgba(15, 60, 20, 0.7);
@@ -21,13 +24,13 @@
 .badge-discount--sm {
   top: 8px;
   left: 8px;
-  padding: 4px 8px;
-  font-size: 0.88rem;
+  padding: clamp(3px, 1vw, 4px) clamp(6px, 1.6vw, 8px);
+  font-size: clamp(0.7rem, 2vw, 0.88rem);
   border-width: 1px;
   border-radius: 8px;
 }
 
-.badge-discount .bd-amt { font-size: 1.1em; font-weight: 900; letter-spacing: 0.15px; }
+.badge-discount .bd-amt { font-size: 1.05em; font-weight: 900; letter-spacing: 0.15px; }
 .badge-discount--sm .bd-amt { font-size: 1.0em; }
 
 /* Make common card image wrappers positioned to host absolute badge */
@@ -64,12 +67,15 @@
   z-index: 3;
   top: 8px;
   right: 8px;
-  padding: 4px 8px;
+  padding: clamp(3px, 1vw, 4px) clamp(6px, 1.6vw, 8px);
   border-radius: 8px;
   font-weight: 800;
-  font-size: 0.88rem;
-  line-height: 1;
+  font-size: clamp(0.7rem, 2vw, 0.88rem);
+  line-height: 1.05;
   white-space: nowrap;
+  max-width: calc(100% - 20px);
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: #ffffff;
   border: 1px solid rgba(0,0,0,0.25);
   box-shadow: 0 2px 6px rgba(0,0,0,.25);
@@ -105,11 +111,13 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
+  max-width: calc(100% - 16px);
 }
 .badge-stack .badge-discount,
 .badge-stack .badge-stock {
   position: static;
   top: auto; left: auto; right: auto;
+  max-width: 100%;
 }
 
 /* Inline row of badges (e.g., on product page under title) */
@@ -124,4 +132,22 @@
 .badge-row .badge-stock {
   position: static;
   top: auto; left: auto; right: auto;
+}
+
+/* ---------------- Responsive tweaks for very small screens ---------------- */
+@media (max-width: 430px) {
+  .badge-stack { top: 6px; left: 6px; gap: 5px; }
+  .badge-discount,
+  .badge-stock {
+    white-space: normal;            /* разрешаем перенос на 2 строки вместо выхода за края */
+    text-overflow: clip;
+    line-height: 1.1;
+  }
+}
+
+@media (max-width: 360px) {
+  .badge-stack { top: 5px; left: 5px; gap: 4px; }
+  .badge-discount { font-size: clamp(0.66rem, 3.2vw, 0.8rem); padding: clamp(3px, 1.4vw, 5px) clamp(6px, 2.2vw, 9px); }
+  .badge-discount--sm { font-size: clamp(0.62rem, 3vw, 0.76rem); padding: clamp(2px, 1.2vw, 4px) clamp(5px, 2vw, 8px); }
+  .badge-stock { font-size: clamp(0.62rem, 3vw, 0.78rem); padding: clamp(2px, 1.2vw, 4px) clamp(5px, 2vw, 8px); }
 }

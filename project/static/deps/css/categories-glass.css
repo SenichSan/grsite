@@ -25,8 +25,10 @@ position: relative;
 .tm-paging-links .category-section-title { /* bump specificity */
   position: relative;
   text-align: center;
-  display: inline-block;     /* shrink to text width */
-  margin: 0 auto 2.2rem;     /* центр и уменьшенный отступ снизу */
+  display: block;            /* full width to allow full-width underline */
+  width: 100%;
+  margin: 0 0 2.2rem;        /* отступ снизу как у бестселлеров */
+  padding-bottom: 14px;      /* резерв под линию */
   font-size: 1.8rem;
   font-weight: 700;
   color: #dcc49a;
@@ -46,11 +48,9 @@ position: relative;
 .tm-paging-links .tm-section-title.category-section-title::after { /* override global */
   content: "";
   position: absolute;
-  left: 50%;
-  bottom: -8px;
-  transform: translateX(-50%);
-  width: 115%;                 /* чуть шире, чем текст */
-  max-width: 520px;            /* ограничение, чтобы не расползалось на гигантских экранах */
+  left: 0;
+  right: 0;
+  bottom: -8px; /* линия строго под заголовком — как в бестселлерах */
   height: 2px;
   background: linear-gradient(90deg, #2f2d28, #ab9964, #2f2d28);
 }
