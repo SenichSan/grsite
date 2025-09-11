@@ -60,9 +60,11 @@
 
 
     <!-- Products container: initial SSR render; later replaced via AJAX -->
-    <section id="catalog-products" class="catalog-products container-bestsellers basic-grid" aria-live="polite">
-        {% include 'goods/_products_list.html' %}
-    </section>
+    <div class="tm-featured-wrapper tm-fw-mobile">
+      <section id="catalog-products" class="catalog-products container-bestsellers basic-grid" aria-live="polite">
+          {% include 'goods/_products_list.html' %}
+      </section>
+    </div>
 
 
     {# category presentation is rendered inside _products_list.html to update via AJAX #}

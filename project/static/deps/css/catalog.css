@@ -1,13 +1,13 @@
-/* Catalog page — categories block (scoped to avoid bleed) */
-/* ===== Catalog products grid (5 per row on desktop) ===== */
-#catalog-products .tm-featured-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 18px;
-  align-items: start;
-  justify-items: center;
-  perspective: 900px; /* enable 3D depth for cards */
+/* Каталог: убираем коллапс нижнего отступа грида, чтобы overlay покрывал всё без "ступеньки" */
+.tm-featured-wrapper > .container-bestsellers.basic-grid { padding-bottom: 2.4rem; }
+.tm-featured-wrapper > .container-bestsellers.basic-grid .tm-featured-grid { margin-bottom: 0; }
+
+@media (max-width: 768px) {
+  .tm-featured-wrapper > .container-bestsellers.basic-grid { padding-bottom: 2.2rem; }
+  .tm-featured-wrapper > .container-bestsellers.basic-grid .tm-featured-grid { margin-bottom: 0; }
 }
+
+/* Catalog page — categories block (scoped to avoid bleed) */
 
 @media (max-width: 1200px) {
   #catalog-products .tm-featured-grid { grid-template-columns: repeat(4, 1fr); }
@@ -19,7 +19,8 @@
   #catalog-products .tm-featured-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 420px) {
-  #catalog-products .tm-featured-grid { grid-template-columns: 1fr; }
+  /* сохраняем 2 в ряд даже на очень узких экранах, как просили */
+  #catalog-products .tm-featured-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* Align product cards height a bit for tidy rows */
@@ -137,6 +138,20 @@
 }
 #category-presentation .category-presentation-description a:hover {
   filter: brightness(1.08) saturate(1.03);
+}
+
+/* Mobile/Tablet: делаем Category Presentation прозрачным, чтобы не создавать "ступеньку"
+   относительно фонового полотна секции товаров */
+@media (max-width: 991.98px) {
+  #category-presentation.category-presentation {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 8px 0 0 !important;
+    margin-top: 8px !important;
+  }
 }
 
 /* Toast notifications */
@@ -331,15 +346,9 @@
 }
 
 /* Products grid framed block */
-#catalog-products {
-  background-color: #ffffff;
-  /* match home .tm-featured-wrapper border */
-  border: 2px solid #4f463e;
-  border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  padding: 16px 18px;
-  margin: 12px 0; /* match home spacing */
-}
+/* ВАЖНО: фон и overlay для каталога берём из bestsellers-carousel.css,
+   чтобы визуально совпадало с home: на мобилках фон на .tm-featured-wrapper,
+   на десктопе — на .container-bestsellers.basic-grid. Здесь ничего не переопределяем. */
 
 @media (min-width: 768px) {
   .catalog-categories { border-radius: 10px; }
@@ -545,15 +554,33 @@
 }
 
 /* responsive */
-@media (max-width: 576px) {
-  .catalog-categories { padding: 0 12px; padding-top: 2rem; }
+@media (max-width: 768px) {
+  .catalog-categories { padding: 0 12px; padding-top: 1.6rem; }
+  /* Переключаемся на сетку 2 колонки, убираем горизонтальный скролл */
   .catalog-categories-list {
-    grid-template-columns: 1fr;
-    column-gap: 12px;
-    row-gap: 12px;
-    padding: 20px 0 40px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px; /* общая щель вместо column/row-gap */
+    padding: 16px 0 22px;
+    overflow: visible; /* без горизонтальной прокрутки */
+    scroll-snap-type: none;
+    justify-content: stretch;
   }
-  .catalog-category-icon-wrap { height: 72px; }
-  .catalog-category-card { padding: 14px; }
+  /* Карточки под сетку: на всю ширину ячейки, обрезку текста снимаем */
+  .catalog-category-item { flex: 0 0 auto; }
+  .catalog-category-card {
+    width: 100%;
+    min-width: 0; /* разрешает сжиматься в колонке */
+    padding: 12px;
+    white-space: normal;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .catalog-category-label { font-size: 0.98rem; }
+  /* Иконки скрыты, высоту-держатель не нужен на мобиле */
+  .catalog-category-icon-wrap { height: 0; }
+  /* Первая (или "все товары") — на всю строку и по центру */
+  .catalog-categories-list .catalog-category-item:first-child { grid-column: 1 / -1; }
+  .catalog-categories-list .catalog-category-card[data-category="all"] { display: inline-flex; margin: 0 auto; max-width: 420px; }
 }
 

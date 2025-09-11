@@ -6,6 +6,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.4;
+  /* Тильный размер фона по умолчанию (высота одного вертикального тайла) */
+  --featured-bg-tile-h: 720px;
 }
 
 /* Frame around the whole bestsellers block */
@@ -18,13 +20,15 @@ body {
   perspective: 800px; /* enable subtle 3D depth for child cards */
 }
 
+/* Desktop/default styles remain clean; mobile-specific effects added below */
+
 /* ---------- секция и заголовок ---------- */
 .container-bestsellers.basic-grid {
   /* Синхронизируем с уменьшёнными отступами блока категорий */
   padding: 0 26px;
   padding-top: 1.2rem;
   background:
-  url('/static/deps/images/bestsellers-carousel-bg.jpg') center/contain no-repeat;
+    url('/static/deps/images/bestsellers-carousel-bg.jpg') center/contain no-repeat;
   background-size: 100% 100%;
   perspective: 900px; /* ensure 3D also applies at grid level */
   position: relative;          /* for overlay */
@@ -38,19 +42,46 @@ body {
   .container-bestsellers.basic-grid { padding: 0 clamp(10px, 4vw, 16px); padding-top: 1.6rem; }
 }
 
-/* ---------------- Mobile vertical background for many rows ---------------- */
+/* ---------------- Mobile vertical background with seam softening ---------------- */
 @media (max-width: 767.98px) {
-  /* Переносим фон на внешнюю обертку, чтобы он доходил до рамок и скруглений */
+  /* Переносим фон на wrapper и повторяем вниз */
   .tm-featured-wrapper {
-    background-image: url('/static/deps/images/bestsellers-carousel-bg-vertical.jpg');
-    background-position: top center;
-    background-size: 100% auto;   /* растягиваем по ширине */
-    background-repeat: repeat-y;  /* много рядов — фон тянется вниз */
+    background: url('/static/deps/images/bestsellers-carousel-bg-vertical.jpg') top center / 100% auto repeat-y !important;
   }
-  /* Во внутреннем контейнере фон выключаем, оставляем только overlay (::before) */
-  .container-bestsellers.basic-grid {
-    background: none;
+  /* Мягкое сглаживание швов и светлая виньетка поверх */
+  .tm-featured-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('/static/deps/images/bestsellers-carousel-bg-vertical.jpg') !important;
+    background-position: top center !important;
+    background-size: 100% auto !important;
+    background-repeat: repeat-y !important;
+    background-attachment: local;
+    filter: blur(20px);
+    opacity: 0.30;
+    transform: scale(1.04);
+    transform-origin: center;
+    will-change: filter, transform, opacity;
+    pointer-events: none;
+    z-index: 1; /* подняли над фоном, под контентом */
   }
+  .tm-featured-wrapper::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1; /* поверх фона, под контентом */
+    background:
+      radial-gradient(120% 70% at 50% 0%, rgba(255, 242, 200, 0.06), rgba(255, 242, 200, 0) 60%),
+      radial-gradient(120% 80% at 50% 100%, rgba(255, 242, 200, 0.05), rgba(255, 242, 200, 0) 60%),
+      linear-gradient(180deg, rgba(12, 14, 18, 0.02), rgba(12, 14, 18, 0.06));
+    mix-blend-mode: soft-light;
+  }
+
+  /* На мобилках фон и оверлей у внутреннего контейнера выключены */
+  .container-bestsellers.basic-grid { background: none !important; position: relative; z-index: 2; }
+  .container-bestsellers.basic-grid::before { content: none !important; background: none !important; }
 }
 
 /* Крупные экраны: чуть меньше паддинги вместо zoom-эффекта */
@@ -58,7 +89,7 @@ body {
   .container-bestsellers.basic-grid { padding: 40px; }
 }
 
-/* Semi-transparent creamy overlay like categories block */
+/* Desktop overlay (кремовая вуаль), как было изначально */
 .container-bestsellers.basic-grid::before {
   content: "";
   position: absolute;
