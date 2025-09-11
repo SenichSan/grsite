@@ -31,7 +31,7 @@
 
 /* ====== Плавающая кнопка (согласованный стиль) ====== */
 /* Десктоп/широкие — сверху справа, без вертикального центрирования */
-#tm-cart-component { position: fixed; right: 24px; top: 24px; z-index: 12000; }
+#tm-cart-component { position: fixed; right: 24px; top: clamp(96px, 12vh, 140px); z-index: 12000; }
 #tm-cart-component .tm-cart-button {
   /* возвращаем корпус кнопки к исходным пропорциям (не увеличиваем) */
   width: 108px; height: 125px;
@@ -91,7 +91,7 @@ body[data-modal-open="true"] #tm-cart-component { opacity: 0; pointer-events: no
 
 /* мобильные: закрепляем сверху справа; увеличиваем только изображение иконки (+10% от 40px → 44px) */
 @media (max-width: 640px) {
-  #tm-cart-component { right: 12px; top: 16px; transform: none; }
+  #tm-cart-component { right: 12px; top: calc(96px + env(safe-area-inset-top, 0px)); transform: none; }
   /* оставляем компактный размер кнопки, как раньше, чтобы не закрывать контент */
   #tm-cart-component .tm-cart-button { width: 56px; height: 56px; }
   /* увеличиваем ТОЛЬКО картинку примерно на +10% от атрибутных 44px → 48px */

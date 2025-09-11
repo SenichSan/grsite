@@ -229,8 +229,15 @@ body {
 
 /* Если нужна специфичная десктопная правка только для product_page, делаем её явно: */
 @media (min-width: 992px) {
-  /* пример (оставлено как заготовка, сейчас не применяем): */
-  /* .container.product-page.page-wrapper .header-hero .tm-nav-buttons { gap: 40px; } */
+  /* Не переопределяем размеры шапки — используем базовые из header-hero.css */
+  .container.product-page.page-wrapper .header-hero { min-height: unset; }
+  .container.product-page.page-wrapper .header-hero .tm-header { height: unset; }
+}
+
+/* На планшетах также не переопределяем высоту — берём дефолт */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .container.product-page.page-wrapper .header-hero { min-height: unset; }
+  .container.product-page.page-wrapper .header-hero .tm-header { height: unset; }
 }
 
 /* Consistent spacing between blocks on product page */

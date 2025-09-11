@@ -15,6 +15,16 @@
   <link rel="stylesheet" href="{% static 'deps/css/header-hero.css' %}">
   <link rel="stylesheet" href="{% static 'deps/css/discount_badge.css' %}">
 
+  <!-- Global container width to match home (does not change backgrounds) -->
+  <style>
+    .container,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl,
+    .container-xxl { max-width: 1450px; width: 100%; }
+  </style>
+
   <!-- Favicon & app icons (site-wide) -->
   <link rel="apple-touch-icon" sizes="180x180" href="{% static 'deps/favicon/apple-touch-icon.png' %}">
   <link rel="icon" type="image/png" sizes="32x32" href="{% static 'deps/favicon/favicon-32x32.png' %}">

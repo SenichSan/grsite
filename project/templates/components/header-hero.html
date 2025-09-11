@@ -52,9 +52,19 @@
             <!-- 3) BOTTOM-RIGHT: навигация (кнопки) -->
             <nav class="tm-header-nav" aria-label="Главная навигация">
                 <ul class="tm-nav-buttons">
-                    <li class="tm-nav-li"><a href="{% url 'main:home' %}" class="tm-nav-link active">Головна</a></li>
-                    <li class="tm-nav-li"><a href="{% url 'catalog:catalog_all' %}" class="tm-nav-link">Каталог</a></li>
-                    <li class="tm-nav-li"><a href="#" class="tm-nav-link">Контакти</a></li>
+                    {% with ns=request.resolver_match.namespace name=request.resolver_match.url_name %}
+                    <li class="tm-nav-li {% if name == 'home' or ns == 'main' %}is-active{% endif %}">
+                        <a href="{% url 'main:home' %}"
+                           class="tm-nav-link {% if name == 'home' or ns == 'main' %}active{% endif %}">Головна</a>
+                    </li>
+                    <li class="tm-nav-li {% if ns == 'catalog' or name|default:''|slice:"0:7" == 'catalog' %}is-active{% endif %}">
+                        <a href="{% url 'catalog:catalog_all' %}"
+                           class="tm-nav-link {% if ns == 'catalog' or name|default:''|slice:"0:7" == 'catalog' %}active{% endif %}">Каталог</a>
+                    </li>
+                    <li class="tm-nav-li {% if ns == 'contacts' or name == 'contacts' %}is-active{% endif %}">
+                        <a href="#" class="tm-nav-link {% if ns == 'contacts' or name == 'contacts' %}active{% endif %}">Контакти</a>
+                    </li>
+                    {% endwith %}
                 </ul>
             </nav>
         </header>
