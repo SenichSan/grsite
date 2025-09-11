@@ -30,8 +30,10 @@
 }
 
 /* ====== Плавающая кнопка (согласованный стиль) ====== */
-#tm-cart-component { position: fixed; right: 34px; bottom: 32px; z-index: 12000; }
+/* Десктоп/широкие — сверху справа, без вертикального центрирования */
+#tm-cart-component { position: fixed; right: 24px; top: 24px; z-index: 12000; }
 #tm-cart-component .tm-cart-button {
+  /* возвращаем корпус кнопки к исходным пропорциям (не увеличиваем) */
   width: 108px; height: 125px;
   display: inline-flex; align-items: center; justify-content: center;
   border: 0; border-radius: 999px; padding: 8px; cursor: pointer;
@@ -49,7 +51,8 @@
   gap: 6px; /* расстояние между иконкой и подписью */
 }
 #tm-cart-component .tm-cart-button-img {
-  width: 100px; height: 100px; display: block; object-fit: cover;
+  /* Десктоп: уменьшение иконки ~15% от 100px → 85px */
+  width: 85px; height: 85px; display: block; object-fit: cover;
   /* лёгкая круглая подложка под иконкой: нежно-зелёная, светлая */
   padding: 6px;
   border-radius: 999px;
@@ -86,11 +89,14 @@
 /* уменьшение при открытом модале */
 body[data-modal-open="true"] #tm-cart-component { opacity: 0; pointer-events: none; transform: translateY(6px) scale(.98); }
 
-/* мобильные размеры */
+/* мобильные: закрепляем сверху справа; увеличиваем только изображение иконки (+10% от 40px → 44px) */
 @media (max-width: 640px) {
-  #tm-cart-component { right: 12px; bottom: 10vh; }
+  #tm-cart-component { right: 12px; top: 16px; transform: none; }
+  /* оставляем компактный размер кнопки, как раньше, чтобы не закрывать контент */
   #tm-cart-component .tm-cart-button { width: 56px; height: 56px; }
-  #tm-cart-component .tm-cart-button-img { width: 40px; height: 40px; }
+  /* увеличиваем ТОЛЬКО картинку примерно на +10% от атрибутных 44px → 48px */
+  #tm-cart-component .tm-cart-button-img { width: 48px; height: 48px; }
+  /* бейдж возвращаем к прежним компактным размерам */
   #tm-cart-component .tm-cart-count { top: -6px; right: -6px; min-width: 20px; height: 20px; font-size: 11px; }
 }
 

@@ -1,21 +1,4 @@
-{% load static %}
-<!doctype html>
-<html lang="uk">
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>FAQ</title>
-    <link rel="stylesheet" href="{% static 'deps/css/faq.css' %}">
-</head>
-<body>
-<div class="container">
-    <!-- Заголовок ВНЕ рамки -->
-    <h2 class="faq-heading">Найчастіші запитання, які нам задають</h2>
-
-    <!-- Рамка аккордеона -->
-    <div id="faq-section" class="faq-box" role="region" aria-labelledby="faq-heading">
-        <div class="faq-container">
-            <div class="accordion" role="presentation">
+{% comment %} FAQ accordion items component (no outer html/head/body) {% endcomment %}
                 <div class="accordion-item">
                     <button id="accordion-button-1" aria-expanded="false" aria-controls="panel-1">
                         <span class="accordion-title">Why is the moon sometimes out during the day?</span>
@@ -90,12 +73,3 @@
                         </p>
                     </div>
                 </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="{% static 'deps/js/accordion.js' %}"></script>
-</body>
-</html>

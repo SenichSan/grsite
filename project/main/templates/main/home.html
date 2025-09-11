@@ -11,8 +11,8 @@
       /* боковые поля контейнера оставляем как в проекте */
     }
 
-    /* Утилита: full-bleed только на мобильных — растянуть секцию на всю ширину вьюпорта */
-    @media (max-width: 576px) {
+    /* Утилита: full-bleed — растянуть секцию на всю ширину вьюпорта на мобильных */
+    @media (max-width: 768px) {
       .full-bleed {
         width: 100vw;
         margin-left: calc(50% - 50vw);
@@ -95,7 +95,9 @@
       </div>
     </section>
 
-    {% include 'components/footer.html' %}
+    <div class="full-bleed">
+      {% include 'components/footer.html' %}
+    </div>
   </div>
 
   {% include 'components/cart_button.html' %}
