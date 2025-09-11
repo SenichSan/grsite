@@ -286,8 +286,49 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function applyCartResponse(data) {
-        if (data && typeof data.cart_items_html !== 'undefined') {
-            itemsContainer.innerHTML = data.cart_items_html;
+        // 1) Точечное обновление DOM списка позиций без перерисовки изображений
+        if (data && typeof data.cart_items_html !== 'undefined' && itemsContainer) {
+            try {
+                const tmp = document.createElement('div');
+                tmp.innerHTML = data.cart_items_html;
+
+                const newRows = Array.from(tmp.querySelectorAll('.cart-row'));
+                const newIds = new Set(newRows.map(r => r.getAttribute('data-cart-id')));
+
+                // a) Удалить строки, которых больше нет
+                Array.from(itemsContainer.querySelectorAll('.cart-row')).forEach((oldRow) => {
+                    const id = oldRow.getAttribute('data-cart-id');
+                    if (!newIds.has(id)) {
+                        oldRow.remove();
+                    }
+                });
+
+                // b) Обновить существующие строки (только правые части), добавить новые
+                newRows.forEach((newRow) => {
+                    const id = newRow.getAttribute('data-cart-id');
+                    const oldRow = itemsContainer.querySelector(`.cart-row[data-cart-id="${CSS.escape(id)}"]`);
+                    if (oldRow) {
+                        const oldMid = oldRow.querySelector('.cart-row-mid');
+                        const oldQty = oldRow.querySelector('.cart-row-qty');
+                        const oldPrice = oldRow.querySelector('.cart-row-price');
+
+                        const newMid = newRow.querySelector('.cart-row-mid');
+                        const newQty = newRow.querySelector('.cart-row-qty');
+                        const newPrice = newRow.querySelector('.cart-row-price');
+
+                        if (oldMid && newMid) oldMid.innerHTML = newMid.innerHTML;
+                        if (oldQty && newQty) oldQty.innerHTML = newQty.innerHTML;
+                        if (oldPrice && newPrice) oldPrice.innerHTML = newPrice.innerHTML;
+                    } else {
+                        // Добавить новую строку (если появилась новая позиция)
+                        itemsContainer.querySelector('.cart-list')
+                            ?.appendChild(newRow);
+                    }
+                });
+            } catch (e) {
+                // Фолбэк: если что-то пошло не так — полная замена, как раньше
+                itemsContainer.innerHTML = data.cart_items_html;
+            }
         }
         if (counterEl && typeof data.total_quantity !== 'undefined') {
             counterEl.textContent = data.total_quantity;
