@@ -39,12 +39,8 @@ section#seo-text-section::before,
   position: absolute;
   inset: 0;
   z-index: 0;
-  /* Prefer modern formats with fallback */
-  background-image: image-set(
-    url('/static/deps/images/seo-text-bg.avif') type('image/avif'),
-    url('/static/deps/images/seo-text-bg.webp') type('image/webp'),
-    url('/static/deps/images/seo-text-bg.jpg') type('image/jpeg')
-  );
+  /* Use only AVIF to avoid multiple candidates */
+  background-image: url('/static/deps/images/seo-text-bg.avif');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

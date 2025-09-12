@@ -416,7 +416,7 @@ p, address {
   /* ensure corners render cleanly like FAQ */
   position: relative;
   overflow: hidden;
-  background-image: url('/static/deps/images/seo-text-bg.jpg');
+  background-image: url('/static/deps/images/seo-text-bg.avif');
   background-size: cover;
   background-position: center;
 }
