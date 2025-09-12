@@ -210,29 +210,8 @@ body {
 /* Product page: uniform small gap after header */
 .product-page .main { padding-top: 0.3rem; }
 
-/* Убираем локальные переопределения хедера, чтобы использовать общий header-hero.css */
-/* .container.product-page.page-wrapper .header-hero .tm-header { ... } */
 
-/* Ранее повышенный z-index рамки перекрывал контент; возвращаем управление общему CSS */
-/* .container.product-page.page-wrapper .header-hero { z-index: 200; } */
-/* .container.product-page.page-wrapper .header-hero::after { z-index: 210; } */
 
-/* Не трогаем размеры/отступы нав-кнопок на уровне страницы — их ведёт header-hero.css */
-/* .container.product-page.page-wrapper .header-hero .tm-nav-buttons { ... } */
-/* .container.product-page.page-wrapper .header-hero .tm-nav-buttons .tm-nav-link { ... } */
-
-/* Соц-иконки управляются общим хедером; локальные переопределения удалены */
-/* .container.product-page.page-wrapper .header-hero .tm-header-social { ... } */
-
-/* Мобильные настройки — из общего header-hero.css */
-/* @media (max-width: 599px) { .container.product-page.page-wrapper .header-hero .tm-nav-buttons { gap: 16px; } } */
-
-/* Если нужна специфичная десктопная правка только для product_page, делаем её явно: */
-@media (min-width: 992px) {
-  /* Не переопределяем размеры шапки — используем базовые из header-hero.css */
-  .container.product-page.page-wrapper .header-hero { min-height: unset; }
-  .container.product-page.page-wrapper .header-hero .tm-header { height: unset; }
-}
 
 /* На планшетах также не переопределяем высоту — берём дефолт */
 @media (min-width: 768px) and (max-width: 991.98px) {

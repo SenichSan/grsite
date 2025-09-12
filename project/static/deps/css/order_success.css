@@ -60,6 +60,33 @@ body.order-success-page { zoom: 0.9; }
   min-height: clamp(360px, 60vh, 840px);
 }
 
+/* Dark parchment-like frame under success-hero (matches footer borders) */
+.order-success-page .success-hero {
+  position: relative;
+  border: 2px solid #4f463e;          /* same border as footer */
+  border-radius: 10px;
+  overflow: hidden;                    /* clean rounded corners */
+  /* transparent dark underlay (no brown) */
+  background: rgba(0,0,0,0.28);
+  /* inner shadows for depth */
+  box-shadow: inset 0 26px 54px rgba(0,0,0,0.40), inset 0 -16px 34px rgba(0,0,0,0.28);
+}
+/* Ensure card and inner content are above the underlay */
+.order-success-page .success-hero > * { position: relative; z-index: 1; }
+/* Optional decorative top/bottom washes similar to footer accents */
+.order-success-page .success-hero::before {
+  content: "";
+  position: absolute; left: 0; right: 0; top: 0;
+  height: 8px; opacity: 0.08; pointer-events: none;
+  background: linear-gradient(90deg, rgba(0,0,0,0.22), rgba(255,255,255,0.02), rgba(0,0,0,0.22));
+}
+.order-success-page .success-hero::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 6px; opacity: 0.08; pointer-events: none;
+  background: linear-gradient(90deg, rgba(0,0,0,0.22), rgba(0,0,0,0.04));
+}
+
 /* Keep header/footer inner content constrained similarly to home */
 .site-footer .footer-inner { max-width: 1100px; margin: 0 auto; }
 .site-header .header-inner { max-width: 1100px; margin: 0 auto; }
