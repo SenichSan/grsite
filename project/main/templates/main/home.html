@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load media_extras %}
 
 {% block css %}
   <!-- Home-only layout overrides: header flush to top, full-bleed blocks -->
@@ -61,8 +62,7 @@
                class="tm-paging-link category-card"
                aria-current="{% if category.slug == current_category %}true{% endif %}">
               <div class="category-icon-wrap">
-                <img src="{% static 'deps/icons/'|add:category.slug|add:'.png' %}"
-                     alt="" class="category-icon" aria-hidden="true"/>
+                {% category_icon_picture category '128x128' 'category-icon' category.name 128 128 %}
               </div>
               <div class="category-label">{{ category.name }}</div>
               {% if category.short_description %}

@@ -43,15 +43,27 @@
                 
 
                 <a href="#" class="tm-social-link" title="Telegram" aria-label="Telegram">
-                    <img src="{% static 'deps/images/telegram.png' %}" alt="Telegram">
+                    <picture>
+                        <source srcset="{% static 'deps/images/telegram.avif' %}" type="image/avif">
+                        <source srcset="{% static 'deps/images/telegram.webp' %}" type="image/webp">
+                        <img src="{% static 'deps/images/telegram.png' %}" alt="Telegram" width="24" height="24" loading="lazy" decoding="async">
+                    </picture>
                 </a>
 
                 <a href="#" class="tm-social-link" title="Viber" aria-label="Viber">
-                    <img src="{% static 'deps/images/viber.png' %}" alt="Viber">
+                    <picture>
+                        <source srcset="{% static 'deps/images/viber.avif' %}" type="image/avif">
+                        <source srcset="{% static 'deps/images/viber.webp' %}" type="image/webp">
+                        <img src="{% static 'deps/images/viber.png' %}" alt="Viber" width="24" height="24" loading="lazy" decoding="async">
+                    </picture>
                 </a>
 
                 <a href="#" class="tm-social-link" title="Whatsapp" aria-label="Whatsapp">
-                    <img src="{% static 'deps/images/whatsapp.png' %}" alt="Whatsapp">
+                    <picture>
+                        <source srcset="{% static 'deps/images/whatsapp.avif' %}" type="image/avif">
+                        <source srcset="{% static 'deps/images/whatsapp.webp' %}" type="image/webp">
+                        <img src="{% static 'deps/images/whatsapp.png' %}" alt="Whatsapp" width="24" height="24" loading="lazy" decoding="async">
+                    </picture>
                 </a>
                 <!-- при необходимости добавь ещё ссылки -->
             </div>

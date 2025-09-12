@@ -1,4 +1,5 @@
 {% load static %}
+{% load media_extras %}
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -46,8 +47,7 @@
                        data-category="{{ category.slug }}"
                        aria-current="{% if category.slug == current_category %}true{% endif %}">
                         <div class="catalog-category-icon-wrap">
-                            <img src="{% static 'deps/icons/'|add:category.slug|add:'.png' %}"
-                                 alt="{{ category.name }}" class="catalog-category-icon" aria-hidden="true"/>
+                            {% category_icon_picture category '128x128' 'catalog-category-icon' category.name 128 128 %}
                         </div>
                         <div class="catalog-category-label">{{ category.name }}</div>
                         {# Removed short description from catalog category card #}
