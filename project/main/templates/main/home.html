@@ -62,7 +62,7 @@
                class="tm-paging-link category-card"
                aria-current="{% if category.slug == current_category %}true{% endif %}">
               <div class="category-icon-wrap">
-                {% category_icon_picture category '128x128' 'category-icon' category.name 128 128 %}
+                {% category_icon_picture category '256x256' 'category-icon' category.name 128 128 %}
               </div>
               <div class="category-label">{{ category.name }}</div>
               {% if category.short_description %}
