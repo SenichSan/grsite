@@ -4,6 +4,13 @@
     <!-- фон -->
     <div class="hero-bg" aria-hidden="true">
         <picture>
+            <!-- Prefer AVIF -->
+            <source media="(max-width:599px)" srcset="{% static 'deps/images/bg-image-blur-1600.avif' %}" type="image/avif">
+            <source media="(min-width:600px)" srcset="{% static 'deps/images/bg-image-blur-1600.avif' %}" type="image/avif">
+            <!-- Then WebP -->
+            <source media="(max-width:599px)" srcset="{% static 'deps/images/bg-image-blur-1600.webp' %}" type="image/webp">
+            <source media="(min-width:600px)" srcset="{% static 'deps/images/bg-image-blur-1600.webp' %}" type="image/webp">
+            <!-- Fallback JPEG -->
             <source media="(max-width:599px)"
                     srcset="{% static 'deps/images/bg-image-blur-800.jpg' %} 1x, {% static 'deps/images/bg-image-blur-1600.jpg' %} 2x"
                     type="image/jpeg">
@@ -12,7 +19,7 @@
                     type="image/jpeg">
             <img class="hero-image"
                  src="{% static 'deps/images/bg-image-blur-1600.jpg' %}" alt=""
-                 loading="lazy" decoding="async">
+                 width="1600" height="400" loading="lazy" decoding="async">
         </picture>
     </div>
 

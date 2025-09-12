@@ -27,8 +27,14 @@ body {
   /* Синхронизируем с уменьшёнными отступами блока категорий */
   padding: 0 26px;
   padding-top: 1.2rem;
-  background:
-    url('/static/deps/images/bestsellers-carousel-bg.jpg') center/contain no-repeat;
+  /* Prefer modern formats with fallback */
+  background-image: image-set(
+    url('/static/deps/images/bestsellers-carousel-bg.avif') type('image/avif'),
+    url('/static/deps/images/bestsellers-carousel-bg.webp') type('image/webp'),
+    url('/static/deps/images/bestsellers-carousel-bg.jpg') type('image/jpeg')
+  );
+  background-position: center;
+  background-repeat: no-repeat;
   background-size: 100% 100%;
   perspective: 900px; /* ensure 3D also applies at grid level */
   position: relative;          /* for overlay */

@@ -1,7 +1,13 @@
 .fantasy-news-slider-container {
   padding: 48px;
-  background:
-  url('/static/deps/images/news-slider-bg.jpg') center/contain no-repeat;
+  /* Use modern formats with fallback */
+  background-image: image-set(
+    url('/static/deps/images/news-slider-bg.avif') type('image/avif'),
+    url('/static/deps/images/news-slider-bg.webp') type('image/webp'),
+    url('/static/deps/images/news-slider-bg.jpg') type('image/jpeg')
+  );
+  background-position: center;
+  background-repeat: no-repeat;
   background-size: 100% 100%;
   /* FAQ-like frame */
   border: 2px solid #4f463e;
