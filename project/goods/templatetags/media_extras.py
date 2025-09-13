@@ -13,6 +13,63 @@ from django.contrib.staticfiles import finders
 register = template.Library()
 
 
+@register.simple_tag
+def product_image_picture(product, size: str = "400x300", classes: str = "", alt: Optional[str] = None,
+                         width: int = 400, height: int = 300, loading: str = "lazy"):
+    """
+    Render a <picture> for product image with AVIF/WebP priority and fallback to original.
+    Usage:
+      {% product_image_picture product '400x300' 'product-card-img' product.name 400 300 'lazy' %}
+    """
+    alt_attr = alt or getattr(product, "name", "")
+    class_attr = classes or ""
+    
+    # Try main product image first
+    img_field = getattr(product, "image", None)
+    if not img_field or not getattr(img_field, "name", ""):
+        # Try first additional image
+        try:
+            images = getattr(product, "images", None)
+            if images and images.exists():
+                img_field = images.first().image
+        except Exception:
+            pass
+    
+    if img_field and getattr(img_field, "name", ""):
+        orig_url = getattr(img_field, "url", None)
+        if callable(orig_url):
+            try:
+                orig_url = img_field.url
+            except Exception:
+                orig_url = None
+
+        if orig_url:
+            name = img_field.name
+            avif_name = _variant_name(name, size, "avif")
+            webp_name = _variant_name(name, size, "webp")
+
+            avif_url = _url_if_exists(avif_name)
+            webp_url = _url_if_exists(webp_name)
+
+            parts = ["<picture>"]
+            if avif_url:
+                parts.append(f"<source srcset=\"{avif_url}\" type=\"image/avif\">")
+            if webp_url:
+                parts.append(f"<source srcset=\"{webp_url}\" type=\"image/webp\">")
+            # Fallback to original
+            parts.append(
+                f"<img src=\"{orig_url}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\">"
+            )
+            parts.append("</picture>")
+            return mark_safe("".join(parts))
+
+    # Ultimate fallback to placeholder
+    fallback = static("deps/images/placeholder.png")
+    return mark_safe(
+        f"<img src=\"{fallback}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\">"
+    )
+
+
 def _variant_name(orig_name: str, size: str, ext: str) -> str:
     root, _ext = os.path.splitext(orig_name)
     return f"{root}_{size}.{ext}"

@@ -1,4 +1,5 @@
 {% load static %}
+{% load media_extras %}
 
 <div class="catalog-current-title">
     {% if current_category and current_category != 'all' %}
@@ -36,12 +37,11 @@
                     </div>
                     {% endif %}
                 </div>
-                {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="tm-card-img" loading="lazy" width="400" height="300"/>
-                {% elif product.images.all|length > 0 %}
-                <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}" class="tm-card-img" loading="lazy" width="400" height="300"/>
+                {# Smart lazy loading: first 3 products eager for LCP, rest lazy #}
+                {% if forloop.counter <= 3 %}
+                    {% product_image_picture product '400x300' 'tm-card-img' product.name 400 300 'eager' %}
                 {% else %}
-                <img src="{% static 'deps/images/placeholder.png' %}" alt="placeholder" class="tm-card-img" loading="lazy" width="400" height="300"/>
+                    {% product_image_picture product '400x300' 'tm-card-img' product.name 400 300 'lazy' %}
                 {% endif %}
             </div>
 
