@@ -52,14 +52,27 @@ body {
 @media (max-width: 767.98px) {
   /* Переносим фон на wrapper и повторяем вниз */
   .tm-featured-wrapper {
-    background: url('/static/deps/images/bestsellers-carousel-bg-vertical.jpg') top center / 100% auto repeat-y !important;
+    /* Prefer modern formats with fallback for mobile vertical background */
+    background-image: image-set(
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.avif') type('image/avif'),
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.webp') type('image/webp'),
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.jpg') type('image/jpeg')
+    ) !important;
+    background-position: top center !important;
+    background-size: 100% auto !important;
+    background-repeat: repeat-y !important;
   }
   /* Мягкое сглаживание швов и светлая виньетка поверх */
   .tm-featured-wrapper::before {
     content: "";
     position: absolute;
     inset: 0;
-    background-image: url('/static/deps/images/bestsellers-carousel-bg-vertical.jpg') !important;
+    /* Mirror the same image-set to ensure modern format is used in the blur overlay as well */
+    background-image: image-set(
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.avif') type('image/avif'),
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.webp') type('image/webp'),
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.jpg') type('image/jpeg')
+    ) !important;
     background-position: top center !important;
     background-size: 100% auto !important;
     background-repeat: repeat-y !important;
