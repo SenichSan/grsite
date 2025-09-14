@@ -9,8 +9,12 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.templatetags.static import static
 from django.contrib.staticfiles import finders
+from django.conf import settings
+import logging
 
 register = template.Library()
+
+logger = logging.getLogger(__name__)
 
 
 @register.simple_tag
@@ -51,15 +55,19 @@ def product_image_picture(product, size: str = "400x300", classes: str = "", alt
             avif_url = _url_if_exists(avif_name)
             webp_url = _url_if_exists(webp_name)
 
+            if getattr(settings, 'DEBUG', False):
+                logger.debug("product_image_picture: name=%s size=%s avif=%s webp=%s orig=%s", name, size, bool(avif_url), bool(webp_url), bool(orig_url))
+
             parts = ["<picture>"]
             if avif_url:
                 parts.append(f"<source srcset=\"{avif_url}\" type=\"image/avif\">")
             if webp_url:
                 parts.append(f"<source srcset=\"{webp_url}\" type=\"image/webp\">")
-            # Fallback to original
+            # Prefer modern fallback in <img>: webp -> avif -> original
+            img_src = webp_url or avif_url or orig_url
             fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
             parts.append(
-                f"<img src=\"{orig_url}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
+                f"<img src=\"{img_src}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
             )
             parts.append("</picture>")
             return mark_safe("".join(parts))
@@ -114,16 +122,20 @@ def category_icon_picture(category, size: str = "128x128", classes: str = "", al
         avif_url = _url_if_exists(avif_name)
         webp_url = _url_if_exists(webp_name)
 
+        if getattr(settings, 'DEBUG', False):
+            logger.debug("category_icon_picture: name=%s size=%s avif=%s webp=%s orig=%s", name, size, bool(avif_url), bool(webp_url), bool(orig_url))
+
         parts = ["<picture>"]
         if avif_url:
             parts.append(f"<source srcset=\"{avif_url}\" type=\"image/avif\">")
         if webp_url:
             parts.append(f"<source srcset=\"{webp_url}\" type=\"image/webp\">")
-        # Fallback to original media image
-        if orig_url:
+        # Prefer modern fallback in <img>: webp -> avif -> original
+        if orig_url or webp_url or avif_url:
+            img_src = webp_url or avif_url or orig_url
             fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
             parts.append(
-                f"<img src=\"{orig_url}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
+                f"<img src=\"{img_src}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
             )
         parts.append("</picture>")
         return mark_safe("".join(parts))
@@ -197,15 +209,18 @@ def field_image_picture(image_field, size: str = "400x300", classes: str = "", a
     avif_url = _url_if_exists(avif_name)
     webp_url = _url_if_exists(webp_name)
 
+    if getattr(settings, 'DEBUG', False):
+        logger.debug("field_image_picture: name=%s size=%s avif=%s webp=%s orig=%s", name, size, bool(avif_url), bool(webp_url), bool(orig_url))
+
     parts = ["<picture>"]
     if avif_url:
         parts.append(f"<source srcset=\"{avif_url}\" type=\"image/avif\">")
     if webp_url:
         parts.append(f"<source srcset=\"{webp_url}\" type=\"image/webp\">")
     fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
-    fallback = orig_url or static("deps/images/placeholder.png")
+    img_src = webp_url or avif_url or orig_url or static("deps/images/placeholder.png")
     parts.append(
-        f"<img src=\"{fallback}\" alt=\"{alt}\" class=\"{classes}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
+        f"<img src=\"{img_src}\" alt=\"{alt}\" class=\"{classes}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
     )
     parts.append("</picture>")
     return mark_safe("".join(parts))

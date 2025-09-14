@@ -32,7 +32,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         sizes_str: str = options["sizes"]
-        only_missing: bool = options["only_messing"] if "only_messing" in options else options.get("only_missing", False)
+        only_missing: bool = options.get("only_missing", False)
         sizes: Tuple[str, ...] = tuple(s.strip() for s in sizes_str.split(",") if s.strip())
 
         self.stdout.write(self.style.WARNING("Checking category images..."))
@@ -53,10 +53,7 @@ class Command(BaseCommand):
                     missing_for_cat.append(size)
             if missing_for_cat:
                 cat_missing += 1
-                if not only_missing:
-                    self.stdout.write(f"[CATEGORY] {cat.name}: missing {', '.join(missing_for_cat)}")
-                else:
-                    self.stdout.write(f"{cat.slug or cat.id}: {', '.join(missing_for_cat)}")
+                self.stdout.write(f"[CATEGORY] {cat.slug or cat.id} ({cat.name}): missing {', '.join(missing_for_cat)}")
 
         self.stdout.write(self.style.WARNING("Checking product images..."))
         prod_total = 0
@@ -75,10 +72,7 @@ class Command(BaseCommand):
                     missing_for_prod.append(size)
             if missing_for_prod:
                 prod_missing += 1
-                if not only_missing:
-                    self.stdout.write(f"[PRODUCT] {p.id} {p.name}: missing {', '.join(missing_for_prod)}")
-                else:
-                    self.stdout.write(f"{p.id}: {', '.join(missing_for_prod)}")
+                self.stdout.write(f"[PRODUCT] {p.id} {p.name}: missing {', '.join(missing_for_prod)}")
 
         # additional images
         for pi in ProductImage.objects.all():
@@ -94,10 +88,7 @@ class Command(BaseCommand):
                     missing_for_prod.append(size)
             if missing_for_prod:
                 prod_missing += 1
-                if not only_missing:
-                    self.stdout.write(f"[PRODUCT-IMG] {pi.id} of {pi.product_id}: missing {', '.join(missing_for_prod)}")
-                else:
-                    self.stdout.write(f"{pi.id}: {', '.join(missing_for_prod)}")
+                self.stdout.write(f"[PRODUCT-IMG] {pi.id} of {pi.product_id}: missing {', '.join(missing_for_prod)}")
 
         self.stdout.write("")
         self.stdout.write(self.style.SUCCESS(f"Categories: total={cat_total}, missing_any={cat_missing}"))
