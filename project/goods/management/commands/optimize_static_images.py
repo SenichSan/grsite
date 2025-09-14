@@ -22,15 +22,36 @@ class Command(BaseCommand):
             help='AVIF quality for background images (default: 12)',
         )
         parser.add_argument(
+            '--bg-quality',
+            type=int,
+            default=None,
+            help='Override AVIF quality specifically for background images (takes priority over --quality)'
+        )
+        parser.add_argument(
+            '--product-quality',
+            type=int,
+            default=None,
+            help='Override AVIF quality specifically for product images (takes priority over --quality)'
+        )
+        parser.add_argument(
             '--force',
             action='store_true',
             help='Force regeneration even if AVIF files already exist',
+        )
+        parser.add_argument(
+            '--bg-max-size',
+            type=int,
+            default=2400,
+            help='Max longest side for background images (0 disables resize, default: 2400)'
         )
 
     def handle(self, *args, **options):
         dry_run = options['dry_run']
         quality = options['quality']
+        bg_quality = options.get('bg_quality')
+        product_quality = options.get('product_quality')
         force = options['force']
+        bg_max_size = options.get('bg_max_size')
         
         if dry_run:
             self.stdout.write(self.style.WARNING("DRY RUN MODE - No files will be modified"))
@@ -116,27 +137,41 @@ class Command(BaseCommand):
                         
                         # Open and process image
                         with Image.open(file_path) as img:
-                            # Convert to RGB if necessary
-                            if img.mode in ('RGBA', 'LA', 'P'):
-                                rgb_img = Image.new('RGB', img.size, (255, 255, 255))
-                                if img.mode == 'P':
-                                    img = img.convert('RGBA')
-                                rgb_img.paste(img, mask=img.split()[-1] if img.mode in ('RGBA', 'LA') else None)
-                                img = rgb_img
+                            # Preserve transparency where present. Do NOT flatten to white.
+                            if img.mode == 'P':
+                                # Convert palette images to RGBA to keep alpha
+                                img = img.convert('RGBA')
+                            # If image has alpha (RGBA/LA), keep it; AVIF/WebP support alpha.
+                            # Only convert to RGB when there is no alpha channel.
+                            if img.mode not in ('RGB', 'RGBA', 'LA'):
+                                img = img.convert('RGB')
                             
-                            # For very large images, resize first
-                            max_size = 1920 if is_background else 1200
-                            if max(img.size) > max_size:
+                            # For very large images, resize first (configurable for backgrounds)
+                            if is_background:
+                                max_size = int(bg_max_size) if isinstance(bg_max_size, int) else 2400
+                            else:
+                                max_size = 1200
+                            if max_size and max(img.size) > max_size:
                                 ratio = max_size / max(img.size)
                                 new_size = (int(img.size[0] * ratio), int(img.size[1] * ratio))
                                 img = img.resize(new_size, Image.Resampling.LANCZOS)
                                 self.stdout.write(f"📏 Resized to {new_size}")
                             
-                            # Save optimized AVIF
-                            save_avif_optimized(img, avif_path, image_type=image_type)
+                            # Choose quality per type: --bg-quality/--product-quality override, then --quality, else heuristics
+                            chosen_quality = None
+                            if is_background and isinstance(bg_quality, int):
+                                chosen_quality = bg_quality
+                            elif (not is_background) and isinstance(product_quality, int):
+                                chosen_quality = product_quality
+                            elif isinstance(quality, int):
+                                chosen_quality = quality
+
+                            # Save optimized AVIF (internal heuristics will adapt if chosen_quality is None)
+                            save_avif_optimized(img, avif_path, image_type=image_type, quality=chosen_quality)
                             
                             # Save WebP as fallback
-                            webp_quality = 70 if is_background else 80
+                            # Keep backgrounds crisp enough
+                            webp_quality = 82 if is_background else 80
                             save_webp(img, webp_path, quality=webp_quality)
                         
                         # Calculate size after

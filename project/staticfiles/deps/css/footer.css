@@ -1,0 +1,122 @@
+
+:root {
+  --parchment-base: #241913;   /* глубокий тёплый коричневый */
+  --parchment-warm: #d7c6ad;   /* кремовый/золотистый для текста */
+  --parchment-muted: rgba(215,198,173,0.82);
+  --parchment-accent: #c9a978;
+}
+
+.site-footer--parchment {
+  background-color: var(--parchment-base);
+
+  /* 3 простых слоя: 1) тонкий верхний wash, 2) мягкие пятна "возраста", 3) тонкие полосы бумаги */
+  background-image:
+    linear-gradient(180deg, rgba(255,245,230,0.02), rgba(0,0,0,0.06)),
+    radial-gradient(600px 220px at 12% 14%, rgba(201,169,120,0.03), transparent 22%),
+    repeating-linear-gradient(180deg, rgba(255,255,255,0.008) 0 1px, rgba(0,0,0,0.02) 1px 9px);
+
+  background-blend-mode: overlay, normal, multiply;
+  background-size: cover, 48% 48%, auto;
+  background-repeat: no-repeat, repeat, repeat;
+
+  color: var(--parchment-warm);
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  /* FAQ-like frame */
+  border: 2px solid #4f463e;
+  border-radius: 10px;
+  overflow: hidden; /* clean rounded corners */
+  /* subtle top line preserved via inner shadow below */
+
+  /* внутренние тени — делают край "старым" и дают глубину */
+  box-shadow: inset 0 30px 60px rgba(0,0,0,0.45), inset 0 -18px 40px rgba(0,0,0,0.32);
+
+  /* мелкие настройки для более "бумажного" feeling */
+  font-family: 'Open Sans', sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+/* декоративный лёгкий "потёртый" верх */
+.site-footer--parchment::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 8px;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.14), rgba(255,255,255,0.02), rgba(0,0,0,0.14));
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+/* внутренний контейнер (как у тебя было) */
+.site-footer--parchment .footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+/* Бренд */
+.site-footer--parchment .footer-brand { flex: 1 1 220px; min-width: 200px; }
+.parchment-title {
+  font-family: 'PT Serif', serif;
+  font-size: 1.12rem;
+  margin: 0 0 0.25rem;
+  color: var(--parchment-warm);
+  /* лёгкий эффект "старой печати" */
+  text-shadow: 0 2px 6px rgba(0,0,0,0.45), 0 0 2px rgba(255,240,210,0.02);
+}
+.site-footer--parchment .brand-sub { margin: 0; color: var(--parchment-muted); font-size: 0.95rem; }
+
+/* Навигация */
+.site-footer--parchment .footer-nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 360px;
+  padding: 0.25rem 0;
+}
+.site-footer--parchment .footer-nav a {
+  color: var(--parchment-muted);
+  text-decoration: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: color .14s ease, background .12s ease, transform .08s ease;
+}
+.site-footer--parchment .footer-nav a:hover,
+.site-footer--parchment .footer-nav a:focus {
+  color: var(--parchment-accent);
+  background: rgba(201,169,120,0.03);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* Мета/копирайт */
+.site-footer--parchment .footer-meta { flex: 0 0 220px; min-width: 160px; text-align: right; }
+.site-footer--parchment .copy { margin: 0 0 0.25rem; color: var(--parchment-muted); font-size: 0.95rem; }
+.site-footer--parchment .small { margin: 0; font-size: 0.88rem; }
+.site-footer--parchment a { color: var(--parchment-warm); text-decoration: underline; text-underline-offset: 2px; }
+
+/* Нижняя полоска (тёмная "рамка") */
+.site-footer--parchment::after {
+  content: "";
+  display: block;
+  height: 6px;
+  width: 100%;
+  margin-top: 1rem;
+  background: linear-gradient(90deg, rgba(0,0,0,0.16), rgba(0,0,0,0.02));
+  opacity: 0.06;
+}
+
+/* Адаптив */
+@media (max-width: 720px) {
+  .site-footer--parchment .footer-inner { display: block; text-align:center; }
+  .site-footer--parchment .footer-brand,
+  .site-footer--parchment .footer-nav,
+  .site-footer--parchment .footer-meta { margin: 0.6rem 0; text-align: center; min-width: auto; }
+  .site-footer--parchment .footer-meta { text-align: center; }
+}

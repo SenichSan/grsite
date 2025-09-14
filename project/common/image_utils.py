@@ -59,7 +59,7 @@ def save_avif(img: Image.Image, out_path: str, quality: int = 50) -> None:
     img.save(out_path, format="AVIF", quality=quality)
 
 
-def save_avif_optimized(img: Image.Image, out_path: str, image_type: str = "background") -> None:
+def save_avif_optimized(img: Image.Image, out_path: str, image_type: str = "background", quality: int | None = None) -> None:
     """
     Optimized AVIF saver expected by management commands.
     Chooses sensible defaults depending on image type.
@@ -74,14 +74,27 @@ def save_avif_optimized(img: Image.Image, out_path: str, image_type: str = "back
     # Normalize type
     kind = (image_type or "background").strip().lower()
 
-    # Heuristic presets (tuned for pillow-avif quality scale)
-    if kind == "product":
-        quality = 40  # keep a bit more detail on product shots
+    # If quality explicitly provided (e.g., via management command), honor it
+    if isinstance(quality, int) and 0 <= quality <= 100:
+        q = quality
     else:
-        # background / default
-        quality = 50  # aggressive for large, noisy backgrounds
+        # Heuristic presets (tuned for pillow-avif quality scale)
+        if kind == "product":
+            # Preserve detail on product shots a bit more than before
+            q = 45
+        else:
+            # Backgrounds: adapt by size; larger backgrounds need higher quality to avoid mushy look
+            longest = max(getattr(img, 'size', (0, 0)) or (0, 0))
+            if longest >= 2400:
+                q = 66
+            elif longest >= 1920:
+                q = 62
+            elif longest >= 1600:
+                q = 58
+            else:
+                q = 54
 
-    save_avif(img, out_path, quality=quality)
+    save_avif(img, out_path, quality=q)
 
 
 def build_variant_paths(original_path: str, size_name: str, out_ext: str) -> str:
