@@ -59,8 +59,8 @@ body {
       url('/static/deps/images/bestsellers-carousel-bg-vertical.jpg') type('image/jpeg')
     ) !important;
     background-position: top center !important;
-    background-size: 100% auto !important;
-    background-repeat: repeat-y !important;
+    background-size: 100% auto;
+    background-repeat: repeat-y;
   }
   /* Мягкое сглаживание швов и светлая виньетка поверх */
   .tm-featured-wrapper::before {
