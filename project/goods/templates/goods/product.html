@@ -1,4 +1,5 @@
 {% load static %}
+{% load media_extras %}
 
 <!DOCTYPE html>
 <html lang="uk">
@@ -240,17 +241,12 @@
                                 <div class="swiper-wrapper">
                                     {% if product.image %}
                                     <figure class="swiper-slide">
-                                        <picture>
-                                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                                        </picture>
+                                        {% product_image_picture product '800x600' '' product.name 800 600 'eager' 'high' %}
                                     </figure>
                                     {% endif %}
                                     {% for img in product.images.all %}
                                     <figure class="swiper-slide">
-                                        <picture>
-                                            <img src="{{ img.image.url }}"
-                                                 alt="{{ img.alt_text|default:product.name }}">
-                                        </picture>
+                                        {% field_image_picture img.image '800x600' '' img.alt_text|default:product.name 800 600 'lazy' %}
                                     </figure>
                                     {% endfor %}
                                 </div>
@@ -276,17 +272,12 @@
                                 <div class="swiper-wrapper">
                                     {% if product.image %}
                                     <figure class="product-image-nav-item swiper-slide">
-                                        <picture>
-                                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                                        </picture>
+                                        {% product_image_picture product '256x192' '' product.name 256 192 'lazy' %}
                                     </figure>
                                     {% endif %}
                                     {% for img in product.images.all %}
                                     <figure class="product-image-nav-item swiper-slide">
-                                        <picture>
-                                            <img src="{{ img.image.url }}"
-                                                 alt="{{ img.alt_text|default:product.name }}">
-                                        </picture>
+                                        {% field_image_picture img.image '256x192' '' img.alt_text|default:product.name 256 192 'lazy' %}
                                     </figure>
                                     {% endfor %}
                                 </div>
@@ -345,7 +336,7 @@
                                 </div>
 
                                 {% if rp.image %}
-                                <img src="{{ rp.image.url }}" alt="{{ rp.name }}"/>
+                                {% product_image_picture rp '400x300' '' rp.name 400 300 'lazy' %}
                                 {% endif %}
                             </div>
                             <div class="rp-card-body">

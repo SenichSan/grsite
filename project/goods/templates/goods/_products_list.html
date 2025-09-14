@@ -122,7 +122,7 @@
     <div class="category-presentation-inner">
         <div class="category-presentation-media">
             {% if current_category_obj.image %}
-                <img src="{{ current_category_obj.image.url }}" alt="{{ current_category_obj.name }}" class="category-presentation-image"/>
+                {% category_icon_picture current_category_obj '800x450' 'category-presentation-image' current_category_obj.name 800 450 'lazy' %}
             {% else %}
                 <div class="category-presentation-image placeholder" aria-hidden="true"></div>
             {% endif %}

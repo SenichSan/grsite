@@ -1,4 +1,5 @@
 {% load static %}
+{% load media_extras %}
 
 <section class="tm-featured-wrapper tm-fw-mobile">
     <div class="container-bestsellers basic-grid" role="region" aria-labelledby="bestsellers-title">
@@ -27,11 +28,7 @@
                             </div>
                             {% endif %}
                         </div>
-                        <img src="{{ product.image.url }}"
-                             alt="{{ product.name }}"
-                             class="tm-card-img"
-                             loading="lazy"
-                             width="400" height="300"/>
+                        {% product_image_picture product '400x300' 'tm-card-img' product.name 400 300 'lazy' %}
                     </div>
 
                     <div class="tm-card-info">

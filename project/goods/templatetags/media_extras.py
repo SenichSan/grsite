@@ -15,7 +15,7 @@ register = template.Library()
 
 @register.simple_tag
 def product_image_picture(product, size: str = "400x300", classes: str = "", alt: Optional[str] = None,
-                         width: int = 400, height: int = 300, loading: str = "lazy"):
+                         width: int = 400, height: int = 300, loading: str = "lazy", fetchpriority: Optional[str] = None):
     """
     Render a <picture> for product image with AVIF/WebP priority and fallback to original.
     Usage:
@@ -57,16 +57,18 @@ def product_image_picture(product, size: str = "400x300", classes: str = "", alt
             if webp_url:
                 parts.append(f"<source srcset=\"{webp_url}\" type=\"image/webp\">")
             # Fallback to original
+            fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
             parts.append(
-                f"<img src=\"{orig_url}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\">"
+                f"<img src=\"{orig_url}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
             )
             parts.append("</picture>")
             return mark_safe("".join(parts))
 
     # Ultimate fallback to placeholder
     fallback = static("deps/images/placeholder.png")
+    fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
     return mark_safe(
-        f"<img src=\"{fallback}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\">"
+        f"<img src=\"{fallback}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
     )
 
 
@@ -86,7 +88,7 @@ def _url_if_exists(name: str) -> Optional[str]:
 
 @register.simple_tag
 def category_icon_picture(category, size: str = "128x128", classes: str = "", alt: Optional[str] = None,
-                          width: int = 128, height: int = 128):
+                          width: int = 128, height: int = 128, loading: str = "lazy", fetchpriority: Optional[str] = None):
     """
     Render a <picture> for category.image with AVIF/WebP priority and fallback to original.
     Usage:
@@ -119,8 +121,9 @@ def category_icon_picture(category, size: str = "128x128", classes: str = "", al
             parts.append(f"<source srcset=\"{webp_url}\" type=\"image/webp\">")
         # Fallback to original media image
         if orig_url:
+            fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
             parts.append(
-                f"<img src=\"{orig_url}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"lazy\" decoding=\"async\">"
+                f"<img src=\"{orig_url}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
             )
         parts.append("</picture>")
         return mark_safe("".join(parts))
@@ -152,14 +155,57 @@ def category_icon_picture(category, size: str = "128x128", classes: str = "", al
             if has_webp:
                 parts.append(f"<source srcset=\"{ static(final_webp) }\" type=\"image/webp\">")
             fallback = static(static_png) if has_png else (static(final_webp) if has_webp else static(final_avif))
+            fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
             parts.append(
-                f"<img src=\"{fallback}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"lazy\" decoding=\"async\">"
+                f"<img src=\"{fallback}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
             )
             parts.append("</picture>")
             return mark_safe("".join(parts))
 
     # 3) Ultimate placeholder
     fallback = static("deps/images/placeholder.png")
+    fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
     return mark_safe(
-        f"<img src=\"{fallback}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"lazy\" decoding=\"async\">"
+        f"<img src=\"{fallback}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
     )
+
+
+@register.simple_tag
+def field_image_picture(image_field, size: str = "400x300", classes: str = "", alt: str = "",
+                        width: int = 400, height: int = 300, loading: str = "lazy", fetchpriority: Optional[str] = None):
+    """
+    Render <picture> for arbitrary ImageField/FileField with AVIF/WebP priority and fallback.
+    Usage:
+      {% field_image_picture img.image '400x300' 'class' product.name 400 300 'lazy' %}
+    """
+    if not image_field or not getattr(image_field, "name", ""):
+        fallback = static("deps/images/placeholder.png")
+        fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
+        return mark_safe(
+            f"<img src=\"{fallback}\" alt=\"{alt}\" class=\"{classes}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
+        )
+
+    try:
+        orig_url = image_field.url
+    except Exception:
+        orig_url = None
+
+    name = image_field.name
+    avif_name = _variant_name(name, size, "avif")
+    webp_name = _variant_name(name, size, "webp")
+
+    avif_url = _url_if_exists(avif_name)
+    webp_url = _url_if_exists(webp_name)
+
+    parts = ["<picture>"]
+    if avif_url:
+        parts.append(f"<source srcset=\"{avif_url}\" type=\"image/avif\">")
+    if webp_url:
+        parts.append(f"<source srcset=\"{webp_url}\" type=\"image/webp\">")
+    fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
+    fallback = orig_url or static("deps/images/placeholder.png")
+    parts.append(
+        f"<img src=\"{fallback}\" alt=\"{alt}\" class=\"{classes}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
+    )
+    parts.append("</picture>")
+    return mark_safe("".join(parts))

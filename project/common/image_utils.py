@@ -50,13 +50,38 @@ def save_webp(img: Image.Image, out_path: str, quality: int = 80) -> None:
     img.save(out_path, format="WEBP", quality=quality, method=6)
 
 
-def save_avif(img: Image.Image, out_path: str, quality: int = 32) -> None:
+def save_avif(img: Image.Image, out_path: str, quality: int = 50) -> None:
     if not AVIF_AVAILABLE:
         return
     ensure_dir(out_path)
     # pillow-avif uses 'quality' 0..100 similar to JPEG; smaller -> worse
     # we'll map requested 'quality' ~ cqLevel analogue
     img.save(out_path, format="AVIF", quality=quality)
+
+
+def save_avif_optimized(img: Image.Image, out_path: str, image_type: str = "background") -> None:
+    """
+    Optimized AVIF saver expected by management commands.
+    Chooses sensible defaults depending on image type.
+
+    image_type:
+      - 'background' -> aggressive compression for large backdrops
+      - 'product'    -> conservative to preserve detail
+    """
+    if not AVIF_AVAILABLE:
+        return
+
+    # Normalize type
+    kind = (image_type or "background").strip().lower()
+
+    # Heuristic presets (tuned for pillow-avif quality scale)
+    if kind == "product":
+        quality = 40  # keep a bit more detail on product shots
+    else:
+        # background / default
+        quality = 50  # aggressive for large, noisy backgrounds
+
+    save_avif(img, out_path, quality=quality)
 
 
 def build_variant_paths(original_path: str, size_name: str, out_ext: str) -> str:
