@@ -12,3 +12,14 @@ class ManifestStaticFilesStorageLoose(ManifestStaticFilesStorage):
     """
 
     manifest_strict = False
+
+
+class ManifestStaticFilesStorageNoPostProcess(ManifestStaticFilesStorage):
+    """
+    Keep manifest hashing for top-level files, but disable CSS/JS URL
+    rewriting during collectstatic to avoid crashes on legacy/broken
+    references inside CSS (e.g., missing images or sourcemaps).
+    """
+
+    # Do not try to rewrite url(...) inside CSS or sourcemap hints
+    patterns = ()
