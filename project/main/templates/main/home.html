@@ -30,12 +30,9 @@
     .header-hero .tm-social-link { width: 49px; height: 49px; }
   </style>
 
-  <!-- Шрифты, используемые на главной -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Marck+Script&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Ruslan+Display&display=swap" rel="stylesheet">
+  <!-- Шрифты: на мобилке оставляем только Poppins 400/600 и делаем не блокирующим -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"></noscript>
 
   <!-- Глобальные/тематические стили, нужные именно на главной -->
   <!-- Critical styles with preload -->
@@ -128,6 +125,24 @@
 {% endblock %}
 
 {% block extra_js %}
+  <!-- Отложенная загрузка декоративных шрифтов (не критично для мобилки) -->
+  <script>
+    window.addEventListener('load', function(){
+      var fonts = [
+        'https://fonts.googleapis.com/css?family=Open+Sans:400',
+        'https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap',
+        'https://fonts.googleapis.com/css2?family=Marck+Script&display=swap',
+        'https://fonts.googleapis.com/css2?family=Ruslan+Display&display=swap'
+      ];
+      fonts.forEach(function(href){
+        var l = document.createElement('link');
+        l.rel = 'stylesheet';
+        l.href = href;
+        l.media = 'all';
+        document.head.appendChild(l);
+      });
+    });
+  </script>
   <!-- Slick JS (после jQuery из base.html) -->
   <script defer src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
