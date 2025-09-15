@@ -10,24 +10,44 @@
 
     <title>{{ product.name }} | Grownica</title>
 
+    <!-- Performance hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link rel="preconnect" href="https://code.jquery.com" crossorigin>
+
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css">
+    <!-- Swiper CSS (secondary) -->
+    <link rel="preload" as="style" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css"></noscript>
 
     <!-- Match home page container/background rules -->
+    <!-- Critical styles first -->
+    <link rel="preload" as="style" href="{% static 'deps/css/templatemo-style.css' %}">
     <link rel="stylesheet" href="{% static 'deps/css/templatemo-style.css' %}">
 
+    <link rel="preload" as="style" href="{% static 'deps/css/product_page.css' %}">
     <link rel="stylesheet" href="{% static 'deps/css/product_page.css' %}">
+    <link rel="preload" as="style" href="{% static 'deps/css/discount_badge.css' %}">
     <link rel="stylesheet" href="{% static 'deps/css/discount_badge.css' %}">
 
+    <link rel="preload" as="style" href="{% static 'deps/css/header-hero.css' %}">
     <link rel="stylesheet" href="{% static 'deps/css/header-hero.css' %}">
-    <link rel="stylesheet" href="{% static 'deps/css/footer.css' %}">
-    <link rel="stylesheet" href="{% static 'deps/css/cart-component.css' %}">
+    <!-- Secondary styles via preload+onload to avoid render-blocking -->
+    <link rel="preload" as="style" href="{% static 'deps/css/footer.css' %}" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% static 'deps/css/footer.css' %}"></noscript>
+    <link rel="preload" as="style" href="{% static 'deps/css/cart-component.css' %}" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% static 'deps/css/cart-component.css' %}"></noscript>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+    <!-- Slick CSS (secondary) -->
+    <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" onload="this.onload=null;this.rel='stylesheet'"/>
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/></noscript>
+    <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" onload="this.onload=null;this.rel='stylesheet'"/>
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/></noscript>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
@@ -388,7 +408,7 @@
     <img class="image-modal__img" src="" alt="Product Image">
 </div>
 
-<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+<script defer src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
 
 <!-- Tawk.to (product page only) -->
 <script type="text/javascript">
@@ -402,13 +422,13 @@
     s0.parentNode.insertBefore(s1,s0);
   })();
 </script>
-<!-- jQuery must be loaded before jquery-ajax.js -->
-<script src="{% static 'deps/js/jquery.min.js' %}"></script>
-<script src="{% static 'deps/js/product_page.js' %}"></script>
-<script src="{% static 'deps/js/product_related.js' %}"></script>
-<script src="{% static 'deps/js/cart.js' %}"></script>
-<script src="{% static 'deps/js/cart-component.js' %}"></script>
-<script src="{% static 'deps/js/jquery-ajax.js' %}"></script>
+<!-- jQuery must be loaded before dependent scripts; defer preserves order -->
+<script defer src="{% static 'deps/js/jquery.min.js' %}"></script>
+<script defer src="{% static 'deps/js/product_page.js' %}"></script>
+<script defer src="{% static 'deps/js/product_related.js' %}"></script>
+<script defer src="{% static 'deps/js/cart.js' %}"></script>
+<script defer src="{% static 'deps/js/cart-component.js' %}"></script>
+<script defer src="{% static 'deps/js/jquery-ajax.js' %}"></script>
 
 </body>
 </html>

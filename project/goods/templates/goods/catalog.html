@@ -9,14 +9,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Каталог</title>
+    <!-- Performance hints -->
+    <link rel="preconnect" href="https://code.jquery.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Global styles matching home (container visuals) -->
+    <link rel="preload" as="style" href="{% static 'deps/css/templatemo-style.css' %}">
     <link href="{% static 'deps/css/templatemo-style.css' %}" rel="stylesheet"/>
     <!-- Page-specific (currently empty/minimal) -->
-    <link rel="stylesheet" href="{% static 'deps/css/catalog.css' %}">
-    <link rel="stylesheet" href="{% static 'deps/css/bestsellers-carousel.css' %}">
+    <link rel="preload" as="style" href="{% static 'deps/css/header-hero.css' %}">
     <link rel="stylesheet" href="{% static 'deps/css/header-hero.css' %}">
-    <link rel="stylesheet" href="{% static 'deps/css/cart-component.css' %}">
-    <link rel="stylesheet" href="{% static 'deps/css/footer.css' %}">
+    <!-- Secondary styles via preload+onload to avoid render-blocking -->
+    <link rel="preload" as="style" href="{% static 'deps/css/catalog.css' %}" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% static 'deps/css/catalog.css' %}"></noscript>
+    <link rel="preload" as="style" href="{% static 'deps/css/bestsellers-carousel.css' %}" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% static 'deps/css/bestsellers-carousel.css' %}"></noscript>
+    <link rel="preload" as="style" href="{% static 'deps/css/cart-component.css' %}" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% static 'deps/css/cart-component.css' %}"></noscript>
+    <link rel="preload" as="style" href="{% static 'deps/css/footer.css' %}" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% static 'deps/css/footer.css' %}"></noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -76,7 +87,7 @@
 {% include 'components/cart_modal.html' %}
 
 <!-- jQuery core (needed for jquery-ajax.js handlers) -->
-<script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
+<script defer src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
 
 <!-- Toast notifications stack and helper -->
 <script>
@@ -164,10 +175,10 @@
 </script>
 
 <!-- Global AJAX handlers for cart actions (legacy + .add-to-cart-btn) -->
-<script src="{% static 'deps/js/jquery-ajax.js' %}"></script>
+<script defer src="{% static 'deps/js/jquery-ajax.js' %}"></script>
 
 <!-- New cart component (modal + counter sync) -->
-<script src="{% static 'deps/js/cart-component.js' %}"></script>
+<script defer src="{% static 'deps/js/cart-component.js' %}"></script>
 
 <script>
 (function() {
