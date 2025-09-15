@@ -57,11 +57,14 @@
   <noscript><link rel="stylesheet" href="{% static 'deps/css/footer.css' %}"></noscript>
   <link rel="preload" as="style" href="{% static 'deps/css/cart-component.css' %}" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="{% static 'deps/css/cart-component.css' %}"></noscript>
-  <link rel="stylesheet" href="{% static 'deps/css/faq.css' %}">
+  <link rel="preload" as="style" href="{% static 'deps/css/faq.css' %}" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="{% static 'deps/css/faq.css' %}"></noscript>
 
-  <!-- Slick carousel CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+  <!-- Slick carousel CSS (non‑blocking) -->
+  <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" onload="this.onload=null;this.rel='stylesheet'"/>
+  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/></noscript>
+  <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" onload="this.onload=null;this.rel='stylesheet'"/>
+  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/></noscript>
   <!-- Preload background image variants for SEO text section -->
   <link rel="preload" as="image" href="{% static 'deps/images/seo-text-bg.avif' %}" type="image/avif" fetchpriority="high">
 {% endblock %}
@@ -82,7 +85,7 @@
                class="tm-paging-link category-card"
                aria-current="{% if category.slug == current_category %}true{% endif %}">
               <div class="category-icon-wrap">
-                {% category_icon_picture category '256x256' 'category-icon' category.name 128 128 %}
+                {% category_icon_picture category '256x256' 'category-icon' category.name 128 128 'eager' 'high' %}
               </div>
               <div class="category-label">{{ category.name }}</div>
               {% if category.short_description %}
