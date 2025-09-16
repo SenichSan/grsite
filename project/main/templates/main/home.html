@@ -36,18 +36,17 @@
 
   <!-- Глобальные/тематические стили, нужные именно на главной -->
   <!-- Critical styles with preload -->
-  <link rel="preload" as="style" href="{% static 'deps/css/templatemo-style.css' %}">
   <link href="{% static 'deps/css/templatemo-style.css' %}" rel="stylesheet"/>
-  <link rel="preload" as="style" href="{% static 'deps/css/discount_badge.css' %}">
-  <link rel="stylesheet" href="{% static 'deps/css/discount_badge.css' %}">
+  <link rel="preload" as="style" href="{% static 'deps/css/discount_badge.css' %}" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="{% static 'deps/css/discount_badge.css' %}"></noscript>
 
   <!-- Secondary styles via preload+onload to avoid render-blocking -->
   <link rel="preload" as="style" href="{% static 'deps/css/seo-text.css' %}" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="{% static 'deps/css/seo-text.css' %}"></noscript>
   <link rel="preload" as="style" href="{% static 'deps/css/news_slider.css' %}" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="{% static 'deps/css/news_slider.css' %}"></noscript>
-  <link rel="preload" as="style" href="{% static 'deps/css/categories-glass.css' %}" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="{% static 'deps/css/categories-glass.css' %}"></noscript>
+  <link rel="stylesheet" href="{% static 'deps/css/categories-glass.css' %}">
+
   <link rel="preload" as="style" href="{% static 'deps/css/bestsellers-carousel.css' %}" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="{% static 'deps/css/bestsellers-carousel.css' %}"></noscript>
   <link rel="preload" as="style" href="{% static 'deps/css/footer.css' %}" onload="this.onload=null;this.rel='stylesheet'">
