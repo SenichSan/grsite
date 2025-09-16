@@ -63,6 +63,15 @@
   <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/></noscript>
   <!-- Preload background image variants for SEO text section -->
   <link rel="preload" as="image" href="{% static 'deps/images/seo-text-bg.avif' %}" type="image/avif" fetchpriority="high">
+  {# Preload first 6 category icons as LCP candidates #}
+  {% with top_categories=categories|slice:":6" %}
+    {% for cat in top_categories %}
+      {% category_best_img_src cat '128x128' as cat_preload %}
+      {% if cat_preload %}
+        <link rel="preload" as="image" href="{{ cat_preload }}" fetchpriority="high">
+      {% endif %}
+    {% endfor %}
+  {% endwith %}
 {% endblock %}
 
 {% block content %}
@@ -81,7 +90,7 @@
                class="tm-paging-link category-card"
                aria-current="{% if category.slug == current_category %}true{% endif %}">
               <div class="category-icon-wrap">
-                {% category_icon_picture category '256x256' 'category-icon' category.name 128 128 'eager' 'high' %}
+                {% category_icon_picture category '128x128' 'category-icon' category.name 128 128 'eager' 'high' %}
               </div>
               <div class="category-label">{{ category.name }}</div>
               {% if category.short_description %}

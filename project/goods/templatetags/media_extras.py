@@ -95,6 +95,49 @@ def _url_if_exists(name: str) -> Optional[str]:
 
 
 @register.simple_tag
+def category_best_img_src(category, size: str = "128x128") -> Optional[str]:
+    """
+    Return the best single URL to be used in <img src> for a category icon of given size.
+    Priority: WebP -> AVIF -> original for media-based images; for static icons: WebP -> AVIF -> PNG.
+    This is used for <link rel="preload" as="image"> to speed up LCP.
+    """
+    # 1) Media image attached to category
+    img_field = getattr(category, "image", None)
+    if img_field and getattr(img_field, "name", ""):
+        try:
+            orig_url = img_field.url
+        except Exception:
+            orig_url = None
+
+        name = img_field.name
+        avif_name = _variant_name(name, size, "avif")
+        webp_name = _variant_name(name, size, "webp")
+        webp_url = _url_if_exists(webp_name)
+        avif_url = _url_if_exists(avif_name)
+        # Prefer modern src for <img>
+        return webp_url or avif_url or orig_url
+
+    # 2) Static icon (by slug)
+    slug = getattr(category, "slug", "")
+    if slug:
+        static_base = f"deps/icons/{slug}"
+        # Sized first
+        static_webp_sized = f"{static_base}_{size}.webp"
+        static_avif_sized = f"{static_base}_{size}.avif"
+        # Non-sized fallback
+        static_webp = f"{static_base}.webp"
+        static_avif = f"{static_base}.avif"
+        static_png = f"{static_base}.png"
+
+        # Prefer WebP -> AVIF -> PNG (for src attribute compatibility and weight)
+        for path in (static_webp_sized, static_avif_sized, static_webp, static_avif, static_png):
+            if finders.find(path):
+                return static(path)
+
+    return None
+
+
+@register.simple_tag
 def category_icon_picture(category, size: str = "128x128", classes: str = "", alt: Optional[str] = None,
                           width: int = 128, height: int = 128, loading: str = "lazy", fetchpriority: Optional[str] = None):
     """
