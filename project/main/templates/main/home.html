@@ -68,12 +68,12 @@
 
   <!-- Preload background image variants for SEO text section -->
   <link rel="preload" as="image" href="{% static 'deps/images/seo-text-bg.avif' %}" type="image/avif" fetchpriority="high">
-  {# Preload first 6 category icons as LCP candidates #}
-  {% with top_categories=categories|slice:":6" %}
+  {# Preload first 4 category icons as LCP candidates on mobile only #}
+  {% with top_categories=categories|slice:":4" %}
     {% for cat in top_categories %}
       {% category_best_img_src cat '128x128' as cat_preload %}
       {% if cat_preload %}
-        <link rel="preload" as="image" href="{{ cat_preload }}" fetchpriority="high">
+        <link rel="preload" as="image" href="{{ cat_preload }}" media="(max-width: 599px)" fetchpriority="high">
       {% endif %}
     {% endfor %}
   {% endwith %}
@@ -156,8 +156,7 @@
       });
     });
   </script>
-  <!-- Slick JS (после jQuery из base.html) -->
-  <script defer src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+  <!-- Slick JS будет загружен по требованию (on-demand) ниже -->
 
   <!-- Локальные скрипты главной -->
   <script defer src="{% static 'deps/js/faq.js' %}"></script>
@@ -175,8 +174,17 @@
       const target = document.querySelector('.tm-featured-carousel');
       if (!target) return;
 
+      function loadSlick(cb){
+        if (window.jQuery && $.fn && $.fn.slick) { cb && cb(); return; }
+        var s=document.createElement('script');
+        s.src='https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js';
+        s.defer=true; s.onload=function(){ cb && cb(); };
+        document.head.appendChild(s);
+      }
+
       function initCarousel(){
-        if (!window.jQuery || !$.fn || !$.fn.slick) return;
+        if (!window.jQuery) return; // wait for jQuery from base.html
+        if (!($.fn && $.fn.slick)) { loadSlick(initCarousel); return; }
         if (target.getAttribute('data-slick-initialized')) return;
         target.setAttribute('data-slick-initialized','1');
         $(target).slick({
