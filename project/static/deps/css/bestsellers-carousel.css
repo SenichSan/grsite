@@ -33,6 +33,7 @@ body {
     url('/static/deps/images/bestsellers-carousel-bg.webp') type('image/webp') 1x,
     url('/static/deps/images/bestsellers-carousel-bg.jpg') type('image/jpeg') 1x
   );
+
   background-image: image-set(
     url('/static/deps/images/bestsellers-carousel-bg.avif') type('image/avif') 1x,
     url('/static/deps/images/bestsellers-carousel-bg.webp') type('image/webp') 1x,
