@@ -204,11 +204,11 @@ TINYMCE_DEFAULT_CONFIG = {
     'plugins': (
         'advlist autolink lists link charmap preview anchor code '
         'fullscreen insertdatetime media table help wordcount '
-        'textcolor'  # добавляем плагин textcolor
+        # TinyMCE 5/6: textcolor функционал встроен; отдельный плагин textcolor удалён
     ),
     'toolbar': (
         'undo redo | formatselect | bold italic underline | '
-        'forecolor backcolor | '  # добавляем кнопки цвета
+        'forecolor backcolor | '
         'bullist numlist | alignleft aligncenter alignright | '
         'removeformat | code'
     ),
