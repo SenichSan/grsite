@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /
+
+#Когда сайт будет готов к индексации, замените на:
+# User-agent: *
+# Allow: /
+# Sitemap: https://grownica.com.ua/sitemap.xml
