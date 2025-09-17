@@ -244,6 +244,11 @@ SECURE_HSTS_PRELOAD = _env_bool('SECURE_HSTS_PRELOAD', 'False')
 # Force redirect HTTP->HTTPS (behind Nginx)
 SECURE_SSL_REDIRECT = _env_bool('SECURE_SSL_REDIRECT', 'False')
 
+# Trust X-Forwarded-Proto header from reverse proxy (e.g., Nginx)
+# This is required so Django correctly detects HTTPS when SSL is terminated at the proxy
+if _env_bool('USE_SECURE_PROXY_SSL_HEADER', 'True'):
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Other recommended headers
 SECURE_REFERRER_POLICY = os.environ.get('SECURE_REFERRER_POLICY', 'strict-origin-when-cross-origin')
 SECURE_CONTENT_TYPE_NOSNIFF = True
