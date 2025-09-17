@@ -27,11 +27,16 @@ body {
   /* Синхронизируем с уменьшёнными отступами блока категорий */
   padding: 0 26px;
   padding-top: 1.2rem;
-  /* Prefer modern formats with fallback */
+  /* Prefer modern formats with fallback (include -webkit-image-set for Safari) */
+  background-image: -webkit-image-set(
+    url('/static/deps/images/bestsellers-carousel-bg.avif') type('image/avif') 1x,
+    url('/static/deps/images/bestsellers-carousel-bg.webp') type('image/webp') 1x,
+    url('/static/deps/images/bestsellers-carousel-bg.jpg') type('image/jpeg') 1x
+  );
   background-image: image-set(
-    url('/static/deps/images/bestsellers-carousel-bg.avif') type('image/avif'),
-    url('/static/deps/images/bestsellers-carousel-bg.webp') type('image/webp'),
-    url('/static/deps/images/bestsellers-carousel-bg.jpg') type('image/jpeg')
+    url('/static/deps/images/bestsellers-carousel-bg.avif') type('image/avif') 1x,
+    url('/static/deps/images/bestsellers-carousel-bg.webp') type('image/webp') 1x,
+    url('/static/deps/images/bestsellers-carousel-bg.jpg') type('image/jpeg') 1x
   );
   background-position: center;
   background-repeat: no-repeat;
@@ -53,10 +58,15 @@ body {
   /* Переносим фон на wrapper и повторяем вниз */
   .tm-featured-wrapper {
     /* Prefer modern formats with fallback for mobile vertical background */
+    background-image: -webkit-image-set(
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.avif') type('image/avif') 1x,
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.webp') type('image/webp') 1x,
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.jpg') type('image/jpeg') 1x
+    ) !important;
     background-image: image-set(
-      url('/static/deps/images/bestsellers-carousel-bg-vertical.avif') type('image/avif'),
-      url('/static/deps/images/bestsellers-carousel-bg-vertical.webp') type('image/webp'),
-      url('/static/deps/images/bestsellers-carousel-bg-vertical.jpg') type('image/jpeg')
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.avif') type('image/avif') 1x,
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.webp') type('image/webp') 1x,
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.jpg') type('image/jpeg') 1x
     ) !important;
     background-position: top center !important;
     background-size: 100% auto;
@@ -68,10 +78,15 @@ body {
     position: absolute;
     inset: 0;
     /* Mirror the same image-set to ensure modern format is used in the blur overlay as well */
+    background-image: -webkit-image-set(
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.avif') type('image/avif') 1x,
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.webp') type('image/webp') 1x,
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.jpg') type('image/jpeg') 1x
+    ) !important;
     background-image: image-set(
-      url('/static/deps/images/bestsellers-carousel-bg-vertical.avif') type('image/avif'),
-      url('/static/deps/images/bestsellers-carousel-bg-vertical.webp') type('image/webp'),
-      url('/static/deps/images/bestsellers-carousel-bg-vertical.jpg') type('image/jpeg')
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.avif') type('image/avif') 1x,
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.webp') type('image/webp') 1x,
+      url('/static/deps/images/bestsellers-carousel-bg-vertical.jpg') type('image/jpeg') 1x
     ) !important;
     background-position: top center !important;
     background-size: 100% auto !important;
