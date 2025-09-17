@@ -55,8 +55,10 @@
 
   <!-- Tiny critical CSS to stabilize category grid before full CSS loads -->
   <style>
-    .tm-paging-links { box-sizing: border-box; padding: 0 16px; }
-    .tm-paging-links .tm-paging-list { display: grid; grid-template-columns: 1fr; gap: 12px; margin:0; padding:0; list-style:none; }
+    .tm-paging-links { box-sizing: border-box; padding: 1.2rem 16px 0; }
+    .tm-paging-links .tm-paging-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin:0; padding:0; list-style:none; }
+    @media (max-width: 991px) { .tm-paging-links { padding-top: 3rem; } }
+    @media (max-width: 576px) { .tm-paging-links { padding-top: 1.6rem; } }
     @media (min-width: 768px) { .tm-paging-links .tm-paging-list { grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 1200px) { .tm-paging-links .tm-paging-list { grid-template-columns: repeat(3, 1fr); } }
   </style>
@@ -105,7 +107,7 @@
                class="tm-paging-link category-card"
                aria-current="{% if category.slug == current_category %}true{% endif %}">
               <div class="category-icon-wrap">
-                {% category_icon_picture category '128x128' 'category-icon' category.name 128 128 'eager' 'high' %}
+                {% category_icon_picture category '256x256' 'category-icon' category.name 256 256 'eager' 'high' %}
               </div>
               <div class="category-label">{{ category.name }}</div>
               {% if category.short_description %}

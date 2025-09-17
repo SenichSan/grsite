@@ -26,7 +26,7 @@ body {
 .container-bestsellers.basic-grid {
   /* Синхронизируем с уменьшёнными отступами блока категорий */
   padding: 0 26px;
-  padding-top: 1.2rem;
+  padding-top: 1rem; /* slightly reduced to match categories heading spacing */
   /* Prefer modern formats with fallback (include -webkit-image-set for Safari) */
   background-image: -webkit-image-set(
     url('/static/deps/images/bestsellers-carousel-bg.avif') type('image/avif') 1x,
@@ -47,10 +47,10 @@ body {
 
 /* Планшеты/мобилки: как в categories-glass.css */
 @media (max-width: 991px) {
-  .container-bestsellers.basic-grid { padding: 0 clamp(16px, 4vw, 24px); padding-top: 3rem; }
+  .container-bestsellers.basic-grid { padding: 0 clamp(16px, 4vw, 24px); padding-top: 2.8rem; }
 }
 @media (max-width: 576px) {
-  .container-bestsellers.basic-grid { padding: 0 clamp(10px, 4vw, 16px); padding-top: 1.6rem; }
+  .container-bestsellers.basic-grid { padding: 0 clamp(10px, 4vw, 16px); padding-top: 1.4rem; }
 }
 
 /* ---------------- Mobile vertical background with seam softening ---------------- */

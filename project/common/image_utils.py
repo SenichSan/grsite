@@ -1,6 +1,6 @@
 import os
 from io import BytesIO
-from typing import Tuple
+from typing import Tuple, Literal
 
 from PIL import Image
 
@@ -43,6 +43,28 @@ def _fit_box(img: Image.Image, size: Tuple[int, int]) -> Image.Image:
     top = (new_h - target_h) // 2
     box = (left, top, left + target_w, top + target_h)
     return resized.crop(box)
+
+
+def _fit_box_contain(img: Image.Image, size: Tuple[int, int], background=(0, 0, 0, 0)) -> Image.Image:
+    """Resize to fit entirely inside target box without cropping.
+    The remaining area is filled with transparent (default) background.
+    """
+    target_w, target_h = size
+    src_w, src_h = img.size
+    if src_w == 0 or src_h == 0 or target_w == 0 or target_h == 0:
+        return img.copy()
+
+    scale = min(target_w / src_w, target_h / src_h)
+    new_w = max(1, int(round(src_w * scale)))
+    new_h = max(1, int(round(src_h * scale)))
+
+    base = Image.new("RGBA", (target_w, target_h), background)
+    resized = img.convert("RGBA").resize((new_w, new_h), Image.LANCZOS)
+
+    left = (target_w - new_w) // 2
+    top = (target_h - new_h) // 2
+    base.paste(resized, (left, top), resized if resized.mode == "RGBA" else None)
+    return base
 
 
 def save_webp(img: Image.Image, out_path: str, quality: int = 80) -> None:
@@ -103,7 +125,13 @@ def build_variant_paths(original_path: str, size_name: str, out_ext: str) -> str
     return f"{root}_{size_name}.{out_ext}"
 
 
-def generate_icon_variants(original_fs_path: str, size: Tuple[int, int] = (128, 128)) -> dict:
+def generate_icon_variants(
+    original_fs_path: str,
+    size: Tuple[int, int] = (128, 128),
+    mode: Literal["contain", "cover"] = "contain",
+    quality_avif: int | None = None,
+    quality_webp: int | None = None,
+) -> dict:
     """
     Generate WebP and AVIF variants next to original file.
     Returns dict with keys: 'webp', 'avif' (values are absolute FS paths that exist).
@@ -113,20 +141,25 @@ def generate_icon_variants(original_fs_path: str, size: Tuple[int, int] = (128, 
         return {}
 
     img = _open_image(original_fs_path)
-    fitted = _fit_box(img, size)
+    if mode == "cover":
+        fitted = _fit_box(img, size)
+    else:
+        fitted = _fit_box_contain(img, size)
 
     size_name = f"{size[0]}x{size[1]}"
 
     out = {}
 
+    webp_q = int(quality_webp) if isinstance(quality_webp, int) else 82
     webp_path = build_variant_paths(original_fs_path, size_name, "webp")
-    save_webp(fitted, webp_path, quality=80)
+    save_webp(fitted, webp_path, quality=webp_q)
     if os.path.exists(webp_path):
         out["webp"] = webp_path
 
     if AVIF_AVAILABLE:
+        avif_q = int(quality_avif) if isinstance(quality_avif, int) else 70
         avif_path = build_variant_paths(original_fs_path, size_name, "avif")
-        save_avif(fitted, avif_path, quality=32)
+        save_avif(fitted, avif_path, quality=avif_q)
         if os.path.exists(avif_path):
             out["avif"] = avif_path
 
