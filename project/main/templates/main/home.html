@@ -6,6 +6,10 @@
   <!-- Performance hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Preload LCP hero image (AVIF): mobile 800px, desktop 1600px -->
+  <link rel="preload" as="image" href="{% static 'deps/images/bg-image-blur-800.avif' %}" type="image/avif" media="(max-width: 599px)" fetchpriority="high">
+  <link rel="preload" as="image" href="{% static 'deps/images/bg-image-blur-1600.avif' %}" type="image/avif" media="(min-width: 600px)" fetchpriority="high">
+
   <!-- Home-only layout overrides: header flush to top, full-bleed blocks -->
   <style>
     /* Убираем верх/низ от main.container и делаем его full-bleed только на главной */
@@ -61,6 +65,7 @@
   <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/></noscript>
   <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" onload="this.onload=null;this.rel='stylesheet'"/>
   <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/></noscript>
+
   <!-- Preload background image variants for SEO text section -->
   <link rel="preload" as="image" href="{% static 'deps/images/seo-text-bg.avif' %}" type="image/avif" fetchpriority="high">
   {# Preload first 6 category icons as LCP candidates #}
@@ -164,30 +169,53 @@
   <script defer src="{% static 'deps/js/cart-component.js' %}"></script>
 
   <script>
-    $(function(){
-      $('.tm-featured-carousel').slick({
-        infinite: true,
-        slidesToShow: 5,
-        slidesToScroll: 1,
-        arrows: true,
-        dots: false,
-        autoplay: true,
-        autoplaySpeed: 3000,
-        speed: 1000,
-        pauseOnHover: true,
-        pauseOnFocus: true,
-        centerPadding: '30px',
-        appendArrows: $('.tm-featured-wrapper .container'),
-        prevArrow: '<button type="button" class="slick-prev slick-arrow">‹</button>',
-        nextArrow: '<button type="button" class="slick-next slick-arrow">›</button>',
-        responsive: [
-          { breakpoint: 1200, settings: { slidesToShow: 4 }},
-          { breakpoint: 992,  settings: { slidesToShow: 3 }},
-          { breakpoint: 768,  settings: { slidesToShow: 2 }},
-          { breakpoint: 576,  settings: { slidesToShow: 1 }}
-        ]
-      });
-    });
+    (function(){
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isNarrow = Math.max(window.innerWidth, document.documentElement.clientWidth) < 768;
+      const target = document.querySelector('.tm-featured-carousel');
+      if (!target) return;
+
+      function initCarousel(){
+        if (!window.jQuery || !$.fn || !$.fn.slick) return;
+        if (target.getAttribute('data-slick-initialized')) return;
+        target.setAttribute('data-slick-initialized','1');
+        $(target).slick({
+          infinite: true,
+          slidesToShow: 5,
+          slidesToScroll: 1,
+          arrows: true,
+          dots: false,
+          autoplay: !(prefersReduced || isNarrow),
+          autoplaySpeed: 3200,
+          speed: prefersReduced ? 0 : 900,
+          pauseOnHover: true,
+          pauseOnFocus: true,
+          centerPadding: '30px',
+          appendArrows: $('.tm-featured-wrapper .container'),
+          prevArrow: '<button type="button" class="slick-prev slick-arrow">‹</button>',
+          nextArrow: '<button type="button" class="slick-next slick-arrow">›</button>',
+          responsive: [
+            { breakpoint: 1200, settings: { slidesToShow: 4 }},
+            { breakpoint: 992,  settings: { slidesToShow: 3 }},
+            { breakpoint: 768,  settings: { slidesToShow: 2 }},
+            { breakpoint: 576,  settings: { slidesToShow: 1 }}
+          ]
+        });
+      }
+
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries, obs) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) { initCarousel(); obs.disconnect(); }
+          });
+        }, { rootMargin: '120px 0px' });
+        io.observe(target);
+      } else {
+        // Fallback: init after load
+        if (document.readyState === 'complete') initCarousel();
+        else window.addEventListener('load', initCarousel);
+      }
+    })();
   </script>
 
   <!-- Tawk.to -->
