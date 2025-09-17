@@ -12,7 +12,12 @@ position: relative;
 /* контейнер: даём боковые отступы, чтобы карточки могли "выходить" при hover */
 .tm-paging-links {
   background:
-  url('/static/deps/images/categories-bg.jpg') center/contain no-repeat;
+  /* Prefer AVIF/WebP; fallback to JPEG */
+  image-set(
+    url('/static/deps/images/categories-bg.avif') type('image/avif') 1x,
+    url('/static/deps/images/categories-bg.webp') type('image/webp') 1x,
+    url('/static/deps/images/categories-bg.jpg') type('image/jpeg') 1x
+  ) center/contain no-repeat;
   background-size: 100% 100%;
   overflow: visible;
   padding: 0 26px; /* десктоп: как было */

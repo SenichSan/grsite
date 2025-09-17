@@ -49,7 +49,17 @@
   <noscript><link rel="stylesheet" href="{% static 'deps/css/seo-text.css' %}"></noscript>
   <link rel="preload" as="style" href="{% static 'deps/css/news_slider.css' %}" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="{% static 'deps/css/news_slider.css' %}"></noscript>
-  <link rel="stylesheet" href="{% static 'deps/css/categories-glass.css' %}">
+  <!-- Categories styles: load non-blocking -->
+  <link rel="preload" as="style" href="{% static 'deps/css/categories-glass.css' %}" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="{% static 'deps/css/categories-glass.css' %}"></noscript>
+
+  <!-- Tiny critical CSS to stabilize category grid before full CSS loads -->
+  <style>
+    .tm-paging-links { box-sizing: border-box; padding: 0 16px; }
+    .tm-paging-links .tm-paging-list { display: grid; grid-template-columns: 1fr; gap: 12px; margin:0; padding:0; list-style:none; }
+    @media (min-width: 768px) { .tm-paging-links .tm-paging-list { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1200px) { .tm-paging-links .tm-paging-list { grid-template-columns: repeat(3, 1fr); } }
+  </style>
 
   <link rel="preload" as="style" href="{% static 'deps/css/bestsellers-carousel.css' %}" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="{% static 'deps/css/bestsellers-carousel.css' %}"></noscript>

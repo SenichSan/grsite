@@ -1,11 +1,14 @@
 /* ---------- header-hero.css (рефакторинг) ---------- */
 
-@font-face {
-  font-family: 'TagesschriftCyrillic';
-  src: url('/static/deps/webfonts/TagesschriftCyrillic-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
+/* Load custom TTF only on desktop to reduce mobile blocking */
+@media (min-width: 992px) {
+  @font-face {
+    font-family: 'TagesschriftCyrillic';
+    src: url('/static/deps/webfonts/TagesschriftCyrillic-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
 }
 
 .header-hero {
@@ -241,6 +244,8 @@
 
 /* На узких экранах: переводим все в поток (stack), чтобы ничего не перекрывалось */
 @media (max-width: 768px) {
+  /* On mobile use a lightweight system/Poppins stack to avoid TTF download */
+  .header-hero { font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; }
   .container-inner.header-hero-content { padding: 0 12px; }
   /* Перекладываем на grid: верх/центр/низ */
   .tm-header {
