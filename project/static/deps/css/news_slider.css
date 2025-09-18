@@ -104,8 +104,13 @@
     transform: scale(1.05);
 }
 
+.fantasy-slide-image { display: flex; align-items: center; justify-content: center; }
+.fantasy-slide-image picture { display: block; width: 100%; max-width: 100%; }
 .fantasy-slide-image img {
+    display: block;
     width: 100%;
+    height: auto;               /* сохраняем пропорции, не растягиваем по высоте */
+    object-fit: contain;        /* вписываемся в контейнер без обрезки */
     border-radius: 10px;
     box-shadow: 0 0 15px #ddc69a;
 }
