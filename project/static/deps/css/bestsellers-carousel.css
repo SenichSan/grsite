@@ -173,7 +173,7 @@ body {
   display: grid;
   gap: 1.5em;
   grid-template-columns: repeat(2, 1fr); /* fallback для мобильных */
-  align-items: start;
+  align-items: stretch; /* треки ряда берут высоту самого высокого элемента, остальные растягиваются */
   justify-items: center; /* центрируем карточку внутри ячейки */
   margin-top: 8px;   /* небольшой зазор от подчеркивания заголовка */
   margin-bottom: 3.2rem;
@@ -192,8 +192,9 @@ body {
   justify-content: space-between;
   width: 100%;
   max-width: 230px; /* уже */
-
-  height: 415px; /* одинаковая, чуть выше */
+  /* Раньше была фикс. высота, из-за неё выпадала кнопка. Даем авто-высоту и базовый минимум */
+  min-height: 360px; /* визуальный базис */
+  height: 100%;      /* растягиваемся до высоты трека (равной высоте самой высокой карточки в ряду) */
   padding: 12px;
   background: #3a3740b0;
   border-radius: 2em;
