@@ -91,13 +91,19 @@ body[data-modal-open="true"] #tm-cart-component { opacity: 0; pointer-events: no
 
 /* мобильные: закрепляем сверху справа; увеличиваем только изображение иконки (+10% от 40px → 44px) */
 @media (max-width: 640px) {
-  #tm-cart-component { right: 37px; top: calc(96px + env(safe-area-inset-top, 0px)); transform: none; }
+  /* опускаем кнопку ниже заголовка на мобилках */
+  #tm-cart-component { right: 12px; top: calc(200px + env(safe-area-inset-top, 0px)); transform: none; }
   /* оставляем компактный размер кнопки, как раньше, чтобы не закрывать контент */
   #tm-cart-component .tm-cart-button { width: 56px; height: 56px; }
   /* увеличиваем ТОЛЬКО картинку примерно на +10% от атрибутных 44px → 48px */
   #tm-cart-component .tm-cart-button-img { width: 48px; height: 48px; }
   /* бейдж возвращаем к прежним компактным размерам */
   #tm-cart-component .tm-cart-count { top: -6px; right: -6px; min-width: 20px; height: 20px; font-size: 11px; }
+}
+
+/* очень узкие телефоны: ещё на чуть-чуть ниже */
+@media (max-width: 430px) {
+  #tm-cart-component { top: calc(180px + env(safe-area-inset-top, 0px)); right: 10px; }
 }
 
 /* ====== Модалка: фон (мягкая dark-fantasy текстура) ====== */
