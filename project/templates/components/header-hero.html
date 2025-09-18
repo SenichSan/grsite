@@ -32,10 +32,12 @@
 
             <!-- 1) LEFT: логотип / текст (вертикально выровнен) -->
             <div class="tm-header-left">
-                <div class="tm-site-text-box">
-                    <h1 class="tm-site-title">Grownica</h1>
-                    <h6 class="tm-site-description">Чарівний світ гровінгу</h6>
-                </div>
+                <a href="{% url 'main:home' %}" class="tm-site-title-link-block" aria-label="На главную">
+                    <div class="tm-site-text-box">
+                        <h1 class="tm-site-title">Grownica</h1>
+                        <h6 class="tm-site-description">Чарівний світ гровінгу</h6>
+                    </div>
+                </a>
             </div>
 
             <!-- 2) TOP-RIGHT: соцсети (абсолютно сверху справа) -->

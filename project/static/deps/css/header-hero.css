@@ -124,6 +124,22 @@
   bottom: 2.6rem;
 }
 
+/* Invisible link wrapper for the whole title block (no visual link effects) */
+.tm-site-title-link-block,
+.tm-site-title-link-block:link,
+.tm-site-title-link-block:visited,
+.tm-site-title-link-block:hover,
+.tm-site-title-link-block:active,
+.tm-site-title-link-block:focus,
+.tm-site-title-link-block:focus-visible {
+  display: inline-block;
+  color: inherit !important;
+  text-decoration: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 /* ----------------- TOP-RIGHT: соцсети ----------------- */
 /* спектр: абсолютно сверху справа */
 .tm-header-social {
