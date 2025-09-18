@@ -9,6 +9,20 @@ position: relative;
   --shadow-dark: rgba(30,18,50,0.36);
 }
 
+/* Надёжная «прокладка» снизу блока (не зависит от padding и overflow детей) */
+.tm-paging-links::after {
+  content: "";
+  display: block;
+  height: 26px; /* воздух снизу */
+}
+
+@media (max-width: 991px) {
+  .tm-paging-links::after { height: 28px; }
+}
+@media (max-width: 576px) {
+  .tm-paging-links::after { height: 22px; }
+}
+
 /* контейнер: даём боковые отступы, чтобы карточки могли "выходить" при hover */
 .tm-paging-links {
   background:
@@ -22,9 +36,23 @@ position: relative;
   overflow: visible;
   padding: 0 26px; /* десктоп: как было */
   padding-top: 1.2rem; /* базовый отступ сверху (уменьшен, но оставлен воздух) */
+  padding-bottom: 24px !important; /* принудительный воздух снизу — перебивает критические inline-стили */
   box-sizing: border-box;
   text-align: center; /* center the heading inline-block */
 }
+
+/* Robust bottom spacer inside the block */
+.tm-paging-links::after {
+  content: "";
+  display: block;
+  height: 24px;
+}
+
+@media (max-width: 991px) { .tm-paging-links::after { height: 28px; } }
+@media (max-width: 576px) { .tm-paging-links::after { height: 20px; } }
+
+/* Внешний зазор под блоком на всякий случай (между секциями) */
+.tm-paging-links-wrap { margin-bottom: 16px; }
 /* Heading style — mirror bestsellers title (.tm-section-title) */
 .category-section-title,
 .tm-paging-links .category-section-title { /* bump specificity */
@@ -170,7 +198,7 @@ position: relative;
 /* Планшеты и ниже — включаем новый адаптив (макс. 2 колонки в ряд) */
 @media (max-width: 991px) {
   /* phones/tablets spacing (reinserted) */
-  .tm-paging-links { padding: 0 clamp(16px, 4vw, 24px); padding-top: 3rem; }
+  .tm-paging-links { padding: 0 clamp(16px, 4vw, 24px); padding-top: 3rem; padding-bottom: 28px !important; }
   .tm-paging-links .tm-paging-list {
     grid-template-columns: repeat(2, 1fr);
     grid-auto-rows: minmax(120px, auto);
@@ -232,7 +260,8 @@ position: relative;
 
 /* responsive */
 @media (max-width: 576px) {
-  .tm-paging-links { padding: 0 clamp(10px, 4vw, 16px); padding-top: 1.6rem; } /* воздух по краям и сверху на мобиле (уменьшен) */
+  .tm-paging-links { padding: 0 clamp(10px, 4vw, 16px); padding-top: 1.6rem; padding-bottom: 20px !important; } /* добавляем воздух снизу */
+  .tm-paging-links-wrap { margin-bottom: 20px; }
   .tm-paging-list {
     grid-template-columns: repeat(2, 1fr); /* две карточки в ряд на телефонах */
     column-gap: clamp(8px, 3vw, 12px);
