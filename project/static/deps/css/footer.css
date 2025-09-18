@@ -1,4 +1,3 @@
-
 :root {
   --parchment-base: #241913;   /* глубокий тёплый коричневый */
   --parchment-warm: #d7c6ad;   /* кремовый/золотистый для текста */
@@ -7,20 +6,12 @@
 }
 
 .site-footer--parchment {
-  background-color: var(--parchment-base);
-
-  /* 3 простых слоя: 1) тонкий верхний wash, 2) мягкие пятна "возраста", 3) тонкие полосы бумаги */
-  background-image:
-    linear-gradient(180deg, rgba(255,245,230,0.02), rgba(0,0,0,0.06)),
-    radial-gradient(600px 220px at 12% 14%, rgba(201,169,120,0.03), transparent 22%),
-    repeating-linear-gradient(180deg, rgba(255,255,255,0.008) 0 1px, rgba(0,0,0,0.02) 1px 9px);
-
-  background-blend-mode: overlay, normal, multiply;
-  background-size: cover, 48% 48%, auto;
-  background-repeat: no-repeat, repeat, repeat;
+  /* полупрозрачный «стеклянный» фон, но без бэндинга */
+  background-color: rgba(36, 25, 19, 0.82);
+  background-image: none; /* исключаем полосы от градиентов */
 
   color: var(--parchment-warm);
-  padding: 2rem 1rem;
+  padding: 0.7rem 0.8rem; /* было 2rem 1rem — делаем ниже */
   box-sizing: border-box;
   /* FAQ-like frame */
   border: 2px solid #4f463e;
@@ -28,8 +19,13 @@
   overflow: hidden; /* clean rounded corners */
   /* subtle top line preserved via inner shadow below */
 
-  /* внутренние тени — делают край "старым" и дают глубину */
-  box-shadow: inset 0 30px 60px rgba(0,0,0,0.45), inset 0 -18px 40px rgba(0,0,0,0.32);
+  /* лёгкое стекло: очень малый blur, чтобы не вызывать бэндинг */
+  backdrop-filter: blur(2px) saturate(110%);
+  -webkit-backdrop-filter: blur(2px) saturate(110%);
+
+  /* внутренние тени — делают край "старым" и дают глубину (чуть мягче из‑за прозрачности) */
+  box-shadow: inset 0 30px 60px rgba(0,0,0,0.38), inset 0 -18px 40px rgba(0,0,0,0.28);
+
 
   /* мелкие настройки для более "бумажного" feeling */
   font-family: 'Open Sans', sans-serif;
@@ -53,37 +49,59 @@
   max-width: 1100px;
   margin: 0 auto;
   display: flex;
-  gap: 1rem;
+  gap: 0.6rem; /* компактнее межколоночные отступы */
   align-items: flex-start;
   justify-content: space-between;
   flex-wrap: wrap;
+  position: relative; /* для noise-overlay */
 }
 
+/* Едва заметный шум для дизеринга, убирает «лесенку» на старых мониторах */
+.site-footer--parchment .footer-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05; /* интенсивность шума */
+  /* SVG noise (fractalNoise) как data URI, повторяется по всему блоку */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 64px 64px;
+  mix-blend-mode: overlay; /* мягко смешиваем без потери читаемости текста */
+  z-index: 0;
+}
+/* Контент футера поверх шума */
+.site-footer--parchment .footer-inner > * { position: relative; z-index: 1; }
+
 /* Бренд */
-.site-footer--parchment .footer-brand { flex: 1 1 220px; min-width: 200px; }
+.site-footer--parchment .footer-brand { flex: 1 1 220px; min-width: 200px; display: flex; flex-direction: column; align-items: center; text-align: center; }
 .parchment-title {
   font-family: 'PT Serif', serif;
-  font-size: 1.12rem;
+  font-size: 2rem; /* явный заголовок */
+  font-weight: 700;
+  line-height: 1.1;
   margin: 0 0 0.25rem;
   color: var(--parchment-warm);
   /* лёгкий эффект "старой печати" */
   text-shadow: 0 2px 6px rgba(0,0,0,0.45), 0 0 2px rgba(255,240,210,0.02);
 }
-.site-footer--parchment .brand-sub { margin: 0; color: var(--parchment-muted); font-size: 0.95rem; }
+.site-footer--parchment .brand-sub { margin: 0; color: var(--parchment-muted); font-size: 0.98rem; text-align: center; }
 
 /* Навигация */
 .site-footer--parchment .footer-nav {
   display: flex;
-  gap: 1rem;
-  align-items: center;
+  flex-direction: column; /* кнопка сверху, копирайт ниже */
+  gap: 0.4rem;
+  align-items: center; /* центрируем по горизонтали */
   justify-content: center;
+  text-align: center;   /* центр текста */
   flex: 1 1 360px;
-  padding: 0.25rem 0;
+  padding: 0.1rem 0;
 }
 .site-footer--parchment .footer-nav a {
   color: var(--parchment-muted);
   text-decoration: none;
-  padding: 6px 8px;
+  padding: 4px 6px; /* компактнее кликабельная зона, но сохраняем удобство */
   border-radius: 6px;
   transition: color .14s ease, background .12s ease, transform .08s ease;
 }
@@ -95,6 +113,41 @@
   outline: none;
 }
 
+/* ===== Footer CTA button ===== */
+.site-footer--parchment .footer-btn {
+  display: inline-block;
+  padding: 10px 14px;            /* как в хеддере */
+  border-radius: 6px;            /* как в хеддере */
+  background: transparent;       /* без подложки */
+  border: none;                  /* без рамки */
+  color: rgb(218 194 153);       /* базовый золотистый */
+  text-decoration: none;
+  font-weight: 800;              /* как .tm-nav-link */
+  font-size: 1.3rem;             /* как .tm-nav-link */
+  cursor: pointer;
+  /* лёгкая пассивная подсветка, чтобы читалось как кнопка */
+  background-color: rgba(255,255,255,0.035); /* еле заметная подложка */
+  box-shadow:
+    inset 0 0 0 1px rgba(221,198,154,0.20), /* тонкий золотистый контур внутри */
+    0 0 10px rgba(221,198,154,0.06);        /* мягкое внешнее свечение */
+  /* лёгкий сдвиг влево для визуального выравнивания с подписью */
+  transform: translateX(-6px);
+  transition: color .2s ease, transform .12s ease, box-shadow .14s ease, background-color .14s ease;
+}
+.site-footer--parchment .footer-btn:hover,
+.site-footer--parchment .footer-btn:focus {
+  color: #ffd700;                /* hover-цвет как в хеддере */
+  transform: translateX(-6px) translateY(-2px);
+  background-color: rgba(255,255,255,0.055);
+  box-shadow:
+    inset 0 0 0 1px rgba(221,198,154,0.32),
+    0 0 14px rgba(221,198,154,0.12);
+  outline: none;
+}
+.site-footer--parchment .footer-btn:active { transform: translateY(0); }
+
+@media (max-width: 576px) { .site-footer--parchment .footer-btn { font-size: 1.15rem; } }
+
 /* Мета/копирайт */
 .site-footer--parchment .footer-meta { flex: 0 0 220px; min-width: 160px; text-align: right; }
 .site-footer--parchment .copy { margin: 0 0 0.25rem; color: var(--parchment-muted); font-size: 0.95rem; }
@@ -105,9 +158,9 @@
 .site-footer--parchment::after {
   content: "";
   display: block;
-  height: 6px;
+  height: 4px; /* тоньше нижняя полоска */
   width: 100%;
-  margin-top: 1rem;
+  margin-top: 0.5rem; /* меньше вертикального зазора снизу */
   background: linear-gradient(90deg, rgba(0,0,0,0.16), rgba(0,0,0,0.02));
   opacity: 0.06;
 }
@@ -117,6 +170,6 @@
   .site-footer--parchment .footer-inner { display: block; text-align:center; }
   .site-footer--parchment .footer-brand,
   .site-footer--parchment .footer-nav,
-  .site-footer--parchment .footer-meta { margin: 0.6rem 0; text-align: center; min-width: auto; }
+  .site-footer--parchment .footer-meta { margin: 0.4rem 0; text-align: center; min-width: auto; } /* меньше вертикальные интервалы на мобиле */
   .site-footer--parchment .footer-meta { text-align: center; }
 }
