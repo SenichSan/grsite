@@ -1,10 +1,16 @@
 .fantasy-news-slider-container {
   padding: 48px;
-  /* Use modern formats with fallback */
+  /* Robust fallback chain for iOS/Safari and modern browsers */
+  background-image: url('/static/deps/images/news-slider-bg.jpg');
+  background-image: -webkit-image-set(
+    url('/static/deps/images/news-slider-bg.avif') 1x,
+    url('/static/deps/images/news-slider-bg.webp') 1x,
+    url('/static/deps/images/news-slider-bg.jpg') 1x
+  );
   background-image: image-set(
-    url('/static/deps/images/news-slider-bg.avif') type('image/avif'),
-    url('/static/deps/images/news-slider-bg.webp') type('image/webp'),
-    url('/static/deps/images/news-slider-bg.jpg') type('image/jpeg')
+    url('/static/deps/images/news-slider-bg.avif') type('image/avif') 1x,
+    url('/static/deps/images/news-slider-bg.webp') type('image/webp') 1x,
+    url('/static/deps/images/news-slider-bg.jpg') type('image/jpeg') 1x
   );
   background-position: center;
   background-repeat: no-repeat;
