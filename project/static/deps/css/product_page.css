@@ -651,6 +651,72 @@ body {
 .product-swiper:not(.swiper-initialized) .swiper-slide { display: none; }
 .product-swiper:not(.swiper-initialized) .swiper-slide:first-child { display: block; }
 
+/* ===== Image Lightbox Modal ===== */
+#image-modal {
+  position: fixed;
+  inset: 0;
+  display: none; /* toggled by JS */
+  z-index: 2147483647; /* ensure over any 3rd-party widgets */
+}
+#image-modal .image-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+}
+#image-modal .image-modal__img {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 92vw; max-height: 92vh;
+  width: auto; height: auto;
+  border-radius: 6px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+#image-modal .image-modal__close {
+  position: absolute;
+  top: 14px; right: 16px;
+  font-size: 32px; line-height: 1;
+  color: #fff; cursor: pointer;
+  z-index: 10001; /* over image */
+}
+/* Bigger, more prominent close button */
+#image-modal .image-modal__close {
+  width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: rgba(0,0,0,0.55); border: 2px solid rgba(255,255,255,0.5);
+}
+#image-modal .image-modal__close:hover { background: rgba(0,0,0,0.7); }
+
+/* Modal navigation arrows */
+#image-modal .image-modal__nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10001;
+  width: 48px; height: 64px; border: 2px solid rgba(255,255,255,0.5); border-radius: 10px;
+  background: rgba(0,0,0,0.45); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+#image-modal .image-modal__nav:hover { background: rgba(0,0,0,0.65); }
+#image-modal .image-modal__prev { left: 14px; }
+#image-modal .image-modal__next { right: 14px; }
+
+/* While modal is open: lock scroll and hide floating UI */
+body.modal-open { overflow: hidden; }
+body.modal-open .header-hero { opacity: 0; visibility: hidden; pointer-events: none; }
+body.modal-open #tm-cart-component { opacity: 0; visibility: hidden; pointer-events: none; }
+/* Tawk.to chat widget is an iframe injected dynamically */
+/* Hide Tawk.to on modal: multiple known containers/selectors */
+body.modal-open iframe[src*="tawk.to"],
+body.modal-open iframe[id^="tawk"],
+body.modal-open div[id^="tawk"],
+body.modal-open div[class^="tawk"],
+body.modal-open #tawkchat-minified-wrapper,
+body.modal-open #tawkchat-status-text-container,
+body.modal-open #tawkchat-container,
+body.modal-open #tawkchat-iframe-container,
+body.modal-open .tawk-min-chat-icon,
+body.modal-open .tawk-button,
+body.modal-open .tawk-chat,
+body.modal-open .tawk-icon,
+body.modal-open .tawk-width-constrained,
+body.modal-open [class*="tawk"],
+body.modal-open [id*="tawk"] { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+
 .swiper-container {
 	margin-left: auto;
 	margin-right: auto;

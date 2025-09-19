@@ -406,7 +406,9 @@
 <!-- Lightbox-модалка -->
 <div id="image-modal" class="image-modal" style="display:none;">
     <div class="image-modal__backdrop"></div>
-    <span class="image-modal__close">&times;</span>
+    <span class="image-modal__close" aria-label="Закрыть">&times;</span>
+    <button type="button" class="image-modal__nav image-modal__prev" aria-label="Назад">&#10094;</button>
+    <button type="button" class="image-modal__nav image-modal__next" aria-label="Вперёд">&#10095;</button>
     <img class="image-modal__img" src="" alt="Product Image">
 </div>
 
