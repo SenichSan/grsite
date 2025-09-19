@@ -458,21 +458,26 @@ body {
 
 @media (max-width: 576px) {
   /* Управляемое сжатие текста на мобильных */
-  .container-bestsellers.basic-grid .tm-featured-grid .tm-card-title,
-  .container-bestsellers.basic-grid .tm-featured-grid .tm-card-subtitle {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+  /* Заголовок: без обрезания, адаптивный размер шрифта, не рвать слова */
   .container-bestsellers.basic-grid .tm-featured-grid .tm-card-title {
-    -webkit-line-clamp: 2;
-    font-size: clamp(0.92rem, 3.6vw, 1.05rem);
+    display: block;               /* убрать -webkit-box, чтобы не было эллипсиса */
+    -webkit-line-clamp: initial;  /* снять ранее возможный кламп */
+    overflow: visible;            /* позволяем естественный поток */
+    white-space: normal;          /* переносить только по пробелам */
+    word-break: keep-all;         /* не разрывать слова */
+    overflow-wrap: normal;        /* без аварийных переносов */
+    -webkit-hyphens: manual; hyphens: manual;
+    font-size: clamp(0.88rem, 3.2vw, 1.02rem);
+    line-height: 1.24;
   }
   /* ВАЖНО: субтитр не режем на 2 строки — пусть занимает доступное место */
   .container-bestsellers.basic-grid .tm-featured-grid .tm-card-subtitle {
-    -webkit-line-clamp: initial;   /* снимаем раннее обрезание */
     display: block;                /* возвращаем блочный поток */
+    -webkit-line-clamp: initial;   /* снимаем раннее обрезание */
     font-size: clamp(0.82rem, 3.2vw, 0.95rem);
+    white-space: normal;
+    word-break: keep-all;
+    overflow-wrap: normal;
   }
   /* Делаем секцию инфо флекс-колонкой, субтитр — растяжимый */
   .container-bestsellers.basic-grid .tm-featured-grid .tm-card-info {

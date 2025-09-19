@@ -191,7 +191,7 @@ body.checkout-page::before {
 /* Allow wrapping in shipping value cell to prevent overflow */
 .checkout-order-summary tr.table-shipping-info td:last-child {
   white-space: normal;
-  word-break: break-word;
+  word-break: normal; /* do not force breaks at arbitrary points */
 }
 
 /* Clamp shipping helper to max 2 lines */
@@ -343,6 +343,20 @@ body.checkout-page main .checkout-order-summary {
   .checkout-order-summary h5 { font-size: 1.05rem; }
   .checkout-order-summary .table { font-size: 0.95rem; }
   .checkout-order-summary td img { width: 56px; }
+  /* Mobile: do not clamp shipping helper; allow full wrap without ellipsis */
+  .checkout-order-summary tr.table-shipping-info td:last-child span {
+    display: inline;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: unset;
+    overflow: visible;
+    white-space: normal;         /* allow wrapping between words only */
+    word-break: keep-all;        /* prevent mid-word breaks */
+    overflow-wrap: normal;       /* no emergency breaks */
+    -webkit-hyphens: manual;     /* avoid auto hyphenation */
+    -ms-hyphens: manual;
+    hyphens: manual;
+    font-size: clamp(0.82rem, 2.8vw, 1rem); /* adaptive font size so it fits */
+  }
 }
 @media (max-width: 400px) {
   .checkout-order-summary .table { font-size: 0.9rem; }
