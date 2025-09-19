@@ -230,7 +230,7 @@
     const ENDPOINT_SEARCH_CITY = "/orders/ajax/search-city/";
     const ENDPOINT_GET_WAREHOUSES = "/orders/ajax/get-warehouses/";
     let selectedCity = "";
-    let inflightSearch = null; // оставляем ссылку только для статуса логов
+    let inflightSearch = null; // ссылка на активный поиск города
     let lastQueryId = 0;       // идентификатор последнего запроса (anti-race)
     let inflightWarehouses = null;
 
@@ -240,6 +240,10 @@
       const q = String(term || '').trim();
       if (q.length < 2) { responseCb([]); return; }
       const queryId = ++lastQueryId;
+      // Abort previous city search to avoid dangling network on mobile
+      if (inflightSearch && inflightSearch.readyState !== 4) {
+        try { inflightSearch.abort(); } catch(_) {}
+      }
       inflightSearch = $.ajax({
         url: ENDPOINT_SEARCH_CITY,
         method: "GET",
@@ -300,30 +304,75 @@
 
           if (inflightWarehouses && inflightWarehouses.readyState !== 4) { try { inflightWarehouses.abort(); } catch(_) {} }
 
-          inflightWarehouses = $.ajax({
-            url: ENDPOINT_GET_WAREHOUSES,
-            method: "GET",
-            dataType: "json",
-            timeout: 10000,
-            data: { settlement_ref: ui.item.ref }
-          }).done(function(res){
-            npLog('[NP][DEV] warehouses ok:', res);
-            const list = (res && res.success && Array.isArray(res.warehouses)) ? res.warehouses : [];
-            $w.empty();
-            if (list.length === 0) { $w.append(new Option('Відділення не знайдені', '')); }
-            else { list.forEach(function(desc){ $w.append(new Option(desc, desc)); }); }
-            $w.prop('disabled', false);
+          // Helper: do a robust warehouses fetch with retry and longer timeout
+          function loadWarehousesWithRetry(settlementRef, attempt) {
+            const tries = attempt || 1;
+            const timeoutMs = tries === 1 ? 15000 : 20000; // чуть больше на первой загрузке Киева
+            inflightWarehouses = $.ajax({
+              url: ENDPOINT_GET_WAREHOUSES,
+              method: "GET",
+              dataType: "json",
+              timeout: timeoutMs,
+              data: { settlement_ref: settlementRef }
+            }).done(function(res){
+              npLog('[NP][DEV] warehouses ok:', res);
+              const list = (res && res.success && Array.isArray(res.warehouses)) ? res.warehouses : [];
+              $w.empty();
+              if (list.length === 0) { $w.append(new Option('Відділення не знайдені', '')); }
+              else { list.forEach(function(desc){ $w.append(new Option(desc, desc)); }); }
+              $w.prop('disabled', false);
 
-            $w.off('change');
-            $w.select2({ placeholder: 'Оберіть відділення', width: '100%' });
-            $w.on('change', function () {
-              const warehouseText = $(this).find('option:selected').text();
-              $('#id_delivery_address').val(`${selectedCity}, ${warehouseText}`);
+              $w.off('change');
+              $w.select2({ placeholder: 'Оберіть відділення', width: '100%' });
+              $w.on('change', function () {
+                const warehouseText = $(this).find('option:selected').text();
+                $('#id_delivery_address').val(`${selectedCity}, ${warehouseText}`);
+              });
+            }).fail(function(err){
+              npLog('[NP][DEV] warehouses fail attempt', tries, err);
+              if (tries < 2) {
+                // retry once after brief delay — фикс «первого Киева»
+                setTimeout(function(){ loadWarehousesWithRetry(settlementRef, tries + 1); }, 450);
+              } else {
+                $w.empty().prop('disabled', false).append(new Option('Помилка завантаження відділень', ''));
+              }
             });
-          }).fail(function(err){
-            npLog('[NP][DEV] warehouses fail:', err);
-            $w.empty().prop('disabled', false).append(new Option('Помилка завантаження відділень', ''));
-          });
+          }
+
+          // Ensure we have a settlement_ref; if missing (иногда по Киеву), resolve by exact match
+          let ref = ui.item && (ui.item.ref || ui.item.Ref || ui.item.SettlementRef || '');
+          if (!ref) {
+            npLog('[NP][DEV] missing settlement_ref, resolving by exact match for', selectedCity);
+            // Try to resolve the ref via search endpoint with exact label
+            if (inflightSearch && inflightSearch.readyState !== 4) { try { inflightSearch.abort(); } catch(_){} }
+            inflightSearch = $.ajax({
+              url: ENDPOINT_SEARCH_CITY,
+              method: 'GET', dataType: 'json', timeout: 10000, cache: false,
+              data: { q: selectedCity }
+            }).done(function(res){
+              let foundRef = '';
+              const arr = Array.isArray(res) ? res : (res && res.cities) || [];
+              for (var i=0;i<arr.length;i++){
+                const it = arr[i];
+                const label = (it && (it.label || it.Present || it.name || '')).trim();
+                if (label === selectedCity) { foundRef = it.ref || it.Ref || it.SettlementRef || ''; break; }
+              }
+              if (!foundRef && arr.length>0) {
+                const it = arr[0];
+                foundRef = it.ref || it.Ref || it.SettlementRef || '';
+              }
+              if (foundRef) {
+                $('#nova_city_ref').val(foundRef);
+                loadWarehousesWithRetry(foundRef, 1);
+              } else {
+                $w.empty().prop('disabled', false).append(new Option('Відділення не знайдені', ''));
+              }
+            }).fail(function(){
+              $w.empty().prop('disabled', false).append(new Option('Помилка завантаження відділень', ''));
+            });
+          } else {
+            loadWarehousesWithRetry(ref, 1);
+          }
         }
       });
       npLog('[NP][DEV] autocomplete bound');
