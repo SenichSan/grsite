@@ -263,12 +263,12 @@
                                 <div class="swiper-wrapper">
                                     {% if product.image %}
                                     <figure class="swiper-slide">
-                                        {% product_image_picture product '800x600' '' product.name 800 600 'eager' 'high' %}
+                                        {% responsive_product_picture product '' product.name 800 600 'eager' 'high' %}
                                     </figure>
                                     {% endif %}
                                     {% for img in product.images.all %}
                                     <figure class="swiper-slide">
-                                        {% field_image_picture img.image '800x600' '' img.alt_text|default:product.name 800 600 'lazy' %}
+                                        {% responsive_field_picture img.image '' img.alt_text|default:product.name 800 600 'lazy' %}
                                     </figure>
                                     {% endfor %}
                                 </div>

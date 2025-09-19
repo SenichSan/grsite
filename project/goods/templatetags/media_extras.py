@@ -93,6 +93,88 @@ def _url_if_exists(name: str) -> Optional[str]:
         return None
     return None
 
+def _orig_url_safe(image_field) -> Optional[str]:
+    try:
+        return image_field.url
+    except Exception:
+        return None
+
+def _best_variant_urls(name: str, size: str):
+    """Return tuple (avif_url, webp_url) if those sized variants exist."""
+    avif_name = _variant_name(name, size, "avif")
+    webp_name = _variant_name(name, size, "webp")
+    return _url_if_exists(avif_name), _url_if_exists(webp_name)
+
+def _append_sources_for_breakpoint(parts, media_query: str, avif_url: Optional[str], webp_url: Optional[str]):
+    if avif_url:
+        parts.append(f'<source media="{media_query}" srcset="{avif_url}" type="image/avif">')
+    if webp_url:
+        parts.append(f'<source media="{media_query}" srcset="{webp_url}" type="image/webp">')
+
+
+@register.simple_tag
+def responsive_product_picture(product, classes: str = "", alt: Optional[str] = None,
+                               width: int = 800, height: int = 600,
+                               loading: str = "lazy", fetchpriority: Optional[str] = None):
+    """
+    Responsive <picture> for product main image with media breakpoints:
+      - (min-width: 1200px): 1200x900
+      - (min-width: 992px): 1024x768
+      - (min-width: 768px): 800x600
+      - default: 640x480
+    """
+    alt_attr = alt or getattr(product, "name", "")
+    class_attr = classes or ""
+
+    img_field = getattr(product, "image", None)
+    if not img_field or not getattr(img_field, "name", ""):
+        try:
+            images = getattr(product, "images", None)
+            if images and images.exists():
+                img_field = images.first().image
+        except Exception:
+            pass
+
+    if not img_field or not getattr(img_field, "name", ""):
+        fallback = static("deps/images/placeholder.png")
+        fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
+        return mark_safe(
+            f"<img src=\"{fallback}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
+        )
+
+    name = img_field.name
+    orig = _orig_url_safe(img_field)
+
+    parts = ["<picture>"]
+    # Desktop XL
+    avif, webp = _best_variant_urls(name, "1200x900")
+    _append_sources_for_breakpoint(parts, "(min-width: 1200px)", avif, webp)
+    # Desktop
+    avif, webp = _best_variant_urls(name, "1024x768")
+    _append_sources_for_breakpoint(parts, "(min-width: 992px)", avif, webp)
+    # Tablet
+    avif, webp = _best_variant_urls(name, "800x600")
+    _append_sources_for_breakpoint(parts, "(min-width: 768px)", avif, webp)
+    # Mobile default
+    avif_m, webp_m = _best_variant_urls(name, "640x480")
+    if avif_m:
+        parts.append(f'<source srcset="{avif_m}" type="image/avif">')
+    if webp_m:
+        parts.append(f'<source srcset="{webp_m}" type="image/webp">')
+
+    # Fallback img src preference
+    img_src = webp_m or avif_m
+    if not img_src:
+        avif_s, webp_s = _best_variant_urls(name, "800x600")
+        img_src = webp_s or avif_s or orig or static("deps/images/placeholder.png")
+
+    fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
+    parts.append(
+        f"<img src=\"{img_src}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
+    )
+    parts.append("</picture>")
+    return mark_safe("".join(parts))
+
 
 @register.simple_tag
 def category_best_img_src(category, size: str = "128x128") -> Optional[str]:
@@ -262,6 +344,42 @@ def field_image_picture(image_field, size: str = "400x300", classes: str = "", a
         parts.append(f"<source srcset=\"{webp_url}\" type=\"image/webp\">")
     fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
     img_src = webp_url or avif_url or orig_url or static("deps/images/placeholder.png")
+    parts.append(
+        f"<img src=\"{img_src}\" alt=\"{alt}\" class=\"{classes}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
+    )
+    parts.append("</picture>")
+    return mark_safe("".join(parts))
+
+
+@register.simple_tag
+def responsive_field_picture(image_field, classes: str = "", alt: str = "",
+                              width: int = 800, height: int = 600,
+                              loading: str = "lazy", fetchpriority: Optional[str] = None):
+    """
+    Responsive variant for arbitrary ImageField with the same breakpoints as responsive_product_picture.
+    """
+    if not image_field or not getattr(image_field, "name", ""):
+        fallback = static("deps/images/placeholder.png")
+        fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
+        return mark_safe(
+            f"<img src=\"{fallback}\" alt=\"{alt}\" class=\"{classes}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
+        )
+
+    name = image_field.name
+    orig = _orig_url_safe(image_field)
+    parts = ["<picture>"]
+    avif, webp = _best_variant_urls(name, "1200x900"); _append_sources_for_breakpoint(parts, "(min-width: 1200px)", avif, webp)
+    avif, webp = _best_variant_urls(name, "1024x768"); _append_sources_for_breakpoint(parts, "(min-width: 992px)", avif, webp)
+    avif, webp = _best_variant_urls(name, "800x600");  _append_sources_for_breakpoint(parts, "(min-width: 768px)", avif, webp)
+    avif_m, webp_m = _best_variant_urls(name, "640x480")
+    if avif_m: parts.append(f'<source srcset="{avif_m}" type="image/avif">')
+    if webp_m: parts.append(f'<source srcset="{webp_m}" type="image/webp">')
+
+    img_src = webp_m or avif_m
+    if not img_src:
+        avif_s, webp_s = _best_variant_urls(name, "800x600")
+        img_src = webp_s or avif_s or orig or static("deps/images/placeholder.png")
+    fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
     parts.append(
         f"<img src=\"{img_src}\" alt=\"{alt}\" class=\"{classes}\" width=\"{width}\" height=\"{height}\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
     )

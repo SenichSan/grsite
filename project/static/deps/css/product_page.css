@@ -470,7 +470,7 @@ body {
   align-items: center;
   justify-content: center;
   /* Uniform stage size */
-  max-width: 560px;
+  max-width: 760px; /* enlarged stage on desktop */
   margin: 0 auto;
 }
 .product-image-photo .product-swiper { overflow: hidden; }
@@ -492,25 +492,25 @@ body {
   height: 100%;
   object-fit: contain; /* fit like screenshot: no crop, show full image */
   /* Create side gutters without affecting Swiper measurements */
-  padding: 0 28px; /* tighter gutters; still clear of 32px arrows */
+  padding: 0 8px; /* slimmer gutters so image looks larger */
   box-sizing: border-box;
 }
 
 /* Responsive adjustments for uniform stage and gutters */
 @media (max-width: 992px) {
-  .product-image-photo .swiper-container { max-width: 480px; }
+  .product-image-photo .swiper-container { max-width: 600px; }
   .product-image-photo .swiper-slide picture,
-  .product-image-photo .swiper-slide img { padding: 0 22px; }
+  .product-image-photo .swiper-slide img { padding: 0 6px; }
 }
 @media (max-width: 768px) {
-  .product-image-photo .swiper-container { max-width: 420px; }
+  .product-image-photo .swiper-container { max-width: 520px; }
   .product-image-photo .swiper-slide picture,
-  .product-image-photo .swiper-slide img { padding: 0 16px; }
+  .product-image-photo .swiper-slide img { padding: 0 4px; }
 }
 @media (max-width: 576px) {
   .product-image-photo .swiper-container { max-width: 100%; }
   .product-image-photo .swiper-slide picture,
-  .product-image-photo .swiper-slide img { padding: 0 12px; }
+  .product-image-photo .swiper-slide img { padding: 0 4px; }
 }
 .product-image-photo figure,
 .product-image-nav figure { margin: 0; }
