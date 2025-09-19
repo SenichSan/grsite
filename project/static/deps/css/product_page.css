@@ -461,7 +461,7 @@ body {
 .product-image-photo { position: relative; }
 .product-image-photo .swiper-container {
   width: 100%;
-  aspect-ratio: 1 / 1;           /* square */
+  aspect-ratio: 6 / 5;           /* slightly shorter (height < width) */
   box-sizing: border-box;
   border-radius: 8px;
   overflow: hidden;
