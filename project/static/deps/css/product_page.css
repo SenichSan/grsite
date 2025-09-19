@@ -688,10 +688,24 @@ body {
 
 /* Modal navigation arrows */
 #image-modal .image-modal__nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10001;
-  width: 48px; height: 64px; border: 2px solid rgba(255,255,255,0.5); border-radius: 10px;
-  background: rgba(0,0,0,0.45); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none; box-shadow: none;
+  color: #E8D8B8; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 32px; line-height: 1; padding: 4px 8px; /* ещё тоньше */
+  /* Тёмная окантовка вокруг глифа стрелки для контраста */
+  text-shadow:
+    0 0 1px rgba(0,0,0,0.7),
+    0 1px 0 rgba(0,0,0,0.6),
+    1px 0 0 rgba(0,0,0,0.6),
+    0 -1px 0 rgba(0,0,0,0.6),
+    -1px 0 0 rgba(0,0,0,0.6),
+    1px 1px 0 rgba(0,0,0,0.5),
+    -1px 1px 0 rgba(0,0,0,0.5),
+    1px -1px 0 rgba(0,0,0,0.5),
+    -1px -1px 0 rgba(0,0,0,0.5);
 }
-#image-modal .image-modal__nav:hover { background: rgba(0,0,0,0.65); }
+#image-modal .image-modal__nav:hover { color: #ffd560; opacity: 0.98; }
+#image-modal .image-modal__nav:focus { outline: none; }
+#image-modal .image-modal__nav:focus-visible { outline: none; }
 #image-modal .image-modal__prev { left: 14px; }
 #image-modal .image-modal__next { right: 14px; }
 
