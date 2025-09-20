@@ -39,6 +39,7 @@ class ProductsAdmin(admin.ModelAdmin):
         "short_description",
         "description",
         "image",
+        "card_image",
         ("price", "discount"),
         "quantity",
         "is_bestseller",

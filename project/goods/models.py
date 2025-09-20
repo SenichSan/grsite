@@ -27,6 +27,8 @@ class Products(models.Model):
     short_description = models.CharField(max_length=300, blank=True, null=True, verbose_name='Краткое описание')
     description = HTMLField(blank=True, null=True, verbose_name='Описание')
     image = models.ImageField(upload_to="products/", blank=True, null=True)
+    # Отдельное изображение для карточки (бестселлеры/ленты): готовим под контейнер без кропа
+    card_image = models.ImageField(upload_to="products/cards/", blank=True, null=True, verbose_name='Изображение для карточки')
     price = models.DecimalField(default=0.00, max_digits=7, decimal_places=2, verbose_name='Цена')
     discount = models.DecimalField(default=0.00, max_digits=4, decimal_places=2, verbose_name='Скидка в %')
     quantity = models.PositiveIntegerField(default=0, verbose_name='Количество')

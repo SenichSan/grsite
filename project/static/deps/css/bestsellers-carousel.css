@@ -54,7 +54,7 @@ body {
   .container-bestsellers.basic-grid { padding: 0 clamp(16px, 4vw, 24px); padding-top: 2.8rem; }
 }
 @media (max-width: 576px) {
-  .container-bestsellers.basic-grid { padding: 0 clamp(10px, 4vw, 16px); padding-top: 1.4rem; }
+  /* Image still fills the rounded wrap on mobile */
 }
 
 /* ---------------- Mobile vertical background with seam softening ---------------- */
@@ -198,11 +198,11 @@ body {
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
-  max-width: 230px; /* уже */
+  max-width: 210px; /* чуть уже, чтобы карточка выглядела стройнее */
   /* Раньше была фикс. высота, из-за неё выпадала кнопка. Даем авто-высоту и базовый минимум */
   min-height: 360px; /* визуальный базис */
   height: 100%;      /* растягиваемся до высоты трека (равной высоте самой высокой карточки в ряду) */
-  padding: 12px;
+  padding: 10px; /* слегка меньше, чтобы сохранить пропорции при сужении */
   background: #3a3740b0;
   border-radius: 2em;
   overflow: visible;
@@ -240,14 +240,28 @@ body {
   width: 100%;
   height: 160px;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 25px; /* более выражённое скругление рамки */
   background: #222;
+  /* Надёжное отсечение для некоторых браузеров с 3D/transform */
+  -webkit-mask-image: -webkit-radial-gradient(white, black); /* webkit clipping quirk */
+  clip-path: inset(0 round 25px);
 }
-.container-bestsellers.basic-grid .tm-featured-grid .tm-card-img {
+.container-bestsellers.basic-grid .tm-featured-grid .tm-card-image-wrap picture {
+  display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  border-radius: inherit;
+  overflow: hidden;
+  clip-path: inset(0 round 25px);
+}
+.container-bestsellers.basic-grid .tm-featured-grid .tm-card-img {
+  /* Fill the wrap so border-radius matches perfectly */
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* canvas already prepared with blur-extend; cover is fine */
   display: block;
+  border-radius: inherit; /* match wrap radius (e.g., 25px) */
+  clip-path: inset(0 round 25px);
   transition: transform .4s ease;
 }
 .container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:hover .tm-card-img {

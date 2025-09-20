@@ -113,6 +113,55 @@ def _append_sources_for_breakpoint(parts, media_query: str, avif_url: Optional[s
 
 
 @register.simple_tag
+def product_card_picture(product, classes: str = "tm-card-img", alt: Optional[str] = None,
+                         loading: str = "lazy", fetchpriority: Optional[str] = None):
+    """
+    Render a <picture> for product card (bestsellers). Prefers product.card_image if provided,
+    otherwise falls back to product.image. Uses size 230x160 for >=768px and 200x160 for default.
+    """
+    alt_attr = alt or getattr(product, "name", "")
+    class_attr = classes or "tm-card-img"
+
+    img_field = getattr(product, "card_image", None) or getattr(product, "image", None)
+    if not img_field or not getattr(img_field, "name", ""):
+        fallback = static("deps/images/placeholder.png")
+        fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
+        return mark_safe(
+            f"<img src=\"{fallback}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"230\" height=\"160\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
+        )
+
+    name = img_field.name
+    # Desktop
+    avif_230 = _url_if_exists(_variant_name(name, "230x160", "avif"))
+    webp_230 = _url_if_exists(_variant_name(name, "230x160", "webp"))
+    # Mobile/default
+    avif_200 = _url_if_exists(_variant_name(name, "200x160", "avif"))
+    webp_200 = _url_if_exists(_variant_name(name, "200x160", "webp"))
+
+    parts = ["<picture>"]
+    # >=768px first (will be ignored on smaller viewports)
+    _append_sources_for_breakpoint(parts, "(min-width: 768px)", avif_230, webp_230)
+    # default sources without media
+    if avif_200:
+        parts.append(f"<source srcset=\"{avif_200}\" type=\"image/avif\">")
+    if webp_200:
+        parts.append(f"<source srcset=\"{webp_200}\" type=\"image/webp\">")
+
+    # Fallback img chooses best available mobile variant, else desktop, else original
+    try:
+        orig_url = img_field.url
+    except Exception:
+        orig_url = None
+    img_src = webp_200 or avif_200 or webp_230 or avif_230 or orig_url or static("deps/images/placeholder.png")
+    fp_attr = f" fetchpriority=\"{fetchpriority}\"" if fetchpriority else ""
+    parts.append(
+        f"<img src=\"{img_src}\" alt=\"{alt_attr}\" class=\"{class_attr}\" width=\"230\" height=\"160\" loading=\"{loading}\" decoding=\"async\"{fp_attr}>"
+    )
+    parts.append("</picture>")
+    return mark_safe("".join(parts))
+
+
+@register.simple_tag
 def responsive_product_picture(product, classes: str = "", alt: Optional[str] = None,
                                width: int = 800, height: int = 600,
                                loading: str = "lazy", fetchpriority: Optional[str] = None):

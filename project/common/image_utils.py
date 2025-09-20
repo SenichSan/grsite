@@ -2,7 +2,7 @@ import os
 from io import BytesIO
 from typing import Tuple, Literal
 
-from PIL import Image
+from PIL import Image, ImageFilter
 
 try:
     import pillow_avif  # noqa: F401  # registers AVIF
@@ -164,3 +164,75 @@ def generate_icon_variants(
             out["avif"] = avif_path
 
     return out
+
+
+def _resize_cover(img: Image.Image, size: Tuple[int, int]) -> Image.Image:
+    """Resize to fully cover target box, cropping overflow (no canvas)."""
+    target_w, target_h = size
+    src_w, src_h = img.size
+    if not src_w or not src_h:
+        return img.copy()
+    scale = max(target_w / src_w, target_h / src_h)
+    new_size = (max(1, int(round(src_w * scale))), max(1, int(round(src_h * scale))))
+    return img.convert("RGBA").resize(new_size, Image.LANCZOS)
+
+
+def _blur_extend_canvas(img: Image.Image, size: Tuple[int, int], blur_radius: int = 24) -> Image.Image:
+    """Make a canvas of size WxH with a blurred cover background from img and a contained sharp foreground.
+    Useful for horizontal card canvases when the source is vertical — prevents awkward crops.
+    """
+    target_w, target_h = size
+    # Background: cover + blur
+    bg = _resize_cover(img, size)
+    # center-crop to exact size
+    left = max(0, (bg.width - target_w) // 2)
+    top = max(0, (bg.height - target_h) // 2)
+    bg = bg.crop((left, top, left + target_w, top + target_h)).filter(ImageFilter.GaussianBlur(blur_radius))
+
+    # Foreground: contain, centered
+    fg = _fit_box_contain(img, size)
+
+    # Composite: paste foreground over blurred background
+    out = Image.new("RGBA", (target_w, target_h))
+    out.paste(bg, (0, 0))
+    out.alpha_composite(fg if fg.mode == "RGBA" else fg.convert("RGBA"))
+    return out
+
+
+def generate_card_variants(
+    original_fs_path: str,
+    size_desktop: Tuple[int, int] = (230, 160),
+    size_mobile: Tuple[int, int] = (200, 160),
+    background_blur: bool = True,
+    quality_webp: int | None = None,
+    quality_avif: int | None = None,
+) -> dict:
+    """Generate AVIF/WebP card variants (desktop+mobile) with blur-extend canvas.
+    Returns dict of created paths per size: {'230x160': {'webp': path, 'avif': path}, '200x160': {...}}
+    """
+    if not original_fs_path or not os.path.exists(original_fs_path):
+        return {}
+
+    img = _open_image(original_fs_path)
+    sizes = [size_desktop, size_mobile]
+    result = {}
+    for w, h in sizes:
+        size_name = f"{w}x{h}"
+        canvas = _blur_extend_canvas(img, (w, h)) if background_blur else _fit_box_contain(img, (w, h))
+
+        out_webp = build_variant_paths(original_fs_path, size_name, "webp")
+        out_avif = build_variant_paths(original_fs_path, size_name, "avif")
+
+        # Save formats
+        save_webp(canvas, out_webp, quality=int(quality_webp) if isinstance(quality_webp, int) else 82)
+        if AVIF_AVAILABLE:
+            save_avif(canvas, out_avif, quality=int(quality_avif) if isinstance(quality_avif, int) else 60)
+
+        created = {}
+        if os.path.exists(out_webp):
+            created["webp"] = out_webp
+        if AVIF_AVAILABLE and os.path.exists(out_avif):
+            created["avif"] = out_avif
+        result[size_name] = created
+
+    return result
