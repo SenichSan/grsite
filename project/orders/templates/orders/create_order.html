@@ -1,4 +1,4 @@
-{% load static carts_tags %}
+{% load static carts_tags media_extras %}
 
 <!DOCTYPE html>
 <html lang="uk">
@@ -199,7 +199,7 @@
                                     <td>
                                         <div class="product-cell d-flex align-items-start">
                                             <a href="{% url 'goods:product' product_slug=item.product.slug %}" class="rp-link me-3">
-                                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="rounded product-thumb">
+                                                {% product_image_picture item.product '128x128' 'rounded product-thumb' item.product.name 64 64 'lazy' %}
                                             </a>
                                             <div class="product-info">
                                                 <a href="{% url 'goods:product' product_slug=item.product.slug %}" class="rp-link d-block">{{ item.product.name }}</a>
