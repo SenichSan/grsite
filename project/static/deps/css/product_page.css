@@ -166,6 +166,8 @@
   align-items: stretch;
   gap: 10px;
   margin: 8px 0 10px;
+  padding-bottom: 10px;            /* space before divider */
+  border-bottom: 2px solid rgba(232,216,184,0.45); /* thicker subtle divider */
 }
 .product-page .product-price-actions__price {
   display: flex;
@@ -2269,18 +2271,7 @@ body {
 	}
 }
 
-.product-image-photo::before {
-	content: "";
-	width: calc(55% + var(--container-gutter));
-	height: 70%;
-	display: block;
-	position: absolute;
-	z-index: -1;
-	right: calc(var(--container-gutter) * -1);
-	top: 15%;
-	background: linear-gradient(270.26deg,#764b87 54.22%,rgba(75,135,133,0) 99.85%);
-	opacity: .1;
-}
+
 
 .product-image-photo .product-swiper .swiper-slide {
 	text-align: center;
