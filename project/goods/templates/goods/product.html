@@ -206,52 +206,57 @@
                             {% endif %}
                         </div>
 
-                        <div class="product-content-numbers">
-                            {% if product.discount and product.discount|floatformat:2 != '0.00' %}
-                            <div class="tm-card-price">
-                                <span class="price-old">{{ product.price }}₴</span>
-                                <span class="price-new">{{ product.sell_price }}₴</span>
+                        {# price moved to product-price-actions below #}
+
+                        {# Action row: price + add-to-cart button on the same level (desktop), stacked on mobile #}
+                        <div class="product-price-actions">
+                            <div class="product-price-actions__price">
+                                <span class="product-price-label">Ціна:</span>
+                                {# duplicate visual price from numbers for alignment; keep source of truth above #}
+                                {% if product.discount and product.discount|floatformat:2 != '0.00' %}
+                                <div class="tm-card-price tm-card-price--inline">
+                                    <span class="price-old">{{ product.price }}₴</span>
+                                    <span class="price-new">{{ product.sell_price }}₴</span>
+                                </div>
+                                {% else %}
+                                <div class="tm-card-price tm-card-price--inline">
+                                    <span class="price">{{ product.price }}₴</span>
+                                </div>
+                                {% endif %}
                             </div>
-                            {% else %}
-                            <div class="tm-card-price">
-                                <span class="price">{{ product.price }}₴</span>
+                            <div class="product-price-actions__cta">
+                                <div class="product-qty-inline" role="group" aria-label="Кількість">
+                                    <button type="button" class="qty-btn qty-btn--dec"
+                                            aria-label="Зменшити кількість" title="-">
+                                        &minus;
+                                    </button>
+                                    <input type="number" name="quantity" min="1" value="1"
+                                           inputmode="numeric" pattern="[0-9]*"
+                                           class="input product-quantity-input-number qty-input" required {% if product.quantity <= 0 %}disabled aria-disabled="true"{% endif %}>
+                                    <button type="button" class="qty-btn qty-btn--inc"
+                                            aria-label="Збільшити кількість" title="+">
+                                        +
+                                    </button>
+                                </div>
+                                {% if product.quantity > 0 %}
+                                    <button type="button"
+                                            class="button button-primary add-to-cart-btn"
+                                            data-product-id="{{ product.id }}"
+                                            data-cart-add-url="{% url 'carts:cart_add' %}"
+                                            aria-label="add to cart">
+                                        Додати в кошик
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="button cta-unavailable" disabled aria-disabled="true" title="Немає в наявності">
+                                        Немає в наявності
+                                    </button>
+                                {% endif %}
                             </div>
-                            {% endif %}
                         </div>
 
                         <div class="product-content-explanation">{{ product.description|safe }}</div>
 
-                        <div class="product-content-quantity-selector">
-                            <label class="product-quantity-input">
-                                <button type="button" class="button product-quantity-input-decrease"
-                                        aria-label="decrease quantity">
-                                    <svg class="icon icon-minus">
-                                        <use xlink:href="#icon-minus"></use>
-                                    </svg>
-                                </button>
-                                <input type="number" name="quantity" min="1" value="1"
-                                       class="input product-quantity-input-number" required {% if product.quantity <= 0 %}disabled aria-disabled="true"{% endif %}>
-                                <button type="button" class="button product-quantity-input-increase"
-                                        aria-label="increase quantity">
-                                    <svg class="icon icon-plus">
-                                        <use xlink:href="#icon-plus"></use>
-                                    </svg>
-                                </button>
-                            </label>
-                            {% if product.quantity > 0 %}
-                                <button type="button"
-                                        class="button button-primary add-to-cart-btn"
-                                        data-product-id="{{ product.id }}"
-                                        data-cart-add-url="{% url 'carts:cart_add' %}"
-                                        aria-label="add to cart">
-                                    Додати в кошик
-                                </button>
-                            {% else %}
-                                <button type="button" class="button" disabled aria-disabled="true" title="Немає в наявності">
-                                    Немає в наявності
-                                </button>
-                            {% endif %}
-                        </div>
+                        {# removed old big quantity selector (moved inline near CTA) #}
                     </form>
 
                     <!-- Блок мульти-изображений -->
@@ -399,6 +404,36 @@
 
 <!-- Cart Button -->
 {% include 'components/cart_button.html' %}
+
+<script>
+// Compact inline quantity buttons next to Add-to-cart
+(function(){
+  document.addEventListener('click', function(e){
+    var dec = e.target.closest('.qty-btn--dec');
+    var inc = e.target.closest('.qty-btn--inc');
+    if (!dec && !inc) return;
+    var group = e.target.closest('.product-qty-inline');
+    if (!group) return;
+    var input = group.querySelector('.product-quantity-input-number');
+    if (!input) return;
+    var val = parseInt(input.value || '1', 10);
+    if (isNaN(val) || val < 1) val = 1;
+    if (dec) { val = Math.max(1, val - 1); }
+    if (inc) { val = val + 1; }
+    input.value = val;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+
+  // Sanitize manual edits (min 1, integers only)
+  document.addEventListener('input', function(e){
+    var inp = e.target.closest('.product-quantity-input-number');
+    if (!inp) return;
+    var v = parseInt(inp.value || '1', 10);
+    if (isNaN(v) || v < 1) v = 1;
+    inp.value = v;
+  });
+})();
+</script>
 
 <!-- Cart Modal -->
 {% include 'components/cart_modal.html' %}
