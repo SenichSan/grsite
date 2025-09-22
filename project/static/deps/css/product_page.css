@@ -167,7 +167,7 @@
   gap: 10px;
   margin: 8px 0 10px;
   padding-bottom: 10px;            /* space before divider */
-  border-bottom: 2px solid rgba(232,216,184,0.45); /* thicker subtle divider */
+  border-bottom: 1px solid rgba(232,216,184,0.45); /* subtle divider */
 }
 .product-page .product-price-actions__price {
   display: flex;
