@@ -203,6 +203,9 @@
                                             </a>
                                             <div class="product-info">
                                                 <a href="{% url 'goods:product' product_slug=item.product.slug %}" class="rp-link d-block">{{ item.product.name }}</a>
+                                                {% if item.gift_choice %}
+                                                <div class="mt-1" style="font-size: .8em; line-height: 1.1;">Стрейн: {{ item.gift_choice }}</div>
+                                                {% endif %}
                                                 <div class="unit-price mt-1">
                                                     {% if item.product.discount %}
                                                         <span class="old-price text-decoration-line-through me-2">{{ item.product.price|floatformat:'0' }} ₴</span>

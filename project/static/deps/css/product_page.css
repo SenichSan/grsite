@@ -408,6 +408,18 @@
   }
 }
 
+/* === Quantity +/- buttons: restore creamy idle color (high-specificity) === */
+.container.product-page.page-wrapper .price-qty-cta-row .product-qty-inline .qty-btn,
+.container.product-page.page-wrapper .product-price-actions__cta .product-qty-inline .qty-btn,
+.product-page .product-qty-inline .qty-btn {
+  color: #c7b18c; /* creamy */
+}
+.container.product-page.page-wrapper .price-qty-cta-row .product-qty-inline .qty-btn:hover,
+.container.product-page.page-wrapper .product-price-actions__cta .product-qty-inline .qty-btn:hover,
+.product-page .product-qty-inline .qty-btn:hover {
+  color: #ffc75b; /* brighter on hover */
+}
+
 /* Inline qty controls next to CTA */
 .product-page .product-qty-inline {
   display: inline-flex;
