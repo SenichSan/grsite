@@ -3,7 +3,7 @@ from django.views import View
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-from django.db import transaction
+from django.db import transaction, IntegrityError
 
 from .models import Cart
 from .utils import get_user_carts
@@ -37,17 +37,39 @@ class CartAddView(View):
             return JsonResponse({'error': 'product_id is required'}, status=400)
 
         product = get_object_or_404(Products, id=product_id)
+        # Подарок-отпечаток: принимаем из формы/JS; если включено на товаре и не передано — используем "Рандом"
+        gift_choice = request.POST.get('gift_choice')
+        if getattr(product, 'gift_enabled', False):
+            if not gift_choice:
+                gift_choice = 'Рандом'
+        else:
+            gift_choice = ''
         owner = _owner_filter(request)
 
         with transaction.atomic():
-            cart_qs = Cart.objects.filter(product=product, **owner)
-            cart_item = cart_qs.first()
+            base_qs = Cart.objects.filter(product=product, **owner)
+            # 1) Ищем точное совпадение по gift_choice
+            cart_item = base_qs.filter(gift_choice=gift_choice).first()
             if cart_item:
-                # увеличиваем
                 cart_item.quantity = cart_item.quantity + qty
                 cart_item.save(update_fields=['quantity'])
             else:
-                cart_item = Cart.objects.create(product=product, quantity=qty, **owner)
+                # 2) Бэкаповый поиск для старых строк (NULL/пусто)
+                legacy_item = base_qs.filter(gift_choice__isnull=True).first()
+                if legacy_item:
+                    legacy_item.gift_choice = gift_choice
+                    legacy_item.quantity = legacy_item.quantity + qty
+                    legacy_item.save(update_fields=['gift_choice', 'quantity'])
+                    cart_item = legacy_item
+                else:
+                    # 3) Пытаемся создать. Если кто-то создал параллельно — сольёмся
+                    try:
+                        cart_item = Cart.objects.create(product=product, quantity=qty, gift_choice=gift_choice, **owner)
+                    except IntegrityError:
+                        cart_item = base_qs.filter(gift_choice=gift_choice).first()
+                        if cart_item:
+                            cart_item.quantity = cart_item.quantity + qty
+                            cart_item.save(update_fields=['quantity'])
 
         # рендерим обновлённый список корзины
         carts = get_user_carts(request)

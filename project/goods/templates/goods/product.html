@@ -210,10 +210,9 @@
 
                         {# Action row: price + add-to-cart button on the same level (desktop), stacked on mobile #}
                         <div class="product-price-actions">
-                            <div class="product-price-actions__price">
+                            <div class="price-qty-cta-row">
                                 <span class="product-price-label">Ціна:</span>
-                                {# duplicate visual price from numbers for alignment; keep source of truth above #}
-                                {% if product.discount and product.discount|floatformat:2 != '0.00' %}
+                                {% if product.discount %}
                                 <div class="tm-card-price tm-card-price--inline">
                                     <span class="price-old">{{ product.price }}₴</span>
                                     <span class="price-new">{{ product.sell_price }}₴</span>
@@ -223,8 +222,7 @@
                                     <span class="price">{{ product.price }}₴</span>
                                 </div>
                                 {% endif %}
-                            </div>
-                            <div class="product-price-actions__cta">
+
                                 <div class="product-qty-inline" role="group" aria-label="Кількість">
                                     <button type="button" class="qty-btn qty-btn--dec"
                                             aria-label="Зменшити кількість" title="-">
@@ -238,6 +236,7 @@
                                         +
                                     </button>
                                 </div>
+
                                 {% if product.quantity > 0 %}
                                     <button type="button"
                                             class="button button-primary add-to-cart-btn"
@@ -252,6 +251,19 @@
                                     </button>
                                 {% endif %}
                             </div>
+                            {% if gift_enabled %}
+                            <div class="product-gift-select" style="margin-top:10px;">
+                                <div class="gift-select-group">
+                                    <label for="gift-choice" class="gift-select-label">Оберіть стрейн відбитка</label>
+                                    <select id="gift-choice" name="gift_choice" class="input gift-select">
+                                        <option value="Рандом">Рандом</option>
+                                        {% for go in gift_options %}
+                                        <option value="{{ go }}">{{ go }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
 
                         <div class="product-content-explanation">{{ product.description|safe }}</div>

@@ -29,6 +29,8 @@ class Cart(models.Model):
     product = models.ForeignKey(Products, on_delete=models.CASCADE, verbose_name='Товар')
     quantity = models.PositiveIntegerField(default=1, verbose_name='Количество')
     created_timestamp = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
+    # Выбранный пользователем подарок-отпечаток (или строка "Рандом"). Пусто, если для товара выбор не включён
+    gift_choice = models.CharField(max_length=255, default='', blank=True, verbose_name='Подарок (отпечаток)')
 
     objects = CartQuerySet.as_manager()
 
@@ -38,9 +40,9 @@ class Cart(models.Model):
         verbose_name_plural = "Корзина"
         ordering = ("id",)
         constraints = [
-            # одна запись на user+product или на session_key+product
-            models.UniqueConstraint(fields=['user', 'product'], name='uniq_user_product', condition=~models.Q(user=None)),
-            models.UniqueConstraint(fields=['session_key', 'product'], name='uniq_session_product', condition=~models.Q(session_key=None)),
+            # одна запись на user+product+gift_choice или на session_key+product+gift_choice
+            models.UniqueConstraint(fields=['user', 'product', 'gift_choice'], name='uniq_user_product_gift', condition=~models.Q(user=None)),
+            models.UniqueConstraint(fields=['session_key', 'product', 'gift_choice'], name='uniq_session_product_gift', condition=~models.Q(session_key=None)),
         ]
 
     def products_price(self):

@@ -169,6 +169,32 @@
   padding-bottom: 10px;            /* space before divider */
   border-bottom: 1px solid rgba(232,216,184,0.45); /* subtle divider */
 }
+.product-page .price-qty-cta-row {
+  display: flex;
+  align-items: baseline;        /* align label with price baseline */
+  gap: 10px;
+  flex-wrap: nowrap;            /* keep strictly one line */
+  width: 100%;                  /* take full row width for proper right alignment */
+  order: 1;                     /* ensure this row is always first */
+}
+.product-page .price-qty-cta-row .product-price-label,
+.product-page .price-qty-cta-row .tm-card-price--inline,
+.product-page .price-qty-cta-row .tm-card-price--inline .price,
+.product-page .price-qty-cta-row .tm-card-price--inline .price-new,
+.product-page .price-qty-cta-row .tm-card-price--inline .price-old {
+  white-space: nowrap;           /* prevent price from breaking */
+}
+.product-page .price-qty-cta-row .product-qty-inline {
+  margin-left: auto;             /* push qty and button cluster to the right */
+}
+.product-page .price-qty-cta-row .product-qty-inline,
+.product-page .price-qty-cta-row .add-to-cart-btn {
+  align-self: center;            /* keep controls vertically centered despite baseline on row */
+}
+.product-page .price-qty-cta-row .product-qty-inline + .add-to-cart-btn {
+  margin-left: 10px;             /* small gap between qty and the button */
+}
+.product-page .price-qty-cta-row .add-to-cart-btn { white-space: nowrap; }
 .product-page .product-price-actions__price {
   display: flex;
   align-items: baseline;
@@ -197,8 +223,16 @@
 .container.product-page.page-wrapper .product-price-actions__cta .button.cta-unavailable:focus { color: #c7b18c; }
 .product-page .product-price-actions__cta {
   display: flex;
+  flex-direction: column;   /* stack gift select above CTA row */
+  align-items: stretch;
+  gap: 8px;
+}
+.product-page .product-price-actions__cta .cta-block {
+  /* Container that defines the exact width for both gift-select and the CTA row */
+  display: grid;
+  gap: 8px;
+  width: max-content; /* shrink-to-fit the content (qty + button) */
   align-items: center;
-  gap: 10px;
 }
 .product-page .product-price-actions__cta .button {
   width: 100%;
@@ -207,24 +241,171 @@
   line-height: 1.1;
 }
 
+/* Gift selector below main row */
+.product-page .product-gift-select { display: block; width: 100%; margin-top: 10px; flex: 0 0 100%; order: 2; }
+.product-page .product-gift-select .gift-select-group { display: block; }
+.product-page .product-gift-select .gift-select-label {
+  display: block;                 /* force label to occupy its own line */
+  font-size: 0.95rem;          /* same as .product-price-label */
+  opacity: 0.95;
+  line-height: 1.1;
+}
+.product-page .product-gift-select .gift-select { display: block; margin-top: 6px; }
+
+/* Gift block as independent section under CTA */
+.product-page .product-gift-select { margin-top: 10px; }
+
+/* Gift selection block */
+.product-page .product-price-actions__cta .gift-select-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+.product-page .product-price-actions__cta .gift-select-label {
+  font-size: 0.95rem;
+  opacity: 0.95;
+}
+.product-page .product-price-actions__cta .gift-select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+
+/* Quantity + Add-to-cart arranged in a single row with wrapping if needed */
+.product-page .product-price-actions__cta .cta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;    /* default mobile behavior */
+}
+.product-page .product-price-actions__cta .cta-row .button {
+  width: auto;        /* prevent full-width inside CTA row */
+  min-width: 160px;
+}
+
 /* Glassy Add-to-cart button on product page */
+/* New Add-to-cart button design (consistent with qty height, modern green) */
+.container.product-page.page-wrapper .product-detail .product-price-actions .price-qty-cta-row .button.add-to-cart-btn,
+.container.product-page.page-wrapper .price-qty-cta-row .add-to-cart-btn,
 .container.product-page.page-wrapper .product-price-actions__cta .add-to-cart-btn {
-  border-radius: 12px; /* slightly more rounded */
-  background: rgb(41 111 45 / 64%)
-  -webkit-backdrop-filter: saturate(140%) blur(10px);
-  backdrop-filter: saturate(140%) blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #E8D8B8; /* readable on dark */
-  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 34px; /* match qty controls */
+  padding: 0 14px;
+  border-radius: 10px;
+  /* Glassy look with brand color */
+  background: rgb(42 112 45 / 45%) !important;
+  border: 1px solid rgba(220,196,154,0.45) !important;
+  color: #dcc49a !important;               /* requested font color */
+  -webkit-backdrop-filter: saturate(140%) blur(8px);
+  backdrop-filter: saturate(140%) blur(8px);
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.92rem;           /* slightly smaller */
+  letter-spacing: .2px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+  transition: transform .12s ease, box-shadow .15s ease, background-color .15s ease, filter .15s ease, border-color .15s ease;
 }
-.container.product-page.page-wrapper .product-price-actions__cta .add-to-cart-btn:not([disabled]):not([aria-disabled="true"]):hover {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 8px 26px rgba(0,0,0,0.24);
+.container.product-page.page-wrapper .product-detail .product-price-actions .price-qty-cta-row .button.add-to-cart-btn:hover,
+.container.product-page.page-wrapper .price-qty-cta-row .add-to-cart-btn:hover,
+.container.product-page.page-wrapper .product-price-actions__cta .add-to-cart-btn:hover {
+  background: rgba(220,196,154,0.28) !important;
+  border-color: rgba(220,196,154,0.6) !important;
+  color: #dcc49a !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.22);
 }
-.container.product-page.page-wrapper .product-price-actions__cta .add-to-cart-btn:not([disabled]):not([aria-disabled="true"]):active {
-  transform: translateY(0) scale(0.99);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+.container.product-page.page-wrapper .product-detail .product-price-actions .price-qty-cta-row .button.add-to-cart-btn:active,
+.container.product-page.page-wrapper .price-qty-cta-row .add-to-cart-btn:active,
+.container.product-page.page-wrapper .product-price-actions__cta .add-to-cart-btn:active {
+  transform: translateY(0.5px) scale(0.985);
+  background: rgba(220,196,154,0.22) !important;
+  color: #dcc49a !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.container.product-page.page-wrapper .price-qty-cta-row .add-to-cart-btn:focus-visible,
+.container.product-page.page-wrapper .product-price-actions__cta .add-to-cart-btn:focus-visible {
+  outline: 2px solid rgba(220,196,154,0.9);
+  outline-offset: 2px;
+}
+.container.product-page.page-wrapper .price-qty-cta-row .add-to-cart-btn[disabled],
+.container.product-page.page-wrapper .product-price-actions__cta .add-to-cart-btn[disabled],
+.container.product-page.page-wrapper .price-qty-cta-row .add-to-cart-btn[aria-disabled="true"],
+.container.product-page.page-wrapper .product-price-actions__cta .add-to-cart-btn[aria-disabled="true"] {
+  background: rgba(220,196,154,0.12);
+  border-color: rgba(220,196,154,0.28);
+  color: #c7b18c;
+  box-shadow: none;
+}
+
+/* Gift select styled as glassy button (high specificity) */
+.container.product-page.page-wrapper .product-detail .product-price-actions > .product-gift-select .gift-select,
+.container.product-page.page-wrapper .product-gift-select .gift-select {
+  display: block;
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: rgba(220,196,154,0.12) !important;
+  border: 1px solid rgba(220,196,154,0.35) !important;
+  color: #dcc49a !important;
+  -webkit-backdrop-filter: saturate(140%) blur(6px);
+  backdrop-filter: saturate(140%) blur(6px);
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 36px;
+  appearance: none;
+}
+.container.product-page.page-wrapper .product-detail .product-price-actions > .product-gift-select .gift-select:hover,
+.container.product-page.page-wrapper .product-gift-select .gift-select:hover {
+  background: rgba(220,196,154,0.2) !important;
+  border-color: rgba(220,196,154,0.5) !important;
+}
+.container.product-page.page-wrapper .product-detail .product-price-actions > .product-gift-select .gift-select:focus,
+.container.product-page.page-wrapper .product-gift-select .gift-select:focus {
+  outline: 2px solid rgba(220,196,154,0.8) !important;
+  outline-offset: 2px;
+}
+
+/* Native dropdown panel styling (limited by browser), high-specificity */
+.container.product-page.page-wrapper .product-detail .product-price-actions > .product-gift-select .gift-select option,
+.container.product-page.page-wrapper .product-detail .product-price-actions > .product-gift-select .gift-select optgroup,
+.container.product-page.page-wrapper .product-gift-select .gift-select option,
+.container.product-page.page-wrapper .product-gift-select .gift-select optgroup {
+  background-color: #20170D;              /* slightly dark solid panel */
+  color: #dcc49a;                          /* brand text */
+}
+/* Selected and hovered option colors (where supported) */
+.container.product-page.page-wrapper .product-gift-select .gift-select option:checked,
+.container.product-page.page-wrapper .product-gift-select .gift-select option:hover,
+.container.product-page.page-wrapper .product-gift-select .gift-select option:focus {
+  background-color: rgba(220,196,154,0.22);
+  color: #dcc49a;
+}
+/* WebKit scrollbar in dropdown list (Chrome-based; may be ignored by OS menus) */
+.container.product-page.page-wrapper .product-gift-select .gift-select::-webkit-scrollbar {
+  width: 10px; height: 10px;
+}
+.container.product-page.page-wrapper .product-gift-select .gift-select::-webkit-scrollbar-thumb {
+  background-color: rgba(220,196,154,0.35);
+  border-radius: 8px;
+}
+.container.product-page.page-wrapper .product-gift-select .gift-select::-webkit-scrollbar-track {
+  background-color: #1A130B;
+}
+
+/* Mobile: ensure full-width stacked buttons */
+@media (max-width: 575.98px) {
+  .container.product-page.page-wrapper .product-detail .product-price-actions .price-qty-cta-row .button.add-to-cart-btn {
+    width: 100% !important;
+  }
+  .container.product-page.page-wrapper .product-gift-select .gift-select {
+    width: 100% !important;
+  }
 }
 
 /* Inline qty controls next to CTA */
@@ -274,12 +455,47 @@
   .product-page .product-price-actions__price { flex: 1 1 auto; }
   .product-page .product-price-actions__cta { flex: 0 0 auto; }
   .product-page .product-price-actions__cta .button { width: auto; min-width: 180px; }
+  /* On tablet+, make grid 2 columns: [qty] [button], and gift-select spans both */
+  .product-page .product-price-actions__cta .cta-block { grid-template-columns: initial; }
+  .product-page .product-price-actions__cta .gift-select-group { grid-column: auto; }
+  /* Let qty and button be direct grid items: flatten the row */
+  .product-page .product-price-actions__cta .cta-row { display: flex; }
+}
+
+/* From tablets: keep price + qty + button on one line */
+@media (min-width: 768px) {
+  .product-page .product-price-actions { flex-wrap: nowrap; }
+  .product-page .product-price-actions__price { flex: 1 1 auto; min-width: 0; }
+  .product-page .product-price-actions__cta { flex: 0 0 auto; }
+}
+
+/* Mobile: allow full width for the block so it fits the container and wraps cleanly */
+@media (max-width: 575.98px) {
+  .product-page .price-qty-cta-row { flex-wrap: wrap; min-width: 0; }
+  /* Keep price label + value first on the line */
+  .product-page .price-qty-cta-row .product-price-label { order: 1; }
+  .product-page .price-qty-cta-row .tm-card-price--inline { order: 2; }
+  /* Quantity stays next, inline with price if хватает места */
+  .product-page .price-qty-cta-row .product-qty-inline { order: 3; margin-left: 0; }
+  /* Add-to-cart goes to its own full-width line */
+  .product-page .price-qty-cta-row .add-to-cart-btn {
+    order: 4;
+    flex: 1 1 100%;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 8px;
+  }
+  /* Gift selector: full width and below the row */
+  .product-page .product-gift-select { display: block !important; width: 100% !important; margin-top: 10px; }
+  .product-page .product-gift-select .gift-select { width: 100%; }
 }
 
 /* Desktop: slightly larger price for emphasis */
 @media (min-width: 992px) {
   .product-page .tm-card-price--inline .price-new,
   .product-page .tm-card-price--inline .price { font-size: 1.35rem; }
+  /* Keep on one row on wide screens */
+  .product-page .product-price-actions { flex-wrap: nowrap; }
 }
 
 /* Image navigation arrows inside the product image area */
@@ -291,6 +507,22 @@
 
 /* Out-of-stock label color on product page + related products */
 .container.product-page.page-wrapper .badge-stock.is-out { color: #c7b18c; }
+
+/* --- Hard override: keep gift selector below the main row on ALL widths --- */
+.container.product-page.page-wrapper .product-price-actions {
+  display: block;       /* break out of any flex row rules */
+}
+.container.product-page.page-wrapper .product-price-actions > .price-qty-cta-row {
+  display: flex;                   /* row remains flex for its inner items */
+  align-items: baseline;
+  width: 100%;
+}
+.container.product-page.page-wrapper .product-price-actions > .product-gift-select {
+  display: block;       /* force to new line under the row */
+  width: 100%;
+  margin-top: 10px;
+  clear: both;
+}
 
 /* (navigation arrows removed) */
 

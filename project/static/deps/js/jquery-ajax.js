@@ -202,9 +202,14 @@ $(document).ready(function () {
         // Пытаемся взять количество из ближайшей формы на странице товара
         var $form = $(this).closest('form');
         var qtyVal = 1;
+        var giftChoiceVal = null;
         if ($form.length) {
             var v = parseInt($form.find('.product-quantity-input-number').val(), 10);
             if (!isNaN(v) && v > 0) qtyVal = v;
+            var $gift = $form.find('#gift-choice');
+            if ($gift.length) {
+                giftChoiceVal = $gift.val() || null;
+            }
         }
 
         $.ajax({
@@ -213,6 +218,7 @@ $(document).ready(function () {
             data: {
                 product_id: product_id,
                 quantity: qtyVal,
+                gift_choice: giftChoiceVal,
                 csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
             },
             headers: { 'X-CSRFToken': getCookie('csrftoken') },

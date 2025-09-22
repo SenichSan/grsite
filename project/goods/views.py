@@ -94,9 +94,22 @@ class ProductView(DetailView):
             .order_by('?')[:10]
         )
 
+        # Опции подарка-отпечатка
+        gift_options = []
+        if getattr(product, 'gift_enabled', False):
+            gift_category = Categories.objects.filter(slug='sporovi-vidbitki').first()
+            if gift_category:
+                gift_options = list(
+                    Products.objects.filter(category=gift_category, quantity__gt=0)
+                    .order_by('name')
+                    .values_list('name', flat=True)
+                )
+
         context.update({
             'title': product.name,
             'related_products': related_products,
+            'gift_enabled': getattr(product, 'gift_enabled', False),
+            'gift_options': gift_options,
         })
         return context
 
