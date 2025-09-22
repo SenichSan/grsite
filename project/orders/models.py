@@ -58,6 +58,8 @@ class OrderItem(models.Model):
     price = models.DecimalField(max_digits=7, decimal_places=2, verbose_name="Цена")
     quantity = models.PositiveIntegerField(default=0, verbose_name="Количество")
     created_timestamp = models.DateTimeField(auto_now_add=True, verbose_name="Дата продажи")
+    # Сохранённый выбор подарка-отпечатка на момент оформления (может быть пустым)
+    gift_choice = models.CharField(max_length=255, default='', blank=True, verbose_name='Подарок (отпечаток)')
 
 
     class Meta:

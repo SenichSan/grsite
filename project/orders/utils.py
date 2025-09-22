@@ -3,6 +3,7 @@
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail import send_mail, EmailMultiAlternatives
+from django.conf import settings
 
 
 # Отправляет письмо продавцу о новом заказе
@@ -13,7 +14,10 @@ def send_order_email_to_seller(order, comment=None):
         return  # Не отправляем письмо, если товаров нет (на всякий случай)
 
     item_lines = '\n'.join([
-        f"{item.name} — Кол-во: {item.quantity}, Цена: {item.price * item.quantity}"
+        (
+            f"{item.name} — Кол-во: {item.quantity}, Цена: {item.price * item.quantity}"
+            + (f"; Стрейн: {item.gift_choice}" if getattr(item, 'gift_choice', '') else '')
+        )
         for item in items
     ])
     order_price = sum(item.price * item.quantity for item in items)
@@ -37,8 +41,8 @@ def send_order_email_to_seller(order, comment=None):
     send_mail(
         subject=f"Новый заказ №{order.id}",
         message=message,
-        from_email='shroomer0ua@gmail.com',
-        recipient_list=['shroomer0ua@gmail.com'],
+        from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'shroomer0ua@gmail.com'),
+        recipient_list=[getattr(settings, 'SELLER_EMAIL', 'shroomer0ua@gmail.com')],
         fail_silently=False
     )
 
@@ -60,6 +64,7 @@ def send_order_email_to_customer(order):
             'name': item.name,
             'quantity': item.quantity,
             'line_total': item.price * item.quantity,
+            'gift_choice': getattr(item, 'gift_choice', ''),
         }
         for item in items
     ]
@@ -86,7 +91,7 @@ def send_order_email_to_customer(order):
     email = EmailMultiAlternatives(
         subject=f"Ваш заказ №{order.id}",
         body=message,
-        from_email='shroomer0ua@gmail.com',
+        from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'shroomer0ua@gmail.com'),
         to=[order.email],
     )
     email.attach_alternative(html_message, "text/html")

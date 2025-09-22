@@ -106,6 +106,7 @@ class CreateOrderView(FormView):
                             name=product.name,
                             price=product.sell_price(),
                             quantity=cart_item.quantity,
+                            gift_choice=getattr(cart_item, 'gift_choice', '') or '',
                         )
 
                     # Списываем остатки под блокировкой
