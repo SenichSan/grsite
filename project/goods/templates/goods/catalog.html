@@ -77,8 +77,8 @@
       </section>
     </div>
 
-
-    {# category presentation is rendered inside _products_list.html to update via AJAX #}
+    {# Standalone container for category presentation; will be filled from partial via JS #}
+    <div id="category-presentation-container"></div>
 
     {% include 'components/footer.html' %}
 </div>
@@ -201,6 +201,16 @@
   // Dynamic 3D tilt similar to bestsellers; safe to call repeatedly
   function initTilt(){
     if (!productsEl) return;
+    // Disable tilt on touch/coarse pointers and small screens (match home logic)
+    try {
+      const isCoarse = window.matchMedia('(pointer: coarse)').matches;
+      const noHover = window.matchMedia('(hover: none)').matches;
+      const isSmall = window.matchMedia('(max-width: 768px)').matches;
+      if (isCoarse || noHover || isSmall) {
+        document.documentElement.classList.add('tilt-disabled');
+        return; // do not bind tilt on mobile/coarse devices
+      }
+    } catch(_) {}
     const cards = productsEl.querySelectorAll('.tm-featured-grid article.tm-product-card');
     if (!cards.length) return;
     const maxTilt = 8;     // degrees
@@ -274,7 +284,27 @@
       const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }, signal: controller.signal });
       if (!res.ok) throw new Error('Network error');
       const html = await res.text();
-      productsEl.innerHTML = html;
+      // Create a detached DOM to query both products and category presentation
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      const newPresentation = tmp.querySelector('#category-presentation');
+      const newProducts = tmp.innerHTML; // full partial content
+      productsEl.innerHTML = newProducts;
+      // Move category presentation out into a standalone container (replace existing)
+      try {
+        const host = document.getElementById('category-presentation-container');
+        const inProducts = productsEl.querySelector('#category-presentation');
+        if (host) {
+          host.innerHTML = '';
+          if (inProducts) {
+            host.appendChild(inProducts);
+          } else if (newPresentation) {
+            host.appendChild(newPresentation);
+          }
+        } else if (inProducts) {
+          // Fallback: if host not found, keep it inside products
+        }
+      } catch(_) {}
 
       // scroll into view for better UX
       productsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -284,6 +314,10 @@
 
       // Re-init tilt handlers for newly injected cards
       initTilt();
+
+      // Bind species filter buttons inside the newly injected content
+      bindSpeciesFilter();
+
 
       if (pushState) {
         history.pushState({ url }, '', url);
@@ -318,12 +352,39 @@
     });
   }
 
+  function bindSpeciesFilter(){
+    if (!productsEl) return;
+    productsEl.querySelectorAll('.species-filter-nav a.catalog-category-card').forEach(link => {
+      if (link.dataset.sfBound) return;
+      link.dataset.sfBound = '1';
+      link.addEventListener('click', function(e){
+        if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        const url = this.href;
+        loadProducts(url, {pushState:true});
+      });
+    });
+  }
+
   // Initial bindings
   if (categoriesWrap) {
     categoriesWrap.addEventListener('click', onCategoryClick);
   }
   bindPagination();
   initTilt();
+  bindSpeciesFilter();
+  // On first render (SSR), if the partial included category presentation, move it out
+  (function initialMovePresentation(){
+    try {
+      const host = document.getElementById('category-presentation-container');
+      if (!host) return;
+      const inProducts = productsEl && productsEl.querySelector('#category-presentation');
+      if (inProducts) {
+        host.innerHTML = '';
+        host.appendChild(inProducts);
+      }
+    } catch(_) {}
+  })();
 
   // Handle back/forward
   window.addEventListener('popstate', (e) => {

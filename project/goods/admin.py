@@ -28,10 +28,10 @@ class ProductImageInline(admin.TabularInline):
 class ProductsAdmin(admin.ModelAdmin):
     inlines = [ProductImageInline]
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ["name", "quantity", "price", "discount", "gift_enabled"]
-    list_editable = ["discount", "gift_enabled"]
+    list_display = ["name", "species", "quantity", "price", "discount", "gift_enabled"]
+    list_editable = ["discount", "gift_enabled", "species"]
     search_fields = ["name", "short_description", "description"]
-    list_filter = ["discount", "quantity", "category"]
+    list_filter = ["category", "species", "discount", "quantity"]
     fields = [
         "name",
         "category",
@@ -44,6 +44,7 @@ class ProductsAdmin(admin.ModelAdmin):
         "quantity",
         "is_bestseller",
         "gift_enabled",
+        "species",
     ]
 
 

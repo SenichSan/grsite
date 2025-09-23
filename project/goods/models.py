@@ -36,6 +36,18 @@ class Products(models.Model):
     is_bestseller = models.BooleanField(default=False, verbose_name='Лидер продаж')
     # Включает выбор подарочного отпечатка на странице товара
     gift_enabled = models.BooleanField(default=False, verbose_name='Подарок на выбор (отпечаток)')
+    # Мягкое разделение для категории "Спорові відбитки": вид гриба
+    SPECIES_CHOICES = (
+        ('cubensis', 'Cubensis'),
+        ('panaeolus', 'Panaeolus'),
+    )
+    species = models.CharField(
+        max_length=20,
+        choices=SPECIES_CHOICES,
+        blank=True,
+        default='',
+        verbose_name='Вид (species)'
+    )
 
 
 

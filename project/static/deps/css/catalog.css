@@ -1,5 +1,26 @@
 /* Каталог: убираем коллапс нижнего отступа грида, чтобы overlay покрывал всё без "ступеньки" */
 .tm-featured-wrapper > .container-bestsellers.basic-grid { padding-bottom: 2.4rem; }
+
+/* Species filter (sporovi-vidbitki) — reuse category card styles + active purple accent */
+.species-filter-nav {
+  /* define accent color variable to match categories block */
+  --accent-rgba: 181,124,255;
+}
+.species-filter-nav .catalog-categories-list {
+  /* stretch buttons across the full block width */
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  justify-content: stretch;
+  align-items: stretch;
+  padding: 12px 0 16px;
+  overflow: visible; /* no horizontal scroll for just two buttons */
+}
+.species-filter-nav .catalog-category-item { flex: 0 0 auto; }
+.species-filter-nav .catalog-category-card {
+  width: 100%;
+  min-width: 0; /* allow to shrink inside grid */
+}
 .tm-featured-wrapper > .container-bestsellers.basic-grid .tm-featured-grid { margin-bottom: 0; }
 
 @media (max-width: 768px) {
@@ -56,9 +77,153 @@
   z-index: 5;
 }
 
+/* ===== Match bestsellers visual style for catalog cards ===== */
+/* Card base look (background, radius, padding, min-height) */
+#catalog-products .tm-featured-grid .tm-product-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 210px;            /* match home cards */
+  min-height: 360px;           /* visual baseline */
+  height: 100%;
+  padding: 10px;
+  background: #3a3740b0;
+  border-radius: 2em;
+}
+
+/* Image frame rounding + reliable clipping */
+#catalog-products .tm-featured-grid .tm-card-image-wrap {
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  border-radius: 25px;
+  background: transparent; /* match home: no forced dark fill */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  clip-path: inset(0 round 25px);
+  position: relative; /* anchor for pseudo-element */
+}
+#catalog-products .tm-featured-grid .tm-card-image-wrap picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  overflow: hidden;
+  clip-path: inset(0 round 25px);
+}
+#catalog-products .tm-featured-grid .tm-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: inherit;
+  clip-path: inset(0 round 25px);
+  transition: transform .4s ease;
+}
+/* (rolled back) pseudo-element echo removed on catalog */
 /* Image subtle zoom on hover */
-#catalog-products .tm-card-image-wrap .tm-card-img {
-  transition: transform 300ms ease;
+#catalog-products .tm-featured-grid .tm-product-card:hover .tm-card-img { transform: scale(1.04); }
+
+/* Card info alignment and typography tweaks */
+#catalog-products .tm-featured-grid .tm-card-info {
+  text-align: center;
+  padding: 10px 6px;
+  color: #F3EFFF;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+#catalog-products .tm-featured-grid .tm-card-title {
+  margin: 0;
+  font-weight: 800;
+  font-size: 1.08rem;
+  line-height: 1.22;
+  font-style: italic;
+  color: #dac291;
+  letter-spacing: .1px;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.25);
+  margin-bottom: 2px;
+}
+#catalog-products .tm-featured-grid .tm-card-subtitle {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.3;
+  color: #9C9EA8;
+}
+#catalog-products .tm-featured-grid .tm-card-price { margin-top: 6px; color: #E6BF5A; font-weight: 800; font-size: 1.02rem; }
+
+/* Actions block and add-to-cart button look */
+#catalog-products .tm-featured-grid .tm-card-actions { display: flex; justify-content: center; padding-top: 8px; position: relative; z-index: 3; margin-top: auto; }
+#catalog-products .tm-featured-grid .add-to-cart,
+#catalog-products .tm-featured-grid .add-to-cart-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  min-width: 120px;
+  cursor: pointer;
+  font-family: 'Ruslan Display', 'Marck Script', 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 0.92rem;
+  letter-spacing: .2px;
+  color: #3a2f1f;
+  text-shadow: none;
+  background: #E8D8B8;
+  border: 2px solid #ad9550 !important;
+  background-clip: padding-box;
+  box-shadow: 0 0 0 1px rgba(173,149,80,0.30), inset 0 0 0 1px rgba(58,47,31,0.10);
+  border-radius: 12px;
+  transition: transform .12s ease, background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+#catalog-products .tm-featured-grid .add-to-cart:hover,
+#catalog-products .tm-featured-grid .add-to-cart-btn:hover {
+  transform: none;
+  background-color: #238B5C;
+  color: #ffffff;
+  border-color: #176E49;
+  box-shadow: none;
+}
+#catalog-products .tm-featured-grid .add-to-cart:active,
+#catalog-products .tm-featured-grid .add-to-cart-btn:active {
+  transform: translateY(0);
+  background-color: #DEC895;
+  border-color: #8c6f2c !important;
+  box-shadow: 0 0 0 1px rgba(203,179,107,0.30), inset 0 0 0 1px rgba(58,47,31,0.14);
+  filter: none;
+}
+#catalog-products .tm-featured-grid .add-to-cart:focus-visible,
+#catalog-products .tm-featured-grid .add-to-cart-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(210,184,121,0.35);
+}
+#catalog-products .tm-featured-grid .tm-card-actions .add-to-cart,
+#catalog-products .tm-featured-grid .tm-card-actions .add-to-cart-btn {
+  border: 2px solid #ad9550 !important;
+  border-style: solid !important;
+  box-shadow: 0 0 0 1px rgba(173,149,80,0.30) !important;
+}
+
+/* Protective rules (match home) to ensure image wrap/picture behave and overlays stack correctly */
+#catalog-products .tm-featured-grid .tm-product-card > a,
+#catalog-products .tm-featured-grid .tm-product-card .tm-card-image-wrap {
+  background: transparent;
+  border-radius: inherit;
+  position: relative;
+  z-index: 1;
+}
+
+/* Link should not cover actions block; keep stacking context sane */
+#catalog-products .tm-featured-grid .tm-product-card > a.tm-product-link {
+  position: relative;
+  z-index: 1; /* below .tm-card-actions (z-index:3) */
+  display: block;
+}
+
+/* Ensure pointer events work on add-to-cart button */
+#catalog-products .tm-featured-grid .tm-card-actions .add-to-cart-btn {
+  pointer-events: auto;
 }
 
 /* ===== Category presentation (selected category) ===== */
@@ -69,8 +234,8 @@
   border: 2px solid #4f463e;     /* match other blocks */
   border-radius: 10px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  padding: 16px 18px;
-  margin: 12px 0; /* match home spacing */
+  padding: 22px 18px 16px; /* extra top padding for internal separator */
+  position: relative; /* for separator line */
 }
 .category-presentation-inner {
   display: grid;
@@ -150,8 +315,13 @@
     border: 0 !important;
     box-shadow: none !important;
     padding: 8px 0 0 !important;
-    margin-top: 8px !important;
+    margin-top: 16px !important; /* a bit more air on mobile too */
   }
+}
+
+/* Products block spacing under cards (separator line removed by request) */
+@media (max-width: 768px) {
+  #catalog-products { margin-bottom: 16px; }
 }
 
 /* Toast notifications */
@@ -418,6 +588,28 @@
 
 }
 
+/* Thin creamy rule under any category heading except 'All products' */
+.catalog-category-heading:not(.is-all) {
+  position: relative;
+  padding-bottom: 13px; /* was 8px */
+}
+.catalog-category-heading:not(.is-all)::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  bottom: -2px;
+  height: 1px;
+  /* creamy, more uniform tone without a bright center */
+  background: linear-gradient(
+    90deg,
+    rgba(255,242,194,0.18) 0%,
+    rgba(255,242,194,0.28) 35%,
+    rgba(255,242,194,0.28) 65%,
+    rgba(255,242,194,0.18) 100%
+  );
+  box-shadow: 0 0 4px rgba(255,242,194,0.18);
+}
+
 /* Smaller, subtle helper subtitle */
 .catalog-categories-subtitle {
   font-size: 0.95rem;
@@ -584,3 +776,33 @@
   .catalog-categories-list .catalog-category-card[data-category="all"] { display: inline-flex; margin: 0 auto; max-width: 420px; }
 }
 
+/* Mobile override for species filter: keep two buttons in one row */
+@media (max-width: 768px) {
+  .species-filter-nav .catalog-categories-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .species-filter-nav .catalog-categories-list .catalog-category-item:first-child { grid-column: auto !important; }
+  .species-filter-nav .catalog-category-card { width: 100%; min-width: 0; }
+}
+
+
+/* --- Stronger specificity to guarantee underline on all category headings except 'All products' --- */
+.catalog-current-title .catalog-category-heading {
+  position: relative;
+  padding-bottom: 13px;
+}
+.catalog-current-title .catalog-category-heading::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(255,242,194,0.18) 0%,
+    rgba(255,242,194,0.28) 35%,
+    rgba(255,242,194,0.28) 65%,
+    rgba(255,242,194,0.18) 100%
+  );
+  box-shadow: 0 0 4px rgba(255,242,194,0.18);
+}
+.catalog-current-title .catalog-category-heading.is-all { padding-bottom: 0; }
+.catalog-current-title .catalog-category-heading.is-all::after { content: none; }

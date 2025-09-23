@@ -20,6 +20,10 @@ class CatalogView(ListView):
         base_qs = Products.objects.all().prefetch_related('images')
 
         category_slug = self.kwargs.get(self.slug_url_kwarg)
+        species = (self.request.GET.get("species") or "").strip().lower()
+        # Default to cubensis for 'sporovi-vidbitki' when no explicit filter provided
+        if (category_slug == 'sporovi-vidbitki') and not species:
+            species = 'cubensis'
         on_sale = self.request.GET.get("on_sale")
         order_by = self.request.GET.get("order_by")
         query = self.request.GET.get("q")
@@ -38,6 +42,10 @@ class CatalogView(ListView):
                 goods = base_qs.filter(category__slug=category_slug)
                 if not goods.exists():
                     raise Http404()
+
+        # Soft subdivision for 'Спорові відбитки': filter by species when provided or defaulted
+        if species in ("cubensis", "panaeolus"):
+            goods = goods.filter(species=species)
 
         if on_sale:
             goods = goods.filter(discount__gt=0)
@@ -63,6 +71,12 @@ class CatalogView(ListView):
         context['current_category_obj'] = None
         if current_slug:
             context['current_category_obj'] = Categories.objects.filter(slug=current_slug).first()
+
+        # Expose active species in context (default to cubensis for 'sporovi-vidbitki')
+        species = (self.request.GET.get("species") or "").strip().lower()
+        if current_slug == 'sporovi-vidbitki' and not species:
+            species = 'cubensis'
+        context['species'] = species
         return context
 
 
