@@ -670,7 +670,7 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  height: auto; /* allow multi-line content */
+  height: 3.5rem; /* allow multi-line content */
   min-width: clamp(120px, 12vw, 180px);
   padding: 10px 14px;
   border-radius: 8px;
@@ -709,7 +709,7 @@
 
 .catalog-category-label {
   font-weight:600;
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   margin: 0;
   z-index: 1;
   text-align: center;
