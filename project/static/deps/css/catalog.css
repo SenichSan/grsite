@@ -23,6 +23,17 @@
 }
 .tm-featured-wrapper > .container-bestsellers.basic-grid .tm-featured-grid { margin-bottom: 0; }
 
+/* Mobile tweak: make species buttons a bit taller for easier tap targets */
+@media (max-width: 576.98px) {
+  .species-filter-nav .catalog-category-card {
+    min-height: 56px; /* was auto; increase tap area */
+    padding: 14px 12px; /* slightly larger inner padding */
+  }
+  .species-filter-nav .catalog-category-label {
+    line-height: 1.2; /* keep label tidy in taller button */
+  }
+}
+
 @media (max-width: 768px) {
   .tm-featured-wrapper > .container-bestsellers.basic-grid { padding-bottom: 2.2rem; }
   .tm-featured-wrapper > .container-bestsellers.basic-grid .tm-featured-grid { margin-bottom: 0; }
@@ -780,7 +791,12 @@
 @media (max-width: 768px) {
   .species-filter-nav .catalog-categories-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .species-filter-nav .catalog-categories-list .catalog-category-item:first-child { grid-column: auto !important; }
-  .species-filter-nav .catalog-category-card { width: 100%; min-width: 0; }
+  .species-filter-nav .catalog-category-card {
+    width: 100%;
+    min-width: 0;
+    min-height: 66px; /* increase tap target */
+    padding: 14px 12px; /* slightly larger inner padding on mobile */
+  }
 }
 
 
@@ -806,3 +822,14 @@
 }
 .catalog-current-title .catalog-category-heading.is-all { padding-bottom: 0; }
 .catalog-current-title .catalog-category-heading.is-all::after { content: none; }
+
+/* Stronger species buttons height on mobile/tablet (target the specific class used in markup) */
+@media (max-width: 991.98px) {
+  .species-filter-nav a.species-filter-btn {
+    min-height: 70px;
+    padding: 16px 14px;
+  }
+  .species-filter-nav a.species-filter-btn .catalog-category-label {
+    line-height: 1.22;
+  }
+}
