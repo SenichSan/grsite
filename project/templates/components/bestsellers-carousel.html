@@ -18,14 +18,6 @@
                             {% endif %}
                             {% if product.quantity <= 0 %}
                             <div class="badge-stock is-out" aria-label="Немає в наявності">немає в наявності</div>
-                            {% elif product.quantity <= 15 and product.quantity > 10 %}
-                            <div class="badge-stock is-low" aria-label="Залишилось: {{ product.quantity }}">
-                                залишилось: <span class="st-amt">{{ product.quantity }}</span>
-                            </div>
-                            {% elif product.quantity <= 10 and product.quantity > 0 %}
-                            <div class="badge-stock is-critical" aria-label="Залишилось: {{ product.quantity }}">
-                                залишилось: <span class="st-amt">{{ product.quantity }}</span>
-                            </div>
                             {% endif %}
                         </div>
                         {% product_card_picture product 'tm-card-img' product.name 'lazy' %}

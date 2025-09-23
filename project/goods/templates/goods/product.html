@@ -195,14 +195,6 @@
                             {% endif %}
                             {% if product.quantity <= 0 %}
                             <div class="badge-stock is-out" aria-label="Немає в наявності">немає в наявності</div>
-                            {% elif product.quantity <= 15 and product.quantity > 10 %}
-                            <div class="badge-stock is-low" aria-label="Залишилось: {{ product.quantity }}">
-                                залишилось: <span class="st-amt">{{ product.quantity }}</span>
-                            </div>
-                            {% elif product.quantity <= 10 and product.quantity > 0 %}
-                            <div class="badge-stock is-critical" aria-label="Залишилось: {{ product.quantity }}">
-                                залишилось: <span class="st-amt">{{ product.quantity }}</span>
-                            </div>
                             {% endif %}
                         </div>
 
@@ -358,16 +350,7 @@
                                     </div>
                                     {% endif %}
 
-                                    {# Low stock / critical stock badge stacked under discount #}
-                                    {% if rp.quantity <= 15 and rp.quantity > 10 %}
-                                    <div class="badge-stock is-low" aria-label="Залишилось: {{ rp.quantity }}">
-                                        Залишилось: <span class="st-amt">{{ rp.quantity }}</span>
-                                    </div>
-                                    {% elif rp.quantity <= 10 and rp.quantity > 0 %}
-                                    <div class="badge-stock is-critical" aria-label="Залишилось: {{ rp.quantity }}">
-                                        Залишилось: <span class="st-amt">{{ rp.quantity }}</span>
-                                    </div>
-                                    {% elif rp.quantity <= 0 %}
+                                    {% if rp.quantity <= 0 %}
                                     <div class="badge-stock is-out" aria-label="Немає в наявності">
                                         Немає в наявності
                                     </div>
