@@ -400,27 +400,21 @@
   });
 })();
 </script>
-</body>
 
-<!-- Tawk.to (catalog page only, lazy) -->
+<!-- Tawk.to (minimized on load) -->
 <script type="text/javascript">
+  window.Tawk_API = window.Tawk_API || {};
+  window.Tawk_LoadStart = new Date();
+  Tawk_API.onLoad = function(){
+    try { Tawk_API.showWidget(); Tawk_API.minimize(); } catch(e) {}
+  };
   (function(){
-    function injectTawk(){
-      if (window.__tawkLoaded) return; window.__tawkLoaded = true;
-      var s1=document.createElement('script');
-      s1.async=true;
-      s1.src='https://embed.tawk.to/6896970ca4fc79192a7bea9e/1j263s266';
-      s1.charset='UTF-8';
-      s1.setAttribute('crossorigin','*');
-      var s0=document.getElementsByTagName('script')[0];
-      s0.parentNode.insertBefore(s1,s0);
-    }
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(injectTawk, { timeout: 4000 });
-    } else {
-      window.addEventListener('load', function(){ setTimeout(injectTawk, 2000); });
-    }
+    var s1=document.createElement('script'), s0=document.getElementsByTagName('script')[0];
+    s1.async=true; s1.src='https://embed.tawk.to/6896970ca4fc79192a7bea9e/1j263s266';
+    s1.charset='UTF-8'; s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
   })();
-  </script>
+</script>
+</body>
 
 </html>

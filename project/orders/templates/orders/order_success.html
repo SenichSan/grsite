@@ -101,15 +101,17 @@
     {% include 'components/footer.html' %}
   </div>
   
-  <!-- Tawk.to (order success page only) -->
+  <!-- Tawk.to (minimized on load) -->
   <script type="text/javascript">
-    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    window.Tawk_API = window.Tawk_API || {};
+    window.Tawk_LoadStart = new Date();
+    Tawk_API.onLoad = function(){
+      try { Tawk_API.showWidget(); Tawk_API.minimize(); } catch(e) {}
+    };
     (function(){
-      var s1=document.createElement("script"), s0=document.getElementsByTagName("script")[0];
-      s1.async=true;
-      s1.src='https://embed.tawk.to/6896970ca4fc79192a7bea9e/1j263s266';
-      s1.charset='UTF-8';
-      s1.setAttribute('crossorigin','*');
+      var s1=document.createElement('script'), s0=document.getElementsByTagName('script')[0];
+      s1.async=true; s1.src='https://embed.tawk.to/6896970ca4fc79192a7bea9e/1j263s266';
+      s1.charset='UTF-8'; s1.setAttribute('crossorigin','*');
       s0.parentNode.insertBefore(s1,s0);
     })();
   </script>

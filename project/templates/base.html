@@ -73,5 +73,21 @@
           crossorigin="anonymous"></script>
 
   {% block extra_js %}{% endblock %}
+
+  <!-- Tawk.to (глобально, свёрнут на старте) -->
+  <script type="text/javascript">
+    window.Tawk_API = window.Tawk_API || {};
+    window.Tawk_LoadStart = new Date();
+    // При загрузке — показать виджет и сразу свернуть, чтобы не было приветственного попапа
+    Tawk_API.onLoad = function(){
+      try { Tawk_API.showWidget(); Tawk_API.minimize(); } catch(e) {}
+    };
+    (function(){
+      var s1=document.createElement('script'), s0=document.getElementsByTagName('script')[0];
+      s1.async=true; s1.src='https://embed.tawk.to/6896970ca4fc79192a7bea9e/1j263s266';
+      s1.charset='UTF-8'; s1.setAttribute('crossorigin','*');
+      s0.parentNode.insertBefore(s1,s0);
+    })();
+  </script>
 </body>
 </html>

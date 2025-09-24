@@ -6,9 +6,12 @@
   <button type="button" class="tm-cart-button" aria-label="Открыть корзину" aria-haspopup="dialog">
     <span class="tm-cart-button-inner">
       <picture>
-        <source srcset="{% static 'deps/images/cart.avif' %}" type="image/avif">
-        <source srcset="{% static 'deps/images/cart.webp' %}" type="image/webp">
-        <img class="tm-cart-button-img" src="{% static 'deps/images/cart.png' %}" alt="Корзина" width="44" height="44" loading="lazy" decoding="async">
+        <source media="(min-width: 992px)" srcset="{% static 'deps/images/cart_96x96.avif' %}" type="image/avif">
+        <source media="(min-width: 992px)" srcset="{% static 'deps/images/cart_96x96.webp' %}" type="image/webp">
+        <source media="(min-width: 992px)" srcset="{% static 'deps/images/cart_96x96.png' %}" type="image/png">
+        <source srcset="{% static 'deps/images/cart_96x96.avif' %}" type="image/avif">
+        <source srcset="{% static 'deps/images/cart_96x96.webp' %}" type="image/webp">
+        <img class="tm-cart-button-img" src="{% static 'deps/images/cart_96x96.png' %}" alt="Корзина" width="44" height="44" loading="lazy" decoding="async">
       </picture>
       <span class="tm-cart-count" id="tm-cart-count" aria-hidden="true">0</span>
       <span class="tm-cart-label" aria-hidden="true">Корзина</span>
