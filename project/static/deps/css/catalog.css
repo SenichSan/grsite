@@ -109,7 +109,7 @@
   height: 160px;
   overflow: hidden;
   border-radius: 25px;
-  background: transparent; /* match home: no forced dark fill */
+  background: #222; /* match home cards: neutral dark base under image */
   -webkit-mask-image: -webkit-radial-gradient(white, black);
   clip-path: inset(0 round 25px);
   position: relative; /* anchor for pseudo-element */
@@ -121,6 +121,9 @@
   border-radius: inherit;
   overflow: hidden;
   clip-path: inset(0 round 25px);
+  /* ensure picture/content sits above pseudo background fill */
+  position: relative;
+  z-index: 1;
 }
 #catalog-products .tm-featured-grid .tm-card-img {
   width: 100%;
@@ -130,6 +133,15 @@
   border-radius: inherit;
   clip-path: inset(0 round 25px);
   transition: transform .4s ease;
+}
+/* Background fill to avoid visible emptiness under cover; mimics home cards behavior */
+#catalog-products .tm-featured-grid .tm-card-image-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #222; /* neutral dark base like on home */
+  z-index: 0;
 }
 /* (rolled back) pseudo-element echo removed on catalog */
 /* Image subtle zoom on hover */

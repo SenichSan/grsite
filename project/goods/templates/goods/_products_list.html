@@ -59,7 +59,7 @@
                     <div class="badge-stock is-out" aria-label="Немає в наявності">немає в наявності</div>
                     {% endif %}
                 </div>
-                {% product_image_picture product '400x300' 'tm-card-img' product.name 400 300 'lazy' %}
+                {% product_card_picture product 'tm-card-img' product.name 'lazy' %}
             </div>
 
             <div class="tm-card-info">
@@ -117,7 +117,7 @@
                     <div class="badge-stock is-out" aria-label="Немає в наявності">немає в наявності</div>
                     {% endif %}
                 </div>
-                {% product_image_picture product '400x300' 'tm-card-img' product.name 400 300 'lazy' %}
+                {% product_card_picture product 'tm-card-img' product.name 'lazy' %}
             </div>
 
             <div class="tm-card-info">
@@ -174,11 +174,11 @@
                     <div class="badge-stock is-out" aria-label="Немає в наявності">немає в наявності</div>
                     {% endif %}
                 </div>
-                {# Smart lazy loading: first 3 products eager for LCP, rest lazy #}
+                {# Smart lazy loading: first 3 products eager for LCP, rest lazy; using card-centric image like on home #}
                 {% if forloop.counter <= 3 %}
-                    {% product_image_picture product '400x300' 'tm-card-img' product.name 400 300 'eager' %}
+                    {% product_card_picture product 'tm-card-img' product.name 'eager' %}
                 {% else %}
-                    {% product_image_picture product '400x300' 'tm-card-img' product.name 400 300 'lazy' %}
+                    {% product_card_picture product 'tm-card-img' product.name 'lazy' %}
                 {% endif %}
             </div>
 
