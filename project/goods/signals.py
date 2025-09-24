@@ -7,7 +7,11 @@ from django.dispatch import receiver
 from django.core.files.storage import default_storage
 
 from .models import Categories, Products, ProductImage
-from common.image_utils import generate_icon_variants
+from common.image_utils import (
+    generate_icon_variants,
+    generate_formats_noresize,
+    generate_card_variants,
+)
 
 
 def _fs_path_from_storage(name: str) -> str:
@@ -37,31 +41,37 @@ def categories_generate_icon_variants(sender, instance: Categories, **kwargs):
 
 @receiver(post_save, sender=Products)
 def products_generate_image_variants(sender, instance: Products, **kwargs):
-    """On product save, generate WebP/AVIF variants for main image."""
+    """On product save, generate AVIF/WebP next to original files WITHOUT resizing."""
+    # Main product image
     image_field = getattr(instance, "image", None)
-    if not image_field or not getattr(image_field, "name", ""):
-        return
-    try:
-        src_path = _fs_path_from_storage(image_field.name)
-        # Generate multiple sizes for responsive images
-        generate_icon_variants(src_path, size=(400, 300))  # Card size
-        generate_icon_variants(src_path, size=(800, 600))  # Detail page size
-    except Exception:
-        # Fail silently; this is a best-effort optimization and should not block saving
-        pass
+    if image_field and getattr(image_field, "name", ""):
+        try:
+            src_path = _fs_path_from_storage(image_field.name)
+            generate_formats_noresize(src_path, image_type="product", overwrite=False)
+            # Generate card-sized variants (no blur-extend), to avoid "baked" background
+            generate_card_variants(src_path, size_desktop=(230,160), size_mobile=(200,160), background_blur=False)
+        except Exception:
+            pass
+
+    # Card-specific image
+    card_field = getattr(instance, "card_image", None)
+    if card_field and getattr(card_field, "name", ""):
+        try:
+            src_path = _fs_path_from_storage(card_field.name)
+            generate_formats_noresize(src_path, image_type="product", overwrite=False)
+            # Ensure card image also has card-sized variants (no blur-extend)
+            generate_card_variants(src_path, size_desktop=(230,160), size_mobile=(200,160), background_blur=False)
+        except Exception:
+            pass
 
 
 @receiver(post_save, sender=ProductImage)
 def product_images_generate_variants(sender, instance: ProductImage, **kwargs):
-    """On product image save, generate WebP/AVIF variants."""
+    """On gallery image save, generate AVIF/WebP next to original WITHOUT resizing."""
     image_field = getattr(instance, "image", None)
-    if not image_field or not getattr(image_field, "name", ""):
-        return
-    try:
-        src_path = _fs_path_from_storage(image_field.name)
-        # Generate multiple sizes for responsive images
-        generate_icon_variants(src_path, size=(400, 300))  # Card size
-        generate_icon_variants(src_path, size=(800, 600))  # Detail page size
-    except Exception:
-        # Fail silently; this is a best-effort optimization and should not block saving
-        pass
+    if image_field and getattr(image_field, "name", ""):
+        try:
+            src_path = _fs_path_from_storage(image_field.name)
+            generate_formats_noresize(src_path, image_type="product", overwrite=False)
+        except Exception:
+            pass

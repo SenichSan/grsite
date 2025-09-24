@@ -218,7 +218,8 @@ def generate_card_variants(
     result = {}
     for w, h in sizes:
         size_name = f"{w}x{h}"
-        canvas = _blur_extend_canvas(img, (w, h)) if background_blur else _fit_box_contain(img, (w, h))
+        # If blur-extend is disabled, use cover-crop to fully fill canvas (no transparent side bars)
+        canvas = _blur_extend_canvas(img, (w, h)) if background_blur else _fit_box(img, (w, h))
 
         out_webp = build_variant_paths(original_fs_path, size_name, "webp")
         out_avif = build_variant_paths(original_fs_path, size_name, "avif")
@@ -236,3 +237,113 @@ def generate_card_variants(
         result[size_name] = created
 
     return result
+
+
+def generate_formats_noresize(
+    original_fs_path: str,
+    *,
+    image_type: Literal["product", "background"] = "product",
+    quality_avif: int | None = None,
+    quality_webp: int | None = None,
+    overwrite: bool = False,
+) -> dict:
+    """
+    Create AVIF and WebP next to the original image WITHOUT resizing.
+    Keeps alpha if present, preserves original canvas size, and writes:
+      <root>.avif, <root>.webp (no size suffix)
+
+    Returns dict with keys:
+      {
+        'original': '<path-to-original>',
+        'avif': '<path-to-avif>' | None,
+        'webp': '<path-to-webp>' | None,
+        'mime_order': [('image/avif', avif_path), ('image/webp', webp_path), ('image/jpeg', original) | ('image/png', original)]
+      }
+    """
+    if not original_fs_path or not os.path.exists(original_fs_path):
+        return {}
+
+    root, ext = os.path.splitext(original_fs_path)
+    ext_lower = (ext or "").lower()
+
+    out_avif = f"{root}.avif"
+    out_webp = f"{root}.webp"
+
+    # Decide mime for original as fallback
+    if ext_lower in (".jpg", ".jpeg"):
+        original_mime = "image/jpeg"
+    elif ext_lower == ".png":
+        original_mime = "image/png"
+    else:
+        # default to jpeg to be safe in <img>
+        original_mime = "image/jpeg"
+
+    img = _open_image(original_fs_path)
+
+    # Preserve transparency: keep RGBA/LA; convert palette to RGBA; fallback to RGB
+    if img.mode == "P":
+        img = img.convert("RGBA")
+    if img.mode not in ("RGB", "RGBA", "LA"):
+        img = img.convert("RGB")
+
+    created_avif = None
+    created_webp = None
+
+    # Save AVIF
+    if AVIF_AVAILABLE:
+        if overwrite or (not os.path.exists(out_avif)):
+            save_avif_optimized(img, out_avif, image_type=image_type, quality=quality_avif if isinstance(quality_avif, int) else None)
+        if os.path.exists(out_avif):
+            created_avif = out_avif
+
+    # Save WebP
+    webp_q = int(quality_webp) if isinstance(quality_webp, int) else (82 if image_type == "background" else 80)
+    if overwrite or (not os.path.exists(out_webp)):
+        save_webp(img, out_webp, quality=webp_q)
+    if os.path.exists(out_webp):
+        created_webp = out_webp
+
+    mime_order = []
+    if created_avif:
+        mime_order.append(("image/avif", created_avif))
+    if created_webp:
+        mime_order.append(("image/webp", created_webp))
+    mime_order.append((original_mime, original_fs_path))
+
+    return {
+        "original": original_fs_path,
+        "avif": created_avif,
+        "webp": created_webp,
+        "mime_order": mime_order,
+    }
+
+
+def build_prioritized_picture_sources(original_fs_path: str) -> list[tuple[str, str]]:
+    """
+    Given a path to the original file, return a prioritized list of (mime, path)
+    suitable to render inside <picture> as <source type=... srcset=...>, ending with
+    the original as <img src=...> fallback. Does NOT perform generation; assumes
+    `generate_formats_noresize()` was called or variants already exist.
+    """
+    if not original_fs_path:
+        return []
+    root, _ext = os.path.splitext(original_fs_path)
+    avif = f"{root}.avif"
+    webp = f"{root}.webp"
+
+    sources: list[tuple[str, str]] = []
+    if os.path.exists(avif):
+        sources.append(("image/avif", avif))
+    if os.path.exists(webp):
+        sources.append(("image/webp", webp))
+
+    # infer original mime
+    ext_lower = _ext.lower()
+    if ext_lower in (".jpg", ".jpeg"):
+        original_mime = "image/jpeg"
+    elif ext_lower == ".png":
+        original_mime = "image/png"
+    else:
+        original_mime = "image/jpeg"
+    sources.append((original_mime, original_fs_path))
+    return sources
