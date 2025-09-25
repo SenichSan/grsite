@@ -328,18 +328,19 @@
   filter: brightness(1.08) saturate(1.03);
 }
 
-/* Mobile/Tablet: делаем Category Presentation прозрачным, чтобы не создавать "ступеньку"
-   относительно фонового полотна секции товаров */
+/* Mobile/Tablet: сохраняем такой же стиль как на десктопе, но компактнее и оптимизировано */
 @media (max-width: 991.98px) {
   #category-presentation.category-presentation {
-    background: transparent !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    padding: 8px 0 0 !important;
-    margin-top: 16px !important; /* a bit more air on mobile too */
+    background: rgba(2, 4, 13, 0.78); /* вернуть подложку */
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    border: 2px solid #4f463e;      /* вернуть рамку */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    padding: 16px 14px;              /* компактнее отступы на мобилке */
+    margin-top: 16px;                /* немного воздуха сверху */
   }
+  #category-presentation .category-presentation-title { font-size: 1.5rem; }
+  .category-presentation-image { max-width: 260px; aspect-ratio: 16 / 9; }
 }
 
 /* Products block spacing under cards (separator line removed by request) */
