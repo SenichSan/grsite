@@ -9,6 +9,7 @@ class Categories(models.Model):
     short_description = models.CharField(max_length=300, blank=True, null=True, verbose_name='Краткое описание')
     description = HTMLField(blank=True, null=True, verbose_name='Описание')
     image = models.ImageField(upload_to='categories_images', blank=True, null=True, verbose_name='Изображение')
+    seo_image = models.ImageField(upload_to='categories_seo', blank=True, null=True, verbose_name='SEO-изображение')
     sort_order = models.PositiveIntegerField(default=100, db_index=True, verbose_name='Порядок')
 
     class Meta:

@@ -259,7 +259,9 @@
 <section id="category-presentation" class="category-presentation">
     <div class="category-presentation-inner">
         <div class="category-presentation-media">
-            {% if current_category_obj.image %}
+            {% if current_category_obj.seo_image %}
+                {% field_image_picture current_category_obj.seo_image '800x450' 'category-presentation-image' current_category_obj.name 800 450 'lazy' %}
+            {% elif current_category_obj.image %}
                 {% category_icon_picture current_category_obj '800x450' 'category-presentation-image' current_category_obj.name 800 450 'lazy' %}
             {% else %}
                 <div class="category-presentation-image placeholder" aria-hidden="true"></div>

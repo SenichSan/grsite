@@ -15,6 +15,7 @@ class CategoriesAdmin(admin.ModelAdmin):
         "short_description",
         "description",
         "image",
+        "seo_image",
         "sort_order",
     ]
 

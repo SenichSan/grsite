@@ -28,15 +28,27 @@ def _fs_path_from_storage(name: str) -> str:
 @receiver(post_save, sender=Categories)
 def categories_generate_icon_variants(sender, instance: Categories, **kwargs):
     """On category save, (re)generate 128x128 AVIF/WebP variants next to original image."""
+    # Icon-sized variants for main category image (used in lists/cards)
     image_field = getattr(instance, "image", None)
-    if not image_field or not getattr(image_field, "name", ""):
-        return
-    try:
-        src_path = _fs_path_from_storage(image_field.name)
-        generate_icon_variants(src_path, size=(128, 128))
-    except Exception:
-        # Fail silently; this is a best-effort optimization and should not block saving
-        pass
+    if image_field and getattr(image_field, "name", ""):
+        try:
+            src_path = _fs_path_from_storage(image_field.name)
+            generate_icon_variants(src_path, size=(128, 128))
+        except Exception:
+            # Fail silently; this is a best-effort optimization and should not block saving
+            pass
+
+    # SEO image: generate no-resize formats and 800x450 cover variants for category presentation block
+    seo_field = getattr(instance, "seo_image", None)
+    if seo_field and getattr(seo_field, "name", ""):
+        try:
+            seo_src = _fs_path_from_storage(seo_field.name)
+            # Create side-by-side AVIF/WebP without resizing
+            generate_formats_noresize(seo_src, image_type="background", overwrite=False)
+            # Create sized cover variants expected by templates (800x450)
+            generate_icon_variants(seo_src, size=(800, 450), mode="cover")
+        except Exception:
+            pass
 
 
 @receiver(post_save, sender=Products)
