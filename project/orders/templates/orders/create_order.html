@@ -270,19 +270,16 @@
 <script defer src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script defer src="{% static 'deps/js/create_order.js' %}?v=4"></script>
 
-<!-- Tawk.to (minimized on load) -->
+<!-- Smartsupp Live Chat script -->
 <script type="text/javascript">
-  window.Tawk_API = window.Tawk_API || {};
-  window.Tawk_LoadStart = new Date();
-  Tawk_API.onLoad = function(){
-    try { Tawk_API.showWidget(); Tawk_API.minimize(); } catch(e) {}
-  };
-  (function(){
-    var s1=document.createElement('script'), s0=document.getElementsByTagName('script')[0];
-    s1.async=true; s1.src='https://embed.tawk.to/6896970ca4fc79192a7bea9e/1j263s266';
-    s1.charset='UTF-8'; s1.setAttribute('crossorigin','*');
-    s0.parentNode.insertBefore(s1,s0);
-  })();
+  var _smartsupp = _smartsupp || {};
+  _smartsupp.key = '5de87bf9af1b8fa48e3662bde83f62b0c5d164d0';
+  window.smartsupp||(function(d) {
+    var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+    s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+    c.type='text/javascript';c.charset='utf-8';c.async=true;
+    c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+  })(document);
 </script>
 
 </body>
