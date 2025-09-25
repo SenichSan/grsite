@@ -147,6 +147,22 @@
 /* Image subtle zoom on hover */
 #catalog-products .tm-featured-grid .tm-product-card:hover .tm-card-img { transform: scale(1.04); }
 
+/* Disable hover highlight on touch/mobile devices */
+@media (hover: none), (pointer: coarse) {
+  #catalog-products .tm-featured-grid:has(article.tm-product-card:hover) article.tm-product-card:not(:hover) {
+    filter: none;
+    box-shadow: 0 0 0 2px #E6BF5A;
+  }
+  #catalog-products .tm-featured-grid article.tm-product-card:hover,
+  #catalog-products .tm-featured-grid article.tm-product-card[data-tilt-active] {
+    filter: none;
+    box-shadow: 0 0 0 2px #E6BF5A;
+  }
+  #catalog-products .tm-featured-grid .tm-product-card:hover .tm-card-img {
+    transform: none;
+  }
+}
+
 /* Card info alignment and typography tweaks */
 #catalog-products .tm-featured-grid .tm-card-info {
   text-align: center;

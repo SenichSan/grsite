@@ -225,6 +225,22 @@ body {
   box-shadow: 0 0 0 2px #E6BF5A;
 }
 
+/* Disable hover highlight on touch/mobile devices */
+@media (hover: none), (pointer: coarse) {
+  .container-bestsellers.basic-grid .tm-featured-grid:has(article.tm-product-card:hover) article.tm-product-card:not(:hover) {
+    filter: none;
+    box-shadow: 0 0 0 2px #E6BF5A;
+  }
+  .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:hover,
+  .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card[data-tilt-active] {
+    filter: none;
+    box-shadow: 0 0 0 2px #E6BF5A;
+  }
+  .container-bestsellers.basic-grid .tm-featured-grid .tm-product-card:hover .tm-card-img {
+    transform: none;
+  }
+}
+
 /* Наведённая карточка — наоборот светлее и чуть теплее */
 .container-bestsellers.basic-grid .tm-featured-grid article.tm-product-card:hover {
   filter: brightness(1.12) contrast(1.05) saturate(1.06);
