@@ -301,7 +301,7 @@
   border-radius: 10px;
   display: block;
   /* golden frame */
-  box-shadow: 0 0 0 3px #E6BF5A; /* ring */
+  box-shadow: 0 0 0 0.7px #E6BF5A;
 }
 .category-presentation-image.placeholder {
   background: repeating-linear-gradient(45deg, #2a2516, #2a2516 10px, #211b0f 10px, #211b0f 20px);
